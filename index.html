@@ -2919,3 +2919,30 @@
     }
 
     function restoreDefaultItems() {
+      if (confirm('ডিফল্ট ক্যাটালগ রিস্টোর করতে চান?')) {
+        products = defaultCatalog;
+        saveProducts(products);
+        renderProducts();
+        renderOwnerOverview();
+      }
+    }
+
+    // Stealth Trigger: Triple Click on Lock icon in footer
+    let stealthClickCount = 0;
+    let stealthClickTimer = null;
+    const lockBtn = document.getElementById('stealthLockBtn');
+    if (lockBtn) {
+      lockBtn.addEventListener('click', () => {
+        stealthClickCount++;
+        clearTimeout(stealthClickTimer);
+        if (stealthClickCount === 3) {
+          stealthClickCount = 0;
+          openOwnerPortal();
+        } else {
+          stealthClickTimer = setTimeout(() => { stealthClickCount = 0; }, 600);
+        }
+      });
+    }
+  </script>
+</body>
+</html>
