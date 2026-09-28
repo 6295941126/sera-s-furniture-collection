@@ -31,16 +31,19 @@
         .gold-glow {
             box-shadow: 0 0 15px rgba(217, 119, 6, 0.35);
         }
+        .slide-fade {
+            transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
+        }
     </style>
 </head>
 <body class="bg-stone-100 text-stone-800 flex flex-col min-h-screen">
 
-    <!-- Top Notice Bar (No personal number here) -->
+    <!-- Top Notice Bar (Clean banner - No personal phone number here) -->
     <div class="bg-stone-900 text-amber-200 text-xs py-2 px-4 text-center tracking-wide font-medium flex justify-center items-center gap-2">
         <span>✨ ১০০% খাঁটি চিটাগাং সেগুন ও শীশম কাঠ | গঙ্গারামপুর ও সংলগ্ন এলাকায় দ্রুত হোম ডেলিভারি ও ফ্রি ফিটিং ✨</span>
     </div>
 
-    <!-- Header (Clean header without phone number) -->
+    <!-- Header (Brand logo, photo search, customer login, cart) -->
     <header class="bg-white sticky top-0 z-40 shadow-sm border-b border-stone-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between gap-4">
             
@@ -71,18 +74,24 @@
                 <input type="file" id="photoSearchInput" accept="image/*" class="hidden" onchange="processPhotoSearch(event)">
             </div>
 
-            <!-- Right Actions: Account & Cart -->
-            <div class="flex items-center gap-3">
+            <!-- Right Actions: Account, Admin & Cart -->
+            <div class="flex items-center gap-2 sm:gap-3">
                 <!-- Mobile Photo Search Icon -->
                 <button onclick="triggerPhotoSearch()" class="md:hidden w-9 h-9 rounded-full bg-amber-50 text-amber-800 flex items-center justify-center border border-amber-200">
                     <i class="ph ph-camera text-xl"></i>
+                </button>
+
+                <!-- Admin Button -->
+                <button onclick="openAdminModal()" class="p-2 sm:px-3 sm:py-1.5 rounded-full bg-stone-100 hover:bg-amber-100 text-stone-700 hover:text-amber-800 border border-stone-300 text-xs font-semibold flex items-center gap-1.5 transition">
+                    <i class="ph ph-gear text-base"></i>
+                    <span class="hidden sm:inline">অ্যাডমিন</span>
                 </button>
 
                 <!-- Customer Account Status -->
                 <div id="authHeaderContainer">
                     <button onclick="openAuthModal()" class="px-3.5 py-1.5 rounded-full border border-stone-300 text-stone-700 hover:border-amber-600 text-xs font-semibold flex items-center gap-1.5 transition">
                         <i class="ph ph-user text-base"></i>
-                        <span>লগইন / সাইন আপ</span>
+                        <span>লগইন</span>
                     </button>
                 </div>
 
@@ -105,6 +114,38 @@
             </div>
         </div>
     </header>
+
+    <!-- Dynamic Hero Carousel / Slider Section -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 w-full">
+        <div class="relative rounded-3xl overflow-hidden shadow-2xl bg-stone-900 group">
+            
+            <!-- Slide Container Track -->
+            <div id="sliderTrack" class="relative h-[280px] sm:h-[380px] md:h-[440px] w-full overflow-hidden">
+                <!-- Slides injected dynamically by JavaScript -->
+            </div>
+
+            <!-- Previous Slide Button -->
+            <button onclick="prevSlide()" class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center backdrop-blur-sm border border-white/20 transition-all opacity-80 hover:opacity-100 z-20">
+                <i class="ph ph-caret-left text-xl sm:text-2xl"></i>
+            </button>
+
+            <!-- Next Slide Button -->
+            <button onclick="nextSlide()" class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center backdrop-blur-sm border border-white/20 transition-all opacity-80 hover:opacity-100 z-20">
+                <i class="ph ph-caret-right text-xl sm:text-2xl"></i>
+            </button>
+
+            <!-- Carousel Pagination Dots -->
+            <div id="sliderDots" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20">
+                <!-- Dots injected dynamically -->
+            </div>
+
+            <!-- Slide Quick Management Floating Trigger -->
+            <button onclick="openAdminModal('sliderTab')" class="absolute top-3 right-3 bg-stone-900/80 hover:bg-amber-600 text-white text-xs font-semibold px-3 py-1.5 rounded-full border border-white/20 backdrop-blur-sm flex items-center gap-1.5 transition z-20 shadow">
+                <i class="ph ph-slideshow text-sm"></i>
+                <span class="text-[11px]">+ স্লাইড যোগ করুন</span>
+            </button>
+        </div>
+    </section>
 
     <!-- Visual / Photo Search Modal -->
     <div id="photoPreviewModal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 hidden">
@@ -134,29 +175,6 @@
 
     <!-- Main Content Grid -->
     <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full">
-        <!-- Hero Banner -->
-        <div class="bg-gradient-to-r from-stone-900 via-stone-800 to-amber-900 rounded-3xl p-6 sm:p-10 text-white mb-8 shadow-xl relative overflow-hidden">
-            <div class="relative z-10 max-w-xl">
-                <span class="inline-block px-3 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-full text-xs font-semibold mb-3">
-                    👑 প্রিমিয়াম উডক্রাফট ও খাঁটি সেগুন
-                </span>
-                <h2 class="text-2xl sm:text-4xl font-extrabold leading-snug mb-3">
-                    ঘরের শোভা বাড়াতে আধুনিক ও টেকসই ফার্নিচার
-                </h2>
-                <p class="text-stone-300 text-xs sm:text-sm mb-6 leading-relaxed">
-                    পছন্দের যেকোনো খাট, সোফা বা ডাইনিং টেবিল বুক করুন মাত্র ১০% অগ্রিমে। কাস্টম কাঠের কাজের বিশ্বস্ত প্রতিষ্ঠান।
-                </p>
-                <div class="flex flex-wrap gap-3">
-                    <a href="#catalog" class="px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-full text-xs sm:text-sm font-bold transition shadow-lg shadow-amber-900/40">
-                        কালেকশন দেখুন
-                    </a>
-                    <button onclick="triggerPhotoSearch()" class="px-5 py-2.5 bg-white/10 hover:bg-white/20 text-white rounded-full text-xs sm:text-sm font-semibold border border-white/20 transition flex items-center gap-2">
-                        <i class="ph ph-camera"></i> নিজের ছবি দিয়ে ডিজাইন খুঁজুন
-                    </button>
-                </div>
-            </div>
-        </div>
-
         <!-- Filter Chips -->
         <div id="catalog" class="flex items-center gap-2 overflow-x-auto pb-4 mb-6 scrollbar-none">
             <button onclick="filterCategory('all')" class="cat-pill active px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap bg-stone-900 text-white transition">
@@ -182,7 +200,7 @@
         </div>
     </main>
 
-    <!-- Footer & Contact Section (Phone numbers are located here) -->
+    <!-- Footer & Contact Section (Phone numbers placed strictly at the bottom) -->
     <footer class="bg-stone-900 text-stone-300 mt-16 border-t border-stone-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -199,13 +217,13 @@
                     </div>
                 </div>
 
-                <!-- Customer Service & Phone Support (Placed Here at the Bottom) -->
+                <!-- Customer Service & Phone Support (Cleanly located here at footer) -->
                 <div class="bg-stone-800/60 p-5 rounded-2xl border border-stone-700">
                     <h4 class="text-sm font-bold text-amber-400 mb-3 flex items-center gap-2">
                         <i class="ph ph-phone-call text-lg"></i> যোগাযোগ ও কাস্টমার হেল্পলাইন
                     </h4>
                     <p class="text-xs text-stone-400 mb-4">
-                        অর্ডার বুকিং, ডিজাইন কাস্টমাইজেশন বা যেকোনো তথ্যের জন্য সরাসরি কল বা হোয়াটসঅ্যাপ করুন:
+                        অর্ডার বুকিং, স্লাইডার ব্যানার তৈরি বা ফার্নিচার কাস্টমাইজেশনের জন্য কল বা হোয়াটসঅ্যাপ করুন:
                     </p>
                     <div class="space-y-2">
                         <a href="tel:+916295941126" class="flex items-center justify-between p-2.5 bg-stone-700/60 hover:bg-stone-700 rounded-xl text-xs text-white font-medium transition">
@@ -243,11 +261,152 @@
                 </div>
             </div>
 
-            <div class="border-t border-stone-800 mt-8 pt-6 text-center text-xs text-stone-500">
-                © 2026 Sera's Collection. সর্বস্বত্ব সংরক্ষিত।
+            <div class="border-t border-stone-800 mt-8 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-stone-500 gap-2">
+                <span>© 2026 Sera's Collection. সর্বস্বত্ব সংরক্ষিত।</span>
+                <button onclick="openAdminModal('sliderTab')" class="text-stone-400 hover:text-amber-400 text-xs">
+                    🛠️ অ্যাডমিন প্যানেল ও স্লাইডার কন্ট্রোল
+                </button>
             </div>
         </div>
     </footer>
+
+    <!-- Admin & Slider Control Modal -->
+    <div id="adminModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-2xl w-full p-5 sm:p-7 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            
+            <button onclick="closeAdminModal()" class="absolute right-4 top-4 text-stone-400 hover:text-stone-700 text-2xl">
+                <i class="ph ph-x"></i>
+            </button>
+
+            <!-- Locked PIN Entry State -->
+            <div id="adminPinContainer" class="py-6 text-center">
+                <div class="w-14 h-14 bg-amber-100 text-amber-700 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3">
+                    <i class="ph ph-lock-key"></i>
+                </div>
+                <h3 class="text-lg font-bold text-stone-900 mb-1">অ্যাডমিন প্রবেশ</h3>
+                <p class="text-xs text-stone-500 mb-4">নতুন স্লাইড ও প্রোডাক্ট নিয়ন্ত্রণ করতে ৪ সংখ্যার পিন লিখুন (PIN: 1234)</p>
+                <div class="max-w-xs mx-auto space-y-3">
+                    <input type="password" id="adminPinInput" maxlength="4" placeholder="••••" class="w-full text-center text-2xl tracking-widest p-2 border border-stone-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                    <button onclick="verifyAdminPin()" class="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition">আনলক করুন</button>
+                </div>
+            </div>
+
+            <!-- Unlocked Admin Tabs & Form -->
+            <div id="adminPanelContent" class="hidden space-y-5">
+                
+                <div class="flex items-center justify-between border-b border-stone-200 pb-3">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                        <h3 class="text-base font-bold text-stone-900">শোরুম অ্যাডমিন প্যানেল</h3>
+                    </div>
+                    <button onclick="lockAdminSession()" class="text-xs text-red-600 hover:underline">লক করুন</button>
+                </div>
+
+                <!-- Tabs: Slides vs Products -->
+                <div class="flex border-b border-stone-200 gap-4">
+                    <button onclick="switchAdminTab('sliderTab')" id="tabBtnSlider" class="pb-2 text-xs font-bold text-amber-700 border-b-2 border-amber-600 transition">
+                        🖼️ ব্যানার স্লাইডার ম্যানেজার
+                    </button>
+                    <button onclick="switchAdminTab('productTab')" id="tabBtnProduct" class="pb-2 text-xs font-semibold text-stone-500 hover:text-stone-800 transition">
+                        🛋️ নতুন ফার্নিচার যোগ
+                    </button>
+                </div>
+
+                <!-- TAB 1: SLIDER MANAGER -->
+                <div id="sliderManagerSection" class="space-y-5">
+                    
+                    <!-- Add New Slide Form -->
+                    <form onsubmit="handleAddNewSlide(event)" class="bg-stone-50 p-4 rounded-2xl border border-stone-200 space-y-3">
+                        <h4 class="text-xs font-bold text-amber-800 uppercase tracking-wider flex items-center gap-1.5">
+                            <i class="ph ph-plus-circle text-base"></i> নতুন ব্যানার স্লাইড তৈরি করুন
+                        </h4>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[11px] font-bold text-stone-600 mb-1">স্লাইড টাইটেল *</label>
+                                <input type="text" id="slideTitleInput" required placeholder="যেমন: নতুন রয়্যাল সোফা অফার" class="w-full p-2 bg-white border border-stone-300 rounded-xl text-xs focus:ring-1 focus:ring-amber-500">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-stone-600 mb-1">ডিসকাউন্ট ব্যাজ / ট্যাগ</label>
+                                <input type="text" id="slideBadgeInput" placeholder="যেমন: 🔥 ২৫% ধামাকা ছাড়" class="w-full p-2 bg-white border border-stone-300 rounded-xl text-xs focus:ring-1 focus:ring-amber-500">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-bold text-stone-600 mb-1">সাবটাইটেল / বিবরণ *</label>
+                            <input type="text" id="slideSubtitleInput" required placeholder="যেমন: মাত্র ১০% অগ্রিমে বুক করুন, ফ্রি হোম ডেলিভারি ও ফিটিং।" class="w-full p-2 bg-white border border-stone-300 rounded-xl text-xs focus:ring-1 focus:ring-amber-500">
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[11px] font-bold text-stone-600 mb-1">বাটন টেক্সট</label>
+                                <input type="text" id="slideButtonInput" placeholder="কালেকশন দেখুন" class="w-full p-2 bg-white border border-stone-300 rounded-xl text-xs focus:ring-1 focus:ring-amber-500">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-stone-600 mb-1">ক্যাটাগরি লিংক</label>
+                                <select id="slideTargetCategory" class="w-full p-2 bg-white border border-stone-300 rounded-xl text-xs focus:ring-1 focus:ring-amber-500">
+                                    <option value="all">সব ফার্নিচার</option>
+                                    <option value="bed">খাট (Beds)</option>
+                                    <option value="sofa">সোফা (Sofas)</option>
+                                    <option value="dining">ডাইনিং টেবিল</option>
+                                    <option value="premium">প্রিমিয়াম লাক্সারি</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] font-bold text-stone-600 mb-1">ব্যানার ছবির লিংক বা ফাইল আপলোড</label>
+                            <div class="flex gap-2">
+                                <input type="url" id="slideImageInput" placeholder="https://images.unsplash.com/..." class="flex-1 p-2 bg-white border border-stone-300 rounded-xl text-xs focus:ring-1 focus:ring-amber-500">
+                                <label class="cursor-pointer px-3 py-2 bg-stone-200 hover:bg-stone-300 text-stone-700 rounded-xl text-xs font-semibold flex items-center gap-1 shrink-0">
+                                    <i class="ph ph-upload-simple"></i> আপলোড
+                                    <input type="file" id="slideFileUpload" accept="image/*" class="hidden" onchange="handleSlideImageUpload(event)">
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 shadow">
+                            <i class="ph ph-check"></i> স্লাইড যোগ করুন
+                        </button>
+                    </form>
+
+                    <!-- Active Slides List -->
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-xs font-bold text-stone-800 uppercase">বর্তমানে চালু থাকা স্লাইডসমূহ (<span id="slideCountText">০</span>)</h4>
+                            <button onclick="restoreDefaultSlides()" class="text-[11px] text-amber-700 hover:underline">ডিফল্ট স্লাইডে রিসেট</button>
+                        </div>
+                        <div id="activeSlidesContainer" class="space-y-2">
+                            <!-- Rendered by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: PRODUCT ADD (Basic) -->
+                <div id="productManagerSection" class="hidden space-y-4">
+                    <form onsubmit="handleAddNewProduct(event)" class="bg-stone-50 p-4 rounded-2xl border border-stone-200 space-y-3">
+                        <h4 class="text-xs font-bold text-amber-800 uppercase tracking-wider">নতুন ফার্নিচার আইটেম যোগ করুন</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <input type="text" id="newProdName" required placeholder="ফার্নিচারের নাম" class="p-2 border rounded-xl text-xs bg-white">
+                            <select id="newProdCategory" class="p-2 border rounded-xl text-xs bg-white">
+                                <option value="bed">খাট (Bed)</option>
+                                <option value="sofa">সোফা (Sofa)</option>
+                                <option value="dining">ডাইনিং (Dining)</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <input type="number" id="newProdPrice" required placeholder="বিক্রয় মূল্য (₹)" class="p-2 border rounded-xl text-xs bg-white">
+                            <input type="number" id="newProdMrp" required placeholder="MRP (₹)" class="p-2 border rounded-xl text-xs bg-white">
+                        </div>
+                        <input type="text" id="newProdWood" required placeholder="কাঠের ধরন (যেমন: ১০০% সেগুন কাঠ)" class="w-full p-2 border rounded-xl text-xs bg-white">
+                        <input type="url" id="newProdImage" required placeholder="ছবির অনলাইন লিংক (URL)" class="w-full p-2 border rounded-xl text-xs bg-white">
+                        <button type="submit" class="w-full py-2.5 bg-stone-900 text-white rounded-xl text-xs font-bold hover:bg-stone-800">প্রোডাক্ট সেভ করুন</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
 
     <!-- Customer Auth Modal (Login / Sign Up) -->
     <div id="authModal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 hidden">
@@ -293,10 +452,40 @@
         </div>
     </div>
 
-    <!-- JavaScript Data & Logic -->
     <script>
+        // Default Slides Setup
+        const DEFAULT_SLIDES = [
+            {
+                id: 1,
+                badge: "👑 প্রিমিয়াম উডক্রাফট ও খাঁটি সেগুন",
+                title: "ঘরের শোভা বাড়াতে আধুনিক ও টেকসই ফার্নিচার",
+                subtitle: "পছন্দের যেকোনো খাট, সোফা বা ডাইনিং টেবিল বুক করুন মাত্র ১০% অগ্রিমে। কাস্টম কাঠের কাজের বিশ্বস্ত প্রতিষ্ঠান।",
+                buttonText: "কালেকশন দেখুন",
+                categoryTarget: "all",
+                image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1200&q=80"
+            },
+            {
+                id: 2,
+                badge: "🔥 বৈশাখী ধামাকা অফার",
+                title: "রয়্যাল কিং সাইজ খাট ও ডাইনিং সেটে বিশেষ ছাড়",
+                subtitle: "চিটাগাং সেগুন কাঠের নিখুঁত ফিনিশিং। ৭-১০ দিনে হোম ডেলিভারি ও সম্পূর্ণ ফ্রি ফিটিং সুবিধা।",
+                buttonText: "খাটের ডিজাইন দেখুন",
+                categoryTarget: "bed",
+                image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=1200&q=80"
+            },
+            {
+                id: 3,
+                badge: "🛋️ নতুন লাক্সারি কালেকশন",
+                title: "আমদানি করা ভেলভেট ফেব্রিকে প্রিমিয়াম সোফা",
+                subtitle: "ড্রয়িং রুমের আধুনিক আভিজাত্যে আমাদের নতুন ৭-সিটার ও এল-শেপ সোফা কালেকশন।",
+                buttonText: "সোফা কালেকশন",
+                categoryTarget: "sofa",
+                image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1200&q=80"
+            }
+        ];
+
         // Sample Catalog Data
-        const products = [
+        const DEFAULT_PRODUCTS = [
             {
                 id: 1,
                 name: "চিটাগাং সেগুন বক্স খাট (King Size)",
@@ -343,16 +532,329 @@
             }
         ];
 
+        // State Variables
+        let slides = JSON.parse(localStorage.getItem('seras_slides')) || DEFAULT_SLIDES;
+        let products = JSON.parse(localStorage.getItem('seras_products')) || DEFAULT_PRODUCTS;
         let cart = [];
         let currentFilter = 'all';
+        let currentSlideIndex = 0;
+        let sliderTimer = null;
+        let isAdminLoggedIn = false;
+        let tempSlideImageBase64 = '';
 
-        // Initialize UI
+        // App Initialization
         document.addEventListener('DOMContentLoaded', () => {
+            initSlider();
             renderProducts();
             checkUserAuth();
+            renderActiveSlidesList();
         });
 
-        // Render Catalog Cards
+        /* ================= CAROUSEL / SLIDER LOGIC ================= */
+        function initSlider() {
+            renderSlidesUI();
+            startSliderAutoPlay();
+        }
+
+        function renderSlidesUI() {
+            const track = document.getElementById('sliderTrack');
+            const dots = document.getElementById('sliderDots');
+            track.innerHTML = '';
+            dots.innerHTML = '';
+
+            if (slides.length === 0) {
+                track.innerHTML = `
+                    <div class="h-full flex items-center justify-center bg-stone-900 text-stone-400 text-sm">
+                        কোনো স্লাইড যোগ করা নেই। অ্যাডমিন প্যানেল থেকে স্লাইড যোগ করুন।
+                    </div>
+                `;
+                return;
+            }
+
+            slides.forEach((slide, index) => {
+                // Slide Item
+                const slideEl = document.createElement('div');
+                slideEl.className = `absolute inset-0 w-full h-full slide-fade transition-opacity duration-700 ${index === currentSlideIndex ? 'opacity-100 z-10 pointer-events-auto' : 'opacity-0 z-0 pointer-events-none'}`;
+                slideEl.id = `slide-${index}`;
+                
+                slideEl.innerHTML = `
+                    <img src="${slide.image}" alt="${slide.title}" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-r from-stone-950/90 via-stone-900/60 to-transparent"></div>
+                    <div class="absolute inset-0 flex flex-col justify-center px-6 sm:px-14 max-w-xl text-white">
+                        <span class="inline-block px-3 py-1 bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-full text-[11px] sm:text-xs font-semibold mb-2 sm:mb-3 w-fit">
+                            ${slide.badge || '👑 স্পেশাল কালেকশন'}
+                        </span>
+                        <h2 class="text-xl sm:text-3xl md:text-4xl font-black leading-tight sm:leading-snug mb-2 sm:mb-3 drop-shadow">
+                            ${slide.title}
+                        </h2>
+                        <p class="text-stone-300 text-xs sm:text-sm mb-4 sm:mb-6 line-clamp-2 leading-relaxed">
+                            ${slide.subtitle}
+                        </p>
+                        <div class="flex items-center gap-3">
+                            <button onclick="handleSlideAction('${slide.categoryTarget || 'all'}')" class="px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-full text-xs sm:text-sm font-bold transition shadow-lg shadow-amber-950/50 flex items-center gap-1.5">
+                                <span>${slide.buttonText || 'কালেকশন দেখুন'}</span>
+                                <i class="ph ph-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                track.appendChild(slideEl);
+
+                // Indicator Dot
+                const dot = document.createElement('button');
+                dot.className = `h-2 sm:h-2.5 rounded-full transition-all duration-300 ${index === currentSlideIndex ? 'w-7 sm:w-8 bg-amber-500' : 'w-2 sm:w-2.5 bg-white/40 hover:bg-white/70'}`;
+                dot.onclick = () => goToSlide(index);
+                dots.appendChild(dot);
+            });
+        }
+
+        function updateSlideVisibility() {
+            slides.forEach((_, idx) => {
+                const el = document.getElementById(`slide-${idx}`);
+                if (el) {
+                    if (idx === currentSlideIndex) {
+                        el.classList.remove('opacity-0', 'pointer-events-none', 'z-0');
+                        el.classList.add('opacity-100', 'pointer-events-auto', 'z-10');
+                    } else {
+                        el.classList.remove('opacity-100', 'pointer-events-auto', 'z-10');
+                        el.classList.add('opacity-0', 'pointer-events-none', 'z-0');
+                    }
+                }
+            });
+
+            // Update Dots
+            const dots = document.getElementById('sliderDots').children;
+            for (let i = 0; i < dots.length; i++) {
+                if (i === currentSlideIndex) {
+                    dots[i].className = 'h-2 sm:h-2.5 w-7 sm:w-8 rounded-full bg-amber-500 transition-all duration-300';
+                } else {
+                    dots[i].className = 'h-2 sm:h-2.5 w-2 sm:w-2.5 rounded-full bg-white/40 hover:bg-white/70 transition-all duration-300';
+                }
+            }
+        }
+
+        function nextSlide() {
+            if (slides.length <= 1) return;
+            currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+            updateSlideVisibility();
+            resetSliderTimer();
+        }
+
+        function prevSlide() {
+            if (slides.length <= 1) return;
+            currentSlideIndex = (currentSlideIndex - 1 + slides.length) % slides.length;
+            updateSlideVisibility();
+            resetSliderTimer();
+        }
+
+        function goToSlide(index) {
+            currentSlideIndex = index;
+            updateSlideVisibility();
+            resetSliderTimer();
+        }
+
+        function startSliderAutoPlay() {
+            clearInterval(sliderTimer);
+            sliderTimer = setInterval(nextSlide, 5000);
+        }
+
+        function resetSliderTimer() {
+            clearInterval(sliderTimer);
+            startSliderAutoPlay();
+        }
+
+        function handleSlideAction(cat) {
+            filterCategory(cat);
+            document.getElementById('catalog').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        /* ================= ADMIN & SLIDER MANAGER LOGIC ================= */
+        function openAdminModal(tab = 'sliderTab') {
+            document.getElementById('adminModal').classList.remove('hidden');
+            if (isAdminLoggedIn) {
+                showAdminDashboard();
+                switchAdminTab(tab);
+            } else {
+                document.getElementById('adminPinContainer').classList.remove('hidden');
+                document.getElementById('adminPanelContent').classList.add('hidden');
+            }
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.add('hidden');
+        }
+
+        function verifyAdminPin() {
+            const pin = document.getElementById('adminPinInput').value.trim();
+            if (pin === "1234" || pin === "6295") {
+                isAdminLoggedIn = true;
+                document.getElementById('adminPinInput').value = '';
+                showAdminDashboard();
+            } else {
+                alert('ভুল পিন নম্বর! অনুগ্রহ করে সঠিক পিন দিন (ডিফল্ট: 1234)');
+            }
+        }
+
+        function showAdminDashboard() {
+            document.getElementById('adminPinContainer').classList.add('hidden');
+            document.getElementById('adminPanelContent').classList.remove('hidden');
+            renderActiveSlidesList();
+        }
+
+        function lockAdminSession() {
+            isAdminLoggedIn = false;
+            document.getElementById('adminPinContainer').classList.remove('hidden');
+            document.getElementById('adminPanelContent').classList.add('hidden');
+        }
+
+        function switchAdminTab(tab) {
+            const isSlider = tab === 'sliderTab';
+            document.getElementById('sliderManagerSection').classList.toggle('hidden', !isSlider);
+            document.getElementById('productManagerSection').classList.toggle('hidden', isSlider);
+
+            document.getElementById('tabBtnSlider').className = isSlider ? 
+                'pb-2 text-xs font-bold text-amber-700 border-b-2 border-amber-600 transition' : 
+                'pb-2 text-xs font-semibold text-stone-500 hover:text-stone-800 transition';
+            
+            document.getElementById('tabBtnProduct').className = !isSlider ? 
+                'pb-2 text-xs font-bold text-amber-700 border-b-2 border-amber-600 transition' : 
+                'pb-2 text-xs font-semibold text-stone-500 hover:text-stone-800 transition';
+        }
+
+        function handleSlideImageUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                tempSlideImageBase64 = evt.target.result;
+                document.getElementById('slideImageInput').value = 'ফাইল প্রস্তুত করা হয়েছে (আপলোডেড ছবি)';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function handleAddNewSlide(e) {
+            e.preventDefault();
+            const title = document.getElementById('slideTitleInput').value.trim();
+            const badge = document.getElementById('slideBadgeInput').value.trim();
+            const subtitle = document.getElementById('slideSubtitleInput').value.trim();
+            const buttonText = document.getElementById('slideButtonInput').value.trim() || 'কালেকশন দেখুন';
+            const categoryTarget = document.getElementById('slideTargetCategory').value;
+            const urlInput = document.getElementById('slideImageInput').value.trim();
+
+            const image = tempSlideImageBase64 || (!urlInput.includes('ফাইল প্রস্তুত') && urlInput ? urlInput : 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1200&q=80');
+
+            const newSlide = {
+                id: Date.now(),
+                badge: badge || '🔥 নতুন অফার',
+                title,
+                subtitle,
+                buttonText,
+                categoryTarget,
+                image
+            };
+
+            slides.push(newSlide);
+            saveSlides();
+            renderSlidesUI();
+            renderActiveSlidesList();
+            goToSlide(slides.length - 1);
+
+            // Reset form
+            e.target.reset();
+            tempSlideImageBase64 = '';
+            alert('সফলভাবে নতুন স্লাইড যোগ করা হয়েছে!');
+        }
+
+        function deleteSlide(id) {
+            if (slides.length <= 1) {
+                return alert('কমপক্ষে একটি স্লাইড অবশ্যই থাকতে হবে!');
+            }
+            if (confirm('আপনি কি এই স্লাইডটি মুছে ফেলতে চান?')) {
+                slides = slides.filter(s => s.id !== id);
+                if (currentSlideIndex >= slides.length) currentSlideIndex = 0;
+                saveSlides();
+                renderSlidesUI();
+                renderActiveSlidesList();
+            }
+        }
+
+        function renderActiveSlidesList() {
+            const container = document.getElementById('activeSlidesContainer');
+            const countEl = document.getElementById('slideCountText');
+            if (!container) return;
+
+            countEl.innerText = slides.length;
+            container.innerHTML = '';
+
+            slides.forEach((s, idx) => {
+                const item = document.createElement('div');
+                item.className = 'flex items-center justify-between p-2.5 bg-white rounded-xl border border-stone-200 text-xs shadow-sm';
+                item.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <img src="${s.image}" class="w-12 h-10 object-cover rounded-lg border border-stone-200">
+                        <div>
+                            <p class="font-bold text-stone-800 line-clamp-1">${s.title}</p>
+                            <span class="text-[10px] text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded font-medium">${s.badge || 'স্লাইড ' + (idx + 1)}</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="goToSlide(${idx}); closeAdminModal();" class="p-1.5 text-stone-500 hover:text-amber-600 text-sm" title="প্রিভিউ দেখুন">
+                            <i class="ph ph-eye"></i>
+                        </button>
+                        <button onclick="deleteSlide(${s.id})" class="p-1.5 text-stone-400 hover:text-red-600 text-sm" title="ডিলিট করুন">
+                            <i class="ph ph-trash"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function saveSlides() {
+            localStorage.setItem('seras_slides', JSON.stringify(slides));
+        }
+
+        function restoreDefaultSlides() {
+            if (confirm('আপনি কি পূর্বের ডিফল্ট স্লাইড কালেকশনে ফিরে যেতে চান?')) {
+                slides = DEFAULT_SLIDES;
+                saveSlides();
+                renderSlidesUI();
+                renderActiveSlidesList();
+                goToSlide(0);
+            }
+        }
+
+        function handleAddNewProduct(e) {
+            e.preventDefault();
+            const name = document.getElementById('newProdName').value.trim();
+            const category = document.getElementById('newProdCategory').value;
+            const price = parseInt(document.getElementById('newProdPrice').value);
+            const mrp = parseInt(document.getElementById('newProdMrp').value);
+            const wood = document.getElementById('newProdWood').value.trim();
+            const image = document.getElementById('newProdImage').value.trim();
+
+            const newProd = {
+                id: Date.now(),
+                name,
+                category,
+                wood,
+                price,
+                mrp,
+                isPremium: price > 20000,
+                stockStatus: "in_stock",
+                image
+            };
+
+            products.unshift(newProd);
+            localStorage.setItem('seras_products', JSON.stringify(products));
+            renderProducts();
+            e.target.reset();
+            alert('নতুন ফার্নিচার সফলভাবে যোগ করা হয়েছে!');
+            closeAdminModal();
+        }
+
+        /* ================= CATALOG & PRODUCT DISPLAY ================= */
         function renderProducts(items = products) {
             const grid = document.getElementById('productGrid');
             grid.innerHTML = '';
@@ -396,13 +898,14 @@
             });
         }
 
-        // Category Filter
         function filterCategory(cat) {
             currentFilter = cat;
             document.querySelectorAll('.cat-pill').forEach(btn => {
                 btn.className = "cat-pill px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap bg-white text-stone-600 border border-stone-200 hover:bg-stone-50 transition";
             });
-            event.target.className = "cat-pill active px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap bg-stone-900 text-white transition";
+            if (event && event.target && event.target.classList.contains('cat-pill')) {
+                event.target.className = "cat-pill active px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap bg-stone-900 text-white transition";
+            }
 
             if (cat === 'all') {
                 renderProducts(products);
@@ -413,7 +916,6 @@
             }
         }
 
-        // Search Handlers
         function handleSearch() {
             const query = document.getElementById('searchInput').value.toLowerCase();
             const filtered = products.filter(p => p.name.toLowerCase().includes(query) || p.wood.toLowerCase().includes(query));
@@ -426,7 +928,7 @@
             renderProducts(filtered);
         }
 
-        // Photo / Sample Search Flow
+        /* ================= PHOTO SEARCH ================= */
         function triggerPhotoSearch() {
             document.getElementById('photoSearchInput').click();
         }
@@ -442,7 +944,6 @@
                 document.getElementById('samplePreviewImg').src = uploadedSampleBase64;
                 document.getElementById('photoPreviewModal').classList.remove('hidden');
 
-                // Smart filter simulation based on filename/context
                 const fname = file.name.toLowerCase();
                 let matched = products;
                 if (fname.includes('bed') || fname.includes('khat')) {
@@ -466,7 +967,7 @@
             closePhotoModal();
         }
 
-        // Cart Actions
+        /* ================= CART & CHECKOUT ================= */
         function addToCart(id) {
             const prod = products.find(p => p.id === id);
             if (prod) {
@@ -555,7 +1056,7 @@
             window.open(`https://wa.me/916295941126?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
-        // Customer Auth Logic (Password Based)
+        /* ================= AUTHENTICATION ================= */
         let isSignupView = false;
         function checkUserAuth() {
             const user = JSON.parse(localStorage.getItem('seras_customer_user') || 'null');
