@@ -1,1169 +1,722 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sera's Collection - ফার্নিচার ও কাঠের কারুকাজ</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#fbf7ee',
-                            100: '#f5ecd6',
-                            500: '#b45309',
-                            600: '#92400e',
-                            700: '#78350f',
-                            800: '#451a03',
-                            900: '#270e02'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- Phosphor Icons -->
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <style>
-        .gold-glow {
-            box-shadow: 0 0 15px rgba(217, 119, 6, 0.35);
-        }
-        .slide-fade {
-            transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sera's Furniture Collection</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+    body { font-family: 'Hind Siliguri', sans-serif; }
+    .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #b45309; border-radius: 4px; }
+  </style>
 </head>
-<body class="bg-stone-100 text-stone-800 flex flex-col min-h-screen">
+<body class="bg-stone-50 text-stone-800 flex flex-col min-h-screen">
 
-    <!-- Top Notice Bar (Clean banner - No personal phone number here) -->
-    <div class="bg-stone-900 text-amber-200 text-xs py-2 px-4 text-center tracking-wide font-medium flex justify-center items-center gap-2">
-        <span>✨ ১০০% খাঁটি চিটাগাং সেগুন ও শীশম কাঠ | গঙ্গারামপুর ও সংলগ্ন এলাকায় দ্রুত হোম ডেলিভারি ও ফ্রি ফিটিং ✨</span>
+  <!-- TOP PROMO -->
+  <div class="bg-amber-900 text-amber-100 text-xs py-1.5 px-4 text-center border-b border-amber-800 font-medium">
+    🎉 বিশেষ অফার: সকল সলিড সেগুন ফার্নিচারে বিশেষ ছাড়! ফ্রি হোম ডেলিভারি ও মিস্ত্রি ফিটিং!
+  </div>
+
+  <!-- NAVIGATION HEADER -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur shadow-sm border-b border-stone-200">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+      <div class="flex items-center space-x-2 cursor-pointer" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+        <div class="w-10 h-10 rounded-lg bg-amber-700 text-white flex items-center justify-center text-xl shadow">
+          <i class="fa-solid fa-couch"></i>
+        </div>
+        <div>
+          <span class="text-xl font-bold tracking-tight text-amber-900 block leading-tight">সেরা ফার্নিচার</span>
+          <span class="text-[11px] text-stone-500 font-medium block">আভিজাত্য ও স্থায়িত্বের ভরসা</span>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <button onclick="toggleCartDrawer()" class="relative p-2 text-stone-600 hover:text-amber-700 transition">
+          <i class="fa-solid fa-bag-shopping text-xl"></i>
+          <span id="cartBadge" class="absolute -top-1 -right-1 bg-amber-700 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+        </button>
+
+        <button onclick="openAdminModal()" class="px-3 py-1.5 bg-amber-700 hover:bg-amber-800 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 shadow transition">
+          <i class="fa-solid fa-sliders"></i>
+          <span>অ্যাডমিন</span>
+        </button>
+      </div>
     </div>
+  </header>
 
-    <!-- Header (Brand logo, photo search, customer login, cart) -->
-    <header class="bg-white sticky top-0 z-40 shadow-sm border-b border-stone-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between gap-4">
-            
-            <!-- Logo & Brand Name -->
-            <a href="#" class="flex items-center gap-2.5">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-700 to-amber-500 text-white flex items-center justify-center font-bold text-xl shadow">
-                    S
-                </div>
-                <div>
-                    <h1 class="text-xl sm:text-2xl font-black tracking-tight text-stone-900 leading-tight">
-                        Sera's <span class="text-amber-700">Collection</span>
-                    </h1>
-                    <p class="text-[11px] text-stone-500 font-medium">প্রিমিয়াম কোয়ালিটি ফার্নিচার</p>
-                </div>
-            </a>
-
-            <!-- Search Bar with Photo Search button -->
-            <div class="flex-1 max-w-lg hidden md:flex items-center relative">
-                <input type="text" id="searchInput" oninput="handleSearch()" placeholder="খাট, সোফা, ডাইনিং টেবিল সার্চ করুন..." 
-                    class="w-full pl-10 pr-28 py-2 bg-stone-50 border border-stone-300 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-amber-600 focus:bg-white transition-all">
-                <i class="ph ph-magnifying-glass absolute left-3.5 text-stone-400 text-lg"></i>
-                
-                <!-- Sample Photo Search Button -->
-                <button onclick="triggerPhotoSearch()" class="absolute right-1.5 top-1 bottom-1 px-3 bg-amber-50 hover:bg-amber-100 text-amber-800 rounded-full text-xs font-semibold flex items-center gap-1.5 border border-amber-200 transition-all">
-                    <i class="ph ph-camera text-base"></i>
-                    <span>ছবি দিয়ে খুঁজুন</span>
-                </button>
-                <input type="file" id="photoSearchInput" accept="image/*" class="hidden" onchange="processPhotoSearch(event)">
+  <!-- STOREFRONT -->
+  <main id="storefrontView" class="flex-grow">
+    <!-- DYNAMIC HERO SLIDER -->
+    <section class="relative bg-stone-900 text-white overflow-hidden select-none">
+      <div id="sliderContainer" class="relative min-h-[300px] sm:min-h-[400px] flex items-center">
+        <img id="activeSlideImg" src="" alt="Banner" class="absolute inset-0 w-full h-full object-cover opacity-45 transition-all duration-700">
+        <div class="max-w-7xl mx-auto px-6 py-12 relative z-10 w-full">
+          <div class="max-w-xl space-y-3">
+            <span id="activeSlideTag" class="inline-block px-3 py-1 bg-amber-600 text-amber-100 text-xs font-bold rounded-full uppercase tracking-wider"></span>
+            <h1 id="activeSlideTitle" class="text-2xl sm:text-4xl font-extrabold leading-tight text-white drop-shadow"></h1>
+            <p id="activeSlideDesc" class="text-stone-200 text-xs sm:text-sm drop-shadow"></p>
+            <div class="pt-2">
+              <a href="#productsCatalog" class="inline-flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white px-5 py-2.5 rounded-lg text-sm font-bold shadow-md transition">
+                <span>ফার্নিচার দেখুন</span>
+                <i class="fa-solid fa-arrow-right text-xs"></i>
+              </a>
             </div>
-
-            <!-- Right Actions: Account, Admin & Cart -->
-            <div class="flex items-center gap-2 sm:gap-3">
-                <!-- Mobile Photo Search Icon -->
-                <button onclick="triggerPhotoSearch()" class="md:hidden w-9 h-9 rounded-full bg-amber-50 text-amber-800 flex items-center justify-center border border-amber-200">
-                    <i class="ph ph-camera text-xl"></i>
-                </button>
-
-                <!-- Admin Button -->
-                <button onclick="openAdminModal()" class="p-2 sm:px-3 sm:py-1.5 rounded-full bg-stone-100 hover:bg-amber-100 text-stone-700 hover:text-amber-800 border border-stone-300 text-xs font-semibold flex items-center gap-1.5 transition">
-                    <i class="ph ph-gear text-base"></i>
-                    <span class="hidden sm:inline">অ্যাডমিন</span>
-                </button>
-
-                <!-- Customer Account Status -->
-                <div id="authHeaderContainer">
-                    <button onclick="openAuthModal()" class="px-3.5 py-1.5 rounded-full border border-stone-300 text-stone-700 hover:border-amber-600 text-xs font-semibold flex items-center gap-1.5 transition">
-                        <i class="ph ph-user text-base"></i>
-                        <span>লগইন</span>
-                    </button>
-                </div>
-
-                <!-- Cart Button -->
-                <button onclick="toggleCartDrawer()" class="relative p-2 rounded-full text-stone-700 hover:bg-stone-100 transition">
-                    <i class="ph ph-shopping-bag text-2xl"></i>
-                    <span id="cartCountBadge" class="absolute top-0.5 right-0.5 bg-amber-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center hidden">
-                        0
-                    </span>
-                </button>
-            </div>
+          </div>
         </div>
-
-        <!-- Mobile Search Input Bar -->
-        <div class="px-4 pb-3 md:hidden">
-            <div class="relative">
-                <input type="text" id="mobileSearchInput" oninput="handleMobileSearch()" placeholder="ফার্নিচার খুঁজুন..." 
-                    class="w-full pl-9 pr-4 py-2 bg-stone-50 border border-stone-200 rounded-full text-sm">
-                <i class="ph ph-magnifying-glass absolute left-3 top-2.5 text-stone-400 text-lg"></i>
-            </div>
-        </div>
-    </header>
-
-    <!-- Dynamic Hero Carousel / Slider Section -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 w-full">
-        <div class="relative rounded-3xl overflow-hidden shadow-2xl bg-stone-900 group">
-            
-            <!-- Slide Container Track -->
-            <div id="sliderTrack" class="relative h-[280px] sm:h-[380px] md:h-[440px] w-full overflow-hidden">
-                <!-- Slides injected dynamically by JavaScript -->
-            </div>
-
-            <!-- Previous Slide Button -->
-            <button onclick="prevSlide()" class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center backdrop-blur-sm border border-white/20 transition-all opacity-80 hover:opacity-100 z-20">
-                <i class="ph ph-caret-left text-xl sm:text-2xl"></i>
-            </button>
-
-            <!-- Next Slide Button -->
-            <button onclick="nextSlide()" class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center backdrop-blur-sm border border-white/20 transition-all opacity-80 hover:opacity-100 z-20">
-                <i class="ph ph-caret-right text-xl sm:text-2xl"></i>
-            </button>
-
-            <!-- Carousel Pagination Dots -->
-            <div id="sliderDots" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20">
-                <!-- Dots injected dynamically -->
-            </div>
-
-            <!-- Slide Quick Management Floating Trigger -->
-            <button onclick="openAdminModal('sliderTab')" class="absolute top-3 right-3 bg-stone-900/80 hover:bg-amber-600 text-white text-xs font-semibold px-3 py-1.5 rounded-full border border-white/20 backdrop-blur-sm flex items-center gap-1.5 transition z-20 shadow">
-                <i class="ph ph-slideshow text-sm"></i>
-                <span class="text-[11px]">+ স্লাইড যোগ করুন</span>
-            </button>
-        </div>
+        <button onclick="prevSlide()" class="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center transition">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <button onclick="nextSlide()" class="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center transition">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
     </section>
 
-    <!-- Visual / Photo Search Modal -->
-    <div id="photoPreviewModal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
-            <button onclick="closePhotoModal()" class="absolute right-4 top-4 text-stone-400 hover:text-stone-700 text-2xl">
-                <i class="ph ph-x"></i>
+    <!-- CATALOG -->
+    <section id="productsCatalog" class="max-w-7xl mx-auto px-4 py-8">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <div>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-stone-900">ফার্নিচার ক্যাটালগ</h2>
+          <p class="text-stone-500 text-xs">ঘুরিয়ে-ফিরিয়ে দেখতে যেকোনো ছবির ওপর ক্লিক করুন</p>
+        </div>
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 max-w-full custom-scrollbar">
+          <button onclick="filterCategory('all')" class="cat-pill px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-800 text-white" data-cat="all">সব ফার্নিচার</button>
+          <button onclick="filterCategory('bed')" class="cat-pill px-3.5 py-1.5 rounded-full text-xs font-bold bg-white text-stone-700 border border-stone-300" data-cat="bed">খাট</button>
+          <button onclick="filterCategory('sofa')" class="cat-pill px-3.5 py-1.5 rounded-full text-xs font-bold bg-white text-stone-700 border border-stone-300" data-cat="sofa">সোফা</button>
+          <button onclick="filterCategory('dining')" class="cat-pill px-3.5 py-1.5 rounded-full text-xs font-bold bg-white text-stone-700 border border-stone-300" data-cat="dining">ডাইনিং</button>
+          <button onclick="filterCategory('almirah')" class="cat-pill px-3.5 py-1.5 rounded-full text-xs font-bold bg-white text-stone-700 border border-stone-300" data-cat="almirah">আলমারি</button>
+        </div>
+      </div>
+
+      <!-- PRODUCTS GRID -->
+      <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+    </section>
+  </main>
+
+  <!-- 360° / MULTI-ANGLE MODAL -->
+  <div id="productViewModal" class="fixed inset-0 z-50 hidden bg-stone-950/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full p-4 sm:p-6 shadow-2xl relative max-h-[95vh] overflow-y-auto custom-scrollbar">
+      <button onclick="closeProductModal()" class="absolute top-3 right-3 text-stone-400 hover:text-stone-700 bg-stone-100 rounded-full w-8 h-8 flex items-center justify-center">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-2">
+        <!-- Main Rotator Frame -->
+        <div>
+          <div class="relative h-64 bg-stone-100 rounded-xl overflow-hidden border border-stone-200">
+            <img id="modalMainImg" src="" class="w-full h-full object-cover transition-all duration-300">
+            <span class="absolute top-2 left-2 bg-amber-900/80 text-white text-[11px] font-bold px-2 py-0.5 rounded flex items-center gap-1">
+              <i class="fa-solid fa-arrows-rotate"></i> 360° অ্যাঙ্গেল
+            </span>
+            <!-- Next / Prev Angle Buttons -->
+            <button onclick="prevAnglePhoto()" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs">
+              <i class="fa-solid fa-chevron-left"></i>
             </button>
-            <h3 class="text-lg font-bold text-stone-900 mb-2 flex items-center gap-2">
-                <i class="ph ph-camera text-amber-600"></i> আপনার আপলোড করা স্যাম্পল
-            </h3>
-            <p class="text-xs text-stone-500 mb-4">আপনার ছবির মতো মিল থাকা ডিজাইন খুঁজে বের করা হচ্ছে...</p>
-            
-            <div class="w-full h-48 bg-stone-100 rounded-xl overflow-hidden mb-4 flex items-center justify-center border border-stone-200">
-                <img id="samplePreviewImg" src="" alt="Sample" class="w-full h-full object-contain">
+            <button onclick="nextAnglePhoto()" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs">
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+          </div>
+
+          <!-- Thumbnails -->
+          <div id="modalThumbnails" class="flex gap-2 mt-3 overflow-x-auto pb-1"></div>
+          <p class="text-[11px] text-stone-400 text-center mt-1">অ্যাঙ্গেলে ক্লিক করে বিভিন্ন দিক থেকে দেখুন</p>
+        </div>
+
+        <!-- Details -->
+        <div class="flex flex-col justify-between">
+          <div>
+            <span id="modalProdWood" class="text-xs font-bold text-amber-800 uppercase tracking-wide"></span>
+            <h3 id="modalProdTitle" class="text-lg font-black text-stone-900 mt-1"></h3>
+            <p id="modalProdSize" class="text-xs text-stone-500 mt-0.5"></p>
+
+            <div class="mt-4 p-3 bg-amber-50 rounded-xl border border-amber-200">
+              <div class="flex items-baseline gap-2">
+                <span id="modalProdPrice" class="text-xl font-extrabold text-amber-950"></span>
+                <span id="modalProdMRP" class="text-xs text-stone-400 line-through"></span>
+              </div>
+              <div class="text-xs text-emerald-700 font-bold mt-1" id="modalProdAdvance"></div>
             </div>
 
-            <div class="space-y-2">
-                <p id="photoMatchResultText" class="text-xs font-semibold text-emerald-700 bg-emerald-50 p-2.5 rounded-lg border border-emerald-200">
-                    ✓ ক্যাটালগে সদৃশ ফার্নিচার ফিল্টার করা হয়েছে
-                </p>
-                <button onclick="sendSampleToWhatsApp()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition">
-                    <i class="ph ph-whatsapp-logo text-base"></i> WhatsApp-এ এই ডিজাইন পাঠিয়ে রেট জানুন
-                </button>
-            </div>
+            <ul class="text-xs text-stone-600 space-y-1.5 mt-4">
+              <li>✓ খাঁটি পাকা কাঠে তৈরি, ১০ বছরের ঘুণ প্রতিরোধ গ্যারান্টি</li>
+              <li>✓ ফ্রি ডেলিভারি ও কার্পেন্টার দিয়ে ফ্রি ফিটিং</li>
+              <li>✓ মাত্র ১০% বুকিং দিয়ে অর্ডার নিশ্চিত করার সুবিধা</li>
+            </ul>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 mt-5">
+            <button id="modalAddToCartBtn" class="bg-amber-100 hover:bg-amber-200 text-amber-950 font-bold py-2.5 rounded-xl text-xs">কার্টে যোগ করুন</button>
+            <button id="modalWhatsAppBtn" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5">
+              <i class="fa-brands fa-whatsapp text-sm"></i> সরাসরি বুক করুন
+            </button>
+          </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN PORTAL -->
+  <div id="adminPortalView" class="hidden flex-grow bg-stone-100 min-h-screen">
+    <div class="bg-stone-900 text-stone-100 px-4 py-3 border-b border-stone-800 flex justify-between items-center sticky top-0 z-30">
+      <div class="flex items-center gap-3">
+        <div class="bg-amber-600 text-white w-8 h-8 rounded flex items-center justify-center font-bold text-sm">
+          <i class="fa-solid fa-lock"></i>
+        </div>
+        <div>
+          <h2 class="text-sm sm:text-base font-bold text-white">ওনার কন্ট্রোল প্যানেল</h2>
+          <p class="text-[11px] text-stone-400">মাল্টি-অ্যাঙ্গেল ছবি ও ব্যানার ম্যানেজমেন্ট</p>
+        </div>
+      </div>
+      <button onclick="exitAdminToStorefront()" class="px-3 py-1.5 bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-semibold rounded flex items-center gap-1.5">
+        <i class="fa-solid fa-store"></i>
+        <span>দোকানে ফিরুন</span>
+      </button>
     </div>
 
-    <!-- Main Content Grid -->
-    <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full">
-        <!-- Filter Chips -->
-        <div id="catalog" class="flex items-center gap-2 overflow-x-auto pb-4 mb-6 scrollbar-none">
-            <button onclick="filterCategory('all')" class="cat-pill active px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap bg-stone-900 text-white transition">
-                সব ফার্নিচার
-            </button>
-            <button onclick="filterCategory('bed')" class="cat-pill px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap bg-white text-stone-600 border border-stone-200 hover:bg-stone-50 transition">
-                সেগুন কাঠের খাট
-            </button>
-            <button onclick="filterCategory('sofa')" class="cat-pill px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap bg-white text-stone-600 border border-stone-200 hover:bg-stone-50 transition">
-                লাক্সারি সোফা
-            </button>
-            <button onclick="filterCategory('dining')" class="cat-pill px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap bg-white text-stone-600 border border-stone-200 hover:bg-stone-50 transition">
-                ডাইনিং সেট
-            </button>
-            <button onclick="filterCategory('premium')" class="cat-pill px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 transition">
-                👑 প্রিমিয়াম লাক্সারি
-            </button>
-        </div>
+    <div class="max-w-7xl mx-auto px-4 py-6 space-y-6">
+      <div class="flex border-b border-stone-300 gap-3">
+        <button onclick="switchAdminTab('products')" id="tabBtnProducts" class="px-4 py-2 font-bold text-sm border-b-2 border-amber-700 text-amber-900 flex items-center gap-2">
+          <i class="fa-solid fa-tags"></i>
+          <span>ফার্নিচার ও ৩টি অ্যাঙ্গেল ফটো</span>
+        </button>
+        <button onclick="switchAdminTab('slides')" id="tabBtnSlides" class="px-4 py-2 font-bold text-sm border-b-2 border-transparent text-stone-500 hover:text-stone-800 flex items-center gap-2">
+          <i class="fa-solid fa-images"></i>
+          <span>ব্যানার স্লাইডার</span>
+        </button>
+      </div>
 
-        <!-- Product Grid -->
-        <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <!-- Rendered by JavaScript -->
-        </div>
-    </main>
-
-    <!-- Footer & Contact Section (Phone numbers placed strictly at the bottom) -->
-    <footer class="bg-stone-900 text-stone-300 mt-16 border-t border-stone-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                
-                <!-- Brand Info -->
-                <div>
-                    <h3 class="text-xl font-bold text-white mb-2">Sera's Collection</h3>
-                    <p class="text-stone-400 text-xs leading-relaxed mb-4">
-                        আমাদের নিজস্ব কারখানায় অভিজ্ঞ কারিগর দ্বারা চিটাগাং সেগুন, শীশম কাঠ এবং মেরিন প্লাইউডের টেকসই ফার্নিচার তৈরি করা হয়।
-                    </p>
-                    <div class="flex items-center gap-2 text-xs text-amber-400">
-                        <i class="ph ph-map-pin text-base"></i>
-                        <span>গঙ্গারামপুর, দক্ষিণ দিনাজপুর, পশ্চিমবঙ্গ</span>
-                    </div>
-                </div>
-
-                <!-- Customer Service & Phone Support (Cleanly located here at footer) -->
-                <div class="bg-stone-800/60 p-5 rounded-2xl border border-stone-700">
-                    <h4 class="text-sm font-bold text-amber-400 mb-3 flex items-center gap-2">
-                        <i class="ph ph-phone-call text-lg"></i> যোগাযোগ ও কাস্টমার হেল্পলাইন
-                    </h4>
-                    <p class="text-xs text-stone-400 mb-4">
-                        অর্ডার বুকিং, স্লাইডার ব্যানার তৈরি বা ফার্নিচার কাস্টমাইজেশনের জন্য কল বা হোয়াটসঅ্যাপ করুন:
-                    </p>
-                    <div class="space-y-2">
-                        <a href="tel:+916295941126" class="flex items-center justify-between p-2.5 bg-stone-700/60 hover:bg-stone-700 rounded-xl text-xs text-white font-medium transition">
-                            <span class="flex items-center gap-2">
-                                <i class="ph ph-phone text-amber-400"></i> কল করুন: <strong>+91 6295941126</strong>
-                            </span>
-                            <span class="text-[10px] bg-stone-600 px-2 py-0.5 rounded text-stone-300">সরাসরি কল</span>
-                        </a>
-                        <a href="https://wa.me/916295941126?text=নমস্কার,%20ফার্নিচার%20সম্পর্কে%20জানতে%20চাই।" target="_blank" class="flex items-center justify-between p-2.5 bg-emerald-950/40 hover:bg-emerald-900/50 border border-emerald-700/50 rounded-xl text-xs text-emerald-300 font-medium transition">
-                            <span class="flex items-center gap-2">
-                                <i class="ph ph-whatsapp-logo text-emerald-400 text-base"></i> WhatsApp: <strong>+91 6295941126</strong>
-                            </span>
-                            <span class="text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded font-bold">চ্যাট করুন</span>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Trust Badges & Policy -->
-                <div class="space-y-3">
-                    <h4 class="text-sm font-bold text-white mb-2">আমাদের অঙ্গীকার</h4>
-                    <div class="flex items-start gap-3">
-                        <i class="ph ph-shield-check text-amber-500 text-xl flex-shrink-0"></i>
-                        <div>
-                            <p class="text-xs font-semibold text-stone-200">১০ বছরের ঘুণ-পোকা গ্যারান্টি</p>
-                            <p class="text-[11px] text-stone-400">খাঁটি পাকা কাঠের ওপর দীর্ঘস্থায়ী নিশ্চয়তা।</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start gap-3">
-                        <i class="ph ph-truck text-amber-500 text-xl flex-shrink-0"></i>
-                        <div>
-                            <p class="text-xs font-semibold text-stone-200">হোম ডেলিভারি ও ফ্রি ফিটিং</p>
-                            <p class="text-[11px] text-stone-400">আপনার বাড়িতে গিয়ে নিখুঁতভাবে সেট করে দেওয়া হয়।</p>
-                        </div>
-                    </div>
-                </div>
+      <!-- TAB 1: ADD PRODUCT WITH MULTI-ANGLES -->
+      <div id="adminTabProducts" class="space-y-6">
+        <div class="bg-white p-5 rounded-xl border border-stone-200 shadow-sm">
+          <h3 class="font-bold text-stone-900 text-sm mb-3 flex items-center gap-2">
+            <i class="fa-solid fa-plus-circle text-amber-700"></i>
+            <span>নতুন ফার্নিচার যোগ করুন (২-৩টি ফটো অ্যাঙ্গেল সহ)</span>
+          </h3>
+          <form onsubmit="handleAddNewProduct(event)" class="space-y-3 text-xs">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+              <div>
+                <label class="block font-semibold mb-1 text-stone-700">ফার্নিচারের নাম</label>
+                <input type="text" id="newProdName" required placeholder="উদাঃ রয়্যাল সেগুন খাট" class="w-full border rounded p-2 outline-none">
+              </div>
+              <div>
+                <label class="block font-semibold mb-1 text-stone-700">ক্যাটেগরি</label>
+                <select id="newProdCat" class="w-full border rounded p-2 outline-none">
+                  <option value="bed">খাট (Bed)</option>
+                  <option value="sofa">সোফা (Sofa)</option>
+                  <option value="dining">ডাইনিং টেবিল</option>
+                  <option value="almirah">আলমারি</option>
+                </select>
+              </div>
+              <div>
+                <label class="block font-semibold mb-1 text-stone-700">আসল দাম (MRP ₹)</label>
+                <input type="number" id="newProdMRP" required placeholder="42000" class="w-full border rounded p-2 outline-none">
+              </div>
+              <div>
+                <label class="block font-semibold mb-1 text-stone-700">বিক্রয় মূল্য (Offer Price ₹)</label>
+                <input type="number" id="newProdPrice" required placeholder="34000" class="w-full border rounded p-2 outline-none">
+              </div>
             </div>
 
-            <div class="border-t border-stone-800 mt-8 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-stone-500 gap-2">
-                <span>© 2026 Sera's Collection. সর্বস্বত্ব সংরক্ষিত।</span>
-                <button onclick="openAdminModal('sliderTab')" class="text-stone-400 hover:text-amber-400 text-xs">
-                    🛠️ অ্যাডমিন প্যানেল ও স্লাইডার কন্ট্রোল
-                </button>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-amber-50/50 p-3 rounded-xl border border-amber-100">
+              <div>
+                <label class="block font-bold mb-1 text-amber-900">১ম ছবি: সামনের ভিউ (Front Angle)</label>
+                <input type="file" id="prodImgFront" accept="image/*" class="w-full border bg-white rounded p-1.5 text-[11px]">
+              </div>
+              <div>
+                <label class="block font-bold mb-1 text-amber-900">২য় ছবি: পাশের ভিউ (Side Angle)</label>
+                <input type="file" id="prodImgSide" accept="image/*" class="w-full border bg-white rounded p-1.5 text-[11px]">
+              </div>
+              <div>
+                <label class="block font-bold mb-1 text-amber-900">৩য় ছবি: পেছনের / ভেতরের ভিউ (Back/Detail)</label>
+                <input type="file" id="prodImgBack" accept="image/*" class="w-full border bg-white rounded p-1.5 text-[11px]">
+              </div>
             </div>
+
+            <div class="flex justify-end">
+              <button type="submit" id="saveProdBtn" class="bg-amber-700 hover:bg-amber-800 text-white font-bold py-2 px-6 rounded-lg transition">
+                ফার্নিচার সেভ করুন
+              </button>
+            </div>
+          </form>
         </div>
-    </footer>
 
-    <!-- Admin & Slider Control Modal -->
-    <div id="adminModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 hidden">
-        <div class="bg-white rounded-3xl max-w-2xl w-full p-5 sm:p-7 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            
-            <button onclick="closeAdminModal()" class="absolute right-4 top-4 text-stone-400 hover:text-stone-700 text-2xl">
-                <i class="ph ph-x"></i>
-            </button>
-
-            <!-- Locked PIN Entry State -->
-            <div id="adminPinContainer" class="py-6 text-center">
-                <div class="w-14 h-14 bg-amber-100 text-amber-700 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3">
-                    <i class="ph ph-lock-key"></i>
-                </div>
-                <h3 class="text-lg font-bold text-stone-900 mb-1">অ্যাডমিন প্রবেশ</h3>
-                <p class="text-xs text-stone-500 mb-4">নতুন স্লাইড ও প্রোডাক্ট নিয়ন্ত্রণ করতে ৪ সংখ্যার পিন লিখুন (PIN: 1234)</p>
-                <div class="max-w-xs mx-auto space-y-3">
-                    <input type="password" id="adminPinInput" maxlength="4" placeholder="••••" class="w-full text-center text-2xl tracking-widest p-2 border border-stone-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none">
-                    <button onclick="verifyAdminPin()" class="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition">আনলক করুন</button>
-                </div>
-            </div>
-
-            <!-- Unlocked Admin Tabs & Form -->
-            <div id="adminPanelContent" class="hidden space-y-5">
-                
-                <div class="flex items-center justify-between border-b border-stone-200 pb-3">
-                    <div class="flex items-center gap-2">
-                        <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
-                        <h3 class="text-base font-bold text-stone-900">শোরুম অ্যাডমিন প্যানেল</h3>
-                    </div>
-                    <button onclick="lockAdminSession()" class="text-xs text-red-600 hover:underline">লক করুন</button>
-                </div>
-
-                <!-- Tabs: Slides vs Products -->
-                <div class="flex border-b border-stone-200 gap-4">
-                    <button onclick="switchAdminTab('sliderTab')" id="tabBtnSlider" class="pb-2 text-xs font-bold text-amber-700 border-b-2 border-amber-600 transition">
-                        🖼️ ব্যানার স্লাইডার ম্যানেজার
-                    </button>
-                    <button onclick="switchAdminTab('productTab')" id="tabBtnProduct" class="pb-2 text-xs font-semibold text-stone-500 hover:text-stone-800 transition">
-                        🛋️ নতুন ফার্নিচার যোগ
-                    </button>
-                </div>
-
-                <!-- TAB 1: SLIDER MANAGER -->
-                <div id="sliderManagerSection" class="space-y-5">
-                    
-                    <!-- Add New Slide Form -->
-                    <form onsubmit="handleAddNewSlide(event)" class="bg-stone-50 p-4 rounded-2xl border border-stone-200 space-y-3">
-                        <h4 class="text-xs font-bold text-amber-800 uppercase tracking-wider flex items-center gap-1.5">
-                            <i class="ph ph-plus-circle text-base"></i> নতুন ব্যানার স্লাইড তৈরি করুন
-                        </h4>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-[11px] font-bold text-stone-600 mb-1">স্লাইড টাইটেল *</label>
-                                <input type="text" id="slideTitleInput" required placeholder="যেমন: নতুন রয়্যাল সোফা অফার" class="w-full p-2 bg-white border border-stone-300 rounded-xl text-xs focus:ring-1 focus:ring-amber-500">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-bold text-stone-600 mb-1">ডিসকাউন্ট ব্যাজ / ট্যাগ</label>
-                                <input type="text" id="slideBadgeInput" placeholder="যেমন: 🔥 ২৫% ধামাকা ছাড়" class="w-full p-2 bg-white border border-stone-300 rounded-xl text-xs focus:ring-1 focus:ring-amber-500">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-[11px] font-bold text-stone-600 mb-1">সাবটাইটেল / বিবরণ *</label>
-                            <input type="text" id="slideSubtitleInput" required placeholder="যেমন: মাত্র ১০% অগ্রিমে বুক করুন, ফ্রি হোম ডেলিভারি ও ফিটিং।" class="w-full p-2 bg-white border border-stone-300 rounded-xl text-xs focus:ring-1 focus:ring-amber-500">
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-[11px] font-bold text-stone-600 mb-1">বাটন টেক্সট</label>
-                                <input type="text" id="slideButtonInput" placeholder="কালেকশন দেখুন" class="w-full p-2 bg-white border border-stone-300 rounded-xl text-xs focus:ring-1 focus:ring-amber-500">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-bold text-stone-600 mb-1">ক্যাটাগরি লিংক</label>
-                                <select id="slideTargetCategory" class="w-full p-2 bg-white border border-stone-300 rounded-xl text-xs focus:ring-1 focus:ring-amber-500">
-                                    <option value="all">সব ফার্নিচার</option>
-                                    <option value="bed">খাট (Beds)</option>
-                                    <option value="sofa">সোফা (Sofas)</option>
-                                    <option value="dining">ডাইনিং টেবিল</option>
-                                    <option value="premium">প্রিমিয়াম লাক্সারি</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-[11px] font-bold text-stone-600 mb-1">ব্যানার ছবির লিংক বা ফাইল আপলোড</label>
-                            <div class="flex gap-2">
-                                <input type="url" id="slideImageInput" placeholder="https://images.unsplash.com/..." class="flex-1 p-2 bg-white border border-stone-300 rounded-xl text-xs focus:ring-1 focus:ring-amber-500">
-                                <label class="cursor-pointer px-3 py-2 bg-stone-200 hover:bg-stone-300 text-stone-700 rounded-xl text-xs font-semibold flex items-center gap-1 shrink-0">
-                                    <i class="ph ph-upload-simple"></i> আপলোড
-                                    <input type="file" id="slideFileUpload" accept="image/*" class="hidden" onchange="handleSlideImageUpload(event)">
-                                </label>
-                            </div>
-                        </div>
-
-                        <button type="submit" class="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 shadow">
-                            <i class="ph ph-check"></i> স্লাইড যোগ করুন
-                        </button>
-                    </form>
-
-                    <!-- Active Slides List -->
-                    <div class="space-y-2">
-                        <div class="flex items-center justify-between">
-                            <h4 class="text-xs font-bold text-stone-800 uppercase">বর্তমানে চালু থাকা স্লাইডসমূহ (<span id="slideCountText">০</span>)</h4>
-                            <button onclick="restoreDefaultSlides()" class="text-[11px] text-amber-700 hover:underline">ডিফল্ট স্লাইডে রিসেট</button>
-                        </div>
-                        <div id="activeSlidesContainer" class="space-y-2">
-                            <!-- Rendered by JS -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- TAB 2: PRODUCT ADD (Basic) -->
-                <div id="productManagerSection" class="hidden space-y-4">
-                    <form onsubmit="handleAddNewProduct(event)" class="bg-stone-50 p-4 rounded-2xl border border-stone-200 space-y-3">
-                        <h4 class="text-xs font-bold text-amber-800 uppercase tracking-wider">নতুন ফার্নিচার আইটেম যোগ করুন</h4>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <input type="text" id="newProdName" required placeholder="ফার্নিচারের নাম" class="p-2 border rounded-xl text-xs bg-white">
-                            <select id="newProdCategory" class="p-2 border rounded-xl text-xs bg-white">
-                                <option value="bed">খাট (Bed)</option>
-                                <option value="sofa">সোফা (Sofa)</option>
-                                <option value="dining">ডাইনিং (Dining)</option>
-                            </select>
-                        </div>
-                        <div class="grid grid-cols-2 gap-3">
-                            <input type="number" id="newProdPrice" required placeholder="বিক্রয় মূল্য (₹)" class="p-2 border rounded-xl text-xs bg-white">
-                            <input type="number" id="newProdMrp" required placeholder="MRP (₹)" class="p-2 border rounded-xl text-xs bg-white">
-                        </div>
-                        <input type="text" id="newProdWood" required placeholder="কাঠের ধরন (যেমন: ১০০% সেগুন কাঠ)" class="w-full p-2 border rounded-xl text-xs bg-white">
-                        <input type="url" id="newProdImage" required placeholder="ছবির অনলাইন লিংক (URL)" class="w-full p-2 border rounded-xl text-xs bg-white">
-                        <button type="submit" class="w-full py-2.5 bg-stone-900 text-white rounded-xl text-xs font-bold hover:bg-stone-800">প্রোডাক্ট সেভ করুন</button>
-                    </form>
-                </div>
-
-            </div>
+        <!-- Product List -->
+        <div class="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
+          <div class="p-4 border-b border-stone-200 font-bold text-stone-800 text-sm">বর্তমান ফার্নিচার তালিকা</div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-stone-100 text-stone-600 uppercase font-semibold">
+                <tr>
+                  <th class="p-3">অ্যাঙ্গেল ছবি</th>
+                  <th class="p-3">ফার্নিচার</th>
+                  <th class="p-3">বিক্রয় মূল্য</th>
+                  <th class="p-3 text-right">মুছুন</th>
+                </tr>
+              </thead>
+              <tbody id="adminProductsTableBody" class="divide-y divide-stone-200"></tbody>
+            </table>
+          </div>
         </div>
+      </div>
+
+      <!-- TAB 2: SLIDES -->
+      <div id="adminTabSlides" class="hidden space-y-6">
+        <div class="bg-white p-5 rounded-xl border border-stone-200 shadow-sm">
+          <h3 class="font-bold text-stone-900 text-sm mb-3">নতুন ব্যানার স্লাইড যোগ করুন</h3>
+          <form onsubmit="handleAddNewSlide(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <input type="text" id="newSlideTitle" required placeholder="ব্যানার টাইটেল" class="border rounded p-2">
+            <input type="text" id="newSlideTag" required placeholder="ট্যাগ / অফার" class="border rounded p-2">
+            <input type="text" id="newSlideDesc" required placeholder="ছোট বিবরণ" class="border rounded p-2">
+            <input type="file" id="newSlideFile" accept="image/*" class="border rounded p-1.5 text-[11px]">
+            <button type="submit" class="bg-amber-700 hover:bg-amber-800 text-white font-bold py-2 rounded">স্লাইড যোগ করুন</button>
+          </form>
+        </div>
+        <div class="bg-white rounded-xl border border-stone-200 shadow-sm p-4">
+          <div class="font-bold text-stone-800 text-sm mb-2">চলমান স্লাইড</div>
+          <div id="adminSlidesList" class="space-y-2"></div>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <!-- Customer Auth Modal (Login / Sign Up) -->
-    <div id="authModal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl relative">
-            <button onclick="closeAuthModal()" class="absolute right-4 top-4 text-stone-400 hover:text-stone-700 text-xl">
-                <i class="ph ph-x"></i>
+  <!-- CART DRAWER -->
+  <div id="cartDrawer" class="fixed inset-0 z-50 pointer-events-none transition-opacity duration-300 opacity-0">
+    <div onclick="toggleCartDrawer()" class="absolute inset-0 bg-stone-900/60 pointer-events-auto"></div>
+    <div class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-white shadow-2xl flex flex-col pointer-events-auto transform translate-x-full transition-transform duration-300" id="cartDrawerPanel">
+      <div class="p-4 border-b border-stone-200 flex justify-between items-center bg-stone-50">
+        <h3 class="font-bold text-stone-900 text-base">শপিং কার্ট</h3>
+        <button onclick="toggleCartDrawer()" class="text-stone-400 hover:text-stone-700"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <div id="cartItemsList" class="flex-grow overflow-y-auto p-4 space-y-3 custom-scrollbar"></div>
+      <div class="p-4 border-t border-stone-200 bg-stone-50 space-y-3">
+        <div class="flex justify-between items-center text-xs text-stone-600">
+          <span>মোট মূল্য:</span>
+          <span class="font-bold text-stone-900 text-sm" id="cartSubtotal">₹০</span>
+        </div>
+        <div class="flex justify-between items-center text-xs text-amber-900 bg-amber-100 p-2 rounded">
+          <span class="font-semibold">১০% অগ্রিম বুকিং ফি:</span>
+          <span class="font-bold text-sm" id="cartAdvancePayable">₹০</span>
+        </div>
+        <button onclick="proceedToCheckout()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2.5 rounded-lg text-sm transition flex items-center justify-center gap-2">
+          <i class="fa-brands fa-whatsapp text-lg"></i> WhatsApp-এ অর্ডার বুক করুন
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN LOGIN MODAL -->
+  <div id="adminModal" class="fixed inset-0 z-50 hidden bg-stone-950/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-xs w-full p-6 shadow-2xl text-center">
+      <h3 class="text-base font-bold text-stone-900 mb-1">ওনার সিকিউরিটি পিন</h3>
+      <p class="text-xs text-stone-500 mb-4">পিন দিয়ে প্রবেশ করুন</p>
+      <input type="password" id="adminPinInput" maxlength="6" placeholder="পিন (1234)" class="w-full border rounded-lg p-2.5 text-center text-lg font-bold outline-none mb-3">
+      <button onclick="verifyAdminPin()" class="w-full bg-amber-700 hover:bg-amber-800 text-white font-bold py-2 rounded-lg text-sm">প্রবেশ</button>
+      <button onclick="closeAdminModal()" class="w-full mt-2 text-stone-400 text-xs">বাতিল</button>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-stone-900 text-stone-400 text-xs py-8 border-t border-stone-800 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
+      <div>
+        <span class="text-stone-200 font-bold text-sm block">Sera's Furniture Collection</span>
+        <p class="text-stone-500 text-[11px] mt-0.5">সব ধরনের উন্নতমানের কাঠের ফার্নিচার প্রস্তুতকারক</p>
+      </div>
+      <div>
+        <span>হেল্পলাইন ও বুকিং: <strong class="text-stone-200">+91 6295941126</strong></span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // DEFAULT PRODUCTS WITH 3 ANGLES
+    const DEFAULT_PRODUCTS = [
+      {
+        id: "p1",
+        name: "রয়্যাল সেগুন বক্স খাট (King Size)",
+        category: "bed",
+        mrp: 46000,
+        price: 34500,
+        wood: "চিটাগাং সলিড সেগুন",
+        size: "6ft x 5ft",
+        images: [
+          "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=600&q=80", // Front
+          "https://images.unsplash.com/photo-1540518614846-7ede433c4ef7?auto=format&fit=crop&w=600&q=80", // Side
+          "https://images.unsplash.com/photo-1505693314120-0d443867891c?auto=format&fit=crop&w=600&q=80"  // Angle
+        ]
+      },
+      {
+        id: "p2",
+        name: "লাক্সারি আধুনিক সোফা সেট",
+        category: "sofa",
+        mrp: 38000,
+        price: 29000,
+        wood: "শীশম কাঠ ও হাই-ডেনসিটি ফোম",
+        size: "7 Seater Set",
+        images: [
+          "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=600&q=80", // Front
+          "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&w=600&q=80", // Side
+          "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=600&q=80"  // Angle
+        ]
+      },
+      {
+        id: "p3",
+        name: "৬-সিটার সলিড ডাইনিং সেট",
+        category: "dining",
+        mrp: 35000,
+        price: 26500,
+        wood: "সেগুন ফিনিশ সলিড কাঠ",
+        size: "৬ চেয়ার + ১ টেবিল",
+        images: [
+          "https://images.unsplash.com/photo-1617806118233-18e1de247200?auto=format&fit=crop&w=600&q=80", // Front
+          "https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?auto=format&fit=crop&w=600&q=80"  // Angle
+        ]
+      }
+    ];
+
+    const DEFAULT_SLIDES = [
+      {
+        id: "s1",
+        title: "আসল চিটাগাং সেগুন কাঠের খাট",
+        tag: "সেরা অফার",
+        desc: "১০ বছরের গ্যারান্টি সহ আজীবন ঘুণের ভয়মুক্ত ফার্নিচার।",
+        image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80"
+      }
+    ];
+
+    let products = JSON.parse(localStorage.getItem('sera_products_v2')) || DEFAULT_PRODUCTS;
+    let slides = JSON.parse(localStorage.getItem('sera_slides')) || DEFAULT_SLIDES;
+    let cart = JSON.parse(localStorage.getItem('sera_cart')) || [];
+    let currentCategory = 'all';
+
+    // 360 MODAL STATE
+    let currentModalProduct = null;
+    let activeAngleIndex = 0;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderProducts();
+      initSlider();
+      updateCartBadge();
+    });
+
+    // IMAGE COMPRESSOR
+    function compressImage(file, maxWidth, callback) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          callback(canvas.toDataURL('image/jpeg', 0.65));
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // RENDER PRODUCTS
+    function renderProducts() {
+      const grid = document.getElementById('productsGrid');
+      grid.innerHTML = '';
+
+      const filtered = currentCategory === 'all' 
+        ? products 
+        : products.filter(p => p.category === currentCategory);
+
+      filtered.forEach(p => {
+        const discount = Math.round(((p.mrp - p.price) / p.mrp) * 100);
+        const advance = Math.round(p.price * 0.10);
+        const mainImg = p.images && p.images.length > 0 ? p.images[0] : 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=600&q=80';
+
+        const card = document.createElement('div');
+        card.className = "bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden flex flex-col justify-between";
+        card.innerHTML = `
+          <div>
+            <div class="relative h-48 bg-stone-100 cursor-pointer group" onclick="openProductModal('${p.id}')">
+              <img src="${mainImg}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+              <span class="absolute top-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded">${discount}% ছাড়</span>
+              <span class="absolute bottom-2 right-2 bg-black/60 backdrop-blur-sm text-white text-[10px] font-semibold px-2 py-0.5 rounded flex items-center gap-1">
+                <i class="fa-solid fa-arrows-rotate"></i> ${p.images ? p.images.length : 1}টি ভিউ
+              </span>
+            </div>
+            <div class="p-4 cursor-pointer" onclick="openProductModal('${p.id}')">
+              <div class="text-[11px] text-stone-500 mb-1 flex justify-between">
+                <span>${p.wood}</span>
+                <span>${p.size}</span>
+              </div>
+              <h3 class="font-bold text-stone-900 text-sm leading-snug">${p.name}</h3>
+              <div class="mt-2 flex items-baseline gap-2">
+                <span class="text-base font-extrabold text-amber-900">₹${p.price.toLocaleString('en-IN')}</span>
+                <span class="text-xs text-stone-400 line-through">₹${p.mrp.toLocaleString('en-IN')}</span>
+              </div>
+              <div class="mt-1 text-[11px] text-emerald-700 font-semibold">
+                ১০% বুকিং টোকেন: ₹${advance.toLocaleString('en-IN')}
+              </div>
+            </div>
+          </div>
+          <div class="p-4 pt-0 grid grid-cols-2 gap-2">
+            <button onclick="addToCart('${p.id}')" class="bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold py-1.5 rounded text-xs">কার্টে নিন</button>
+            <button onclick="openProductModal('${p.id}')" class="bg-amber-700 hover:bg-amber-800 text-white font-bold py-1.5 rounded text-xs flex items-center justify-center gap-1">
+              <i class="fa-solid fa-eye"></i> ৩৬০° ভিউ
             </button>
-            <div id="authFormContainer">
-                <!-- Dynamically loaded Sign in or Sign up -->
-            </div>
-        </div>
-    </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
 
-    <!-- Cart Drawer -->
-    <div id="cartDrawer" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex justify-end">
-        <div class="w-full max-w-md bg-white h-full flex flex-col shadow-2xl">
-            <div class="p-4 border-b border-stone-200 flex items-center justify-between">
-                <h3 class="font-bold text-stone-900 flex items-center gap-2">
-                    <i class="ph ph-shopping-cart text-amber-600"></i> আপনার কার্ট
-                </h3>
-                <button onclick="toggleCartDrawer()" class="text-stone-400 hover:text-stone-700 text-xl">
-                    <i class="ph ph-x"></i>
-                </button>
-            </div>
-            
-            <div id="cartItemsList" class="flex-1 overflow-y-auto p-4 space-y-3">
-                <!-- Cart Items rendered here -->
-            </div>
+    // MULTI-ANGLE MODAL LOGIC
+    function openProductModal(id) {
+      const p = products.find(x => x.id === id);
+      if (!p) return;
+      currentModalProduct = p;
+      activeAngleIndex = 0;
 
-            <div class="p-4 border-t border-stone-200 bg-stone-50">
-                <div class="flex justify-between text-xs text-stone-600 mb-1">
-                    <span>মোট অর্ডার মূল্য:</span>
-                    <span id="cartTotalPrice" class="font-bold text-stone-900">₹0</span>
-                </div>
-                <div class="flex justify-between text-xs text-amber-800 mb-3 bg-amber-100/60 p-2 rounded-lg font-semibold">
-                    <span>১০% অগ্রিম বুকিং ফি:</span>
-                    <span id="cartBookingAdvance" class="font-bold">₹0</span>
-                </div>
-                <button onclick="checkoutToWhatsApp()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow transition">
-                    <i class="ph ph-whatsapp-logo text-lg"></i> WhatsApp-এ ১০% বুকিং অর্ডার পাঠান
-                </button>
-            </div>
-        </div>
-    </div>
+      document.getElementById('modalProdTitle').innerText = p.name;
+      document.getElementById('modalProdWood').innerText = p.wood;
+      document.getElementById('modalProdSize').innerText = "সাইজ: " + p.size;
+      document.getElementById('modalProdPrice').innerText = "₹" + p.price.toLocaleString('en-IN');
+      document.getElementById('modalProdMRP').innerText = "MRP ₹" + p.mrp.toLocaleString('en-IN');
+      document.getElementById('modalProdAdvance').innerText = "১০% বুকিং টোকেন: ₹" + Math.round(p.price * 0.10).toLocaleString('en-IN');
 
-    <script>
-        // Default Slides Setup
-        const DEFAULT_SLIDES = [
-            {
-                id: 1,
-                badge: "👑 প্রিমিয়াম উডক্রাফট ও খাঁটি সেগুন",
-                title: "ঘরের শোভা বাড়াতে আধুনিক ও টেকসই ফার্নিচার",
-                subtitle: "পছন্দের যেকোনো খাট, সোফা বা ডাইনিং টেবিল বুক করুন মাত্র ১০% অগ্রিমে। কাস্টম কাঠের কাজের বিশ্বস্ত প্রতিষ্ঠান।",
-                buttonText: "কালেকশন দেখুন",
-                categoryTarget: "all",
-                image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1200&q=80"
-            },
-            {
-                id: 2,
-                badge: "🔥 বৈশাখী ধামাকা অফার",
-                title: "রয়্যাল কিং সাইজ খাট ও ডাইনিং সেটে বিশেষ ছাড়",
-                subtitle: "চিটাগাং সেগুন কাঠের নিখুঁত ফিনিশিং। ৭-১০ দিনে হোম ডেলিভারি ও সম্পূর্ণ ফ্রি ফিটিং সুবিধা।",
-                buttonText: "খাটের ডিজাইন দেখুন",
-                categoryTarget: "bed",
-                image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=1200&q=80"
-            },
-            {
-                id: 3,
-                badge: "🛋️ নতুন লাক্সারি কালেকশন",
-                title: "আমদানি করা ভেলভেট ফেব্রিকে প্রিমিয়াম সোফা",
-                subtitle: "ড্রয়িং রুমের আধুনিক আভিজাত্যে আমাদের নতুন ৭-সিটার ও এল-শেপ সোফা কালেকশন।",
-                buttonText: "সোফা কালেকশন",
-                categoryTarget: "sofa",
-                image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1200&q=80"
-            }
-        ];
+      document.getElementById('modalAddToCartBtn').onclick = () => { addToCart(p.id); closeProductModal(); };
+      document.getElementById('modalWhatsAppBtn').onclick = () => {
+        const msg = encodeURIComponent(`নমস্কার সেরা ফার্নিচার,\nআমি "${p.name}" বুক করতে চাই।\nমূল্য: ₹${p.price}\n১০% বুকিং: ₹${Math.round(p.price*0.10)}`);
+        window.open(`https://wa.me/916295941126?text=${msg}`, '_blank');
+      };
 
-        // Sample Catalog Data
-        const DEFAULT_PRODUCTS = [
-            {
-                id: 1,
-                name: "চিটাগাং সেগুন বক্স খাট (King Size)",
-                category: "bed",
-                wood: "১০০% খাঁটি সেগুন কাঠ",
-                price: 24500,
-                mrp: 32000,
-                isPremium: true,
-                stockStatus: "in_stock",
-                image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=700&q=80"
-            },
-            {
-                id: 2,
-                name: "রয়্যাল এল-শেপ ৭-সিটার সোফা",
-                category: "sofa",
-                wood: "শীশম কাঠ ও ভেলভেট ফেব্রিক",
-                price: 28500,
-                mrp: 36000,
-                isPremium: true,
-                stockStatus: "in_stock",
-                image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=700&q=80"
-            },
-            {
-                id: 3,
-                name: "৬-সিটার ডাইনিং টেবিল ও চেয়ার সেট",
-                category: "dining",
-                wood: "সলিড শীশম কাঠ",
-                price: 19500,
-                mrp: 26000,
-                isPremium: false,
-                stockStatus: "in_stock",
-                image: "https://images.unsplash.com/photo-1617806118233-18e1de247200?w=700&q=80"
-            },
-            {
-                id: 4,
-                name: "মডার্ন হাইড্রোলিক স্টোরেজ খাট (Queen)",
-                category: "bed",
-                wood: "মেরিন গ্রেড প্লাইউড ও টিক ভিনিয়ার",
-                price: 18500,
-                mrp: 23000,
-                isPremium: false,
-                stockStatus: "in_stock",
-                image: "https://images.unsplash.com/photo-1540518614846-7ede433c4ef9?w=700&q=80"
-            }
-        ];
+      updateAngleDisplay();
+      document.getElementById('productViewModal').classList.remove('hidden');
+    }
 
-        // State Variables
-        let slides = JSON.parse(localStorage.getItem('seras_slides')) || DEFAULT_SLIDES;
-        let products = JSON.parse(localStorage.getItem('seras_products')) || DEFAULT_PRODUCTS;
-        let cart = [];
-        let currentFilter = 'all';
-        let currentSlideIndex = 0;
-        let sliderTimer = null;
-        let isAdminLoggedIn = false;
-        let tempSlideImageBase64 = '';
+    function closeProductModal() {
+      document.getElementById('productViewModal').classList.add('hidden');
+    }
 
-        // App Initialization
-        document.addEventListener('DOMContentLoaded', () => {
-            initSlider();
-            renderProducts();
-            checkUserAuth();
-            renderActiveSlidesList();
+    function updateAngleDisplay() {
+      if (!currentModalProduct || !currentModalProduct.images) return;
+      const images = currentModalProduct.images;
+      document.getElementById('modalMainImg').src = images[activeAngleIndex];
+
+      const thumbContainer = document.getElementById('modalThumbnails');
+      thumbContainer.innerHTML = '';
+      images.forEach((img, idx) => {
+        const btn = document.createElement('button');
+        btn.className = `w-14 h-12 rounded-lg overflow-hidden border-2 transition shrink-0 ${idx === activeAngleIndex ? 'border-amber-700 scale-105' : 'border-stone-300 opacity-60'}`;
+        btn.innerHTML = `<img src="${img}" class="w-full h-full object-cover">`;
+        btn.onclick = () => { activeAngleIndex = idx; updateAngleDisplay(); };
+        thumbContainer.appendChild(btn);
+      });
+    }
+
+    function nextAnglePhoto() {
+      if (!currentModalProduct) return;
+      activeAngleIndex = (activeAngleIndex + 1) % currentModalProduct.images.length;
+      updateAngleDisplay();
+    }
+
+    function prevAnglePhoto() {
+      if (!currentModalProduct) return;
+      activeAngleIndex = (activeAngleIndex - 1 + currentModalProduct.images.length) % currentModalProduct.images.length;
+      updateAngleDisplay();
+    }
+
+    // ADD NEW PRODUCT WITH 3 ANGLES
+    function handleAddNewProduct(e) {
+      e.preventDefault();
+      const btn = document.getElementById('saveProdBtn');
+      btn.innerText = "সংরক্ষণ হচ্ছে...";
+      btn.disabled = true;
+
+      const name = document.getElementById('newProdName').value.trim();
+      const category = document.getElementById('newProdCat').value;
+      const mrp = parseFloat(document.getElementById('newProdMRP').value);
+      const price = parseFloat(document.getElementById('newProdPrice').value);
+
+      const fFront = document.getElementById('prodImgFront').files[0];
+      const fSide = document.getElementById('prodImgSide').files[0];
+      const fBack = document.getElementById('prodImgBack').files[0];
+
+      const collectedImages = [];
+
+      const finalize = () => {
+        if (collectedImages.length === 0) {
+          collectedImages.push("https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=600&q=80");
+        }
+        products.unshift({
+          id: "p" + Date.now(),
+          name, category, mrp, price,
+          wood: "চিটাগাং সলিড সেগুন",
+          size: "Standard Size",
+          images: collectedImages
         });
-
-        /* ================= CAROUSEL / SLIDER LOGIC ================= */
-        function initSlider() {
-            renderSlidesUI();
-            startSliderAutoPlay();
-        }
-
-        function renderSlidesUI() {
-            const track = document.getElementById('sliderTrack');
-            const dots = document.getElementById('sliderDots');
-            track.innerHTML = '';
-            dots.innerHTML = '';
-
-            if (slides.length === 0) {
-                track.innerHTML = `
-                    <div class="h-full flex items-center justify-center bg-stone-900 text-stone-400 text-sm">
-                        কোনো স্লাইড যোগ করা নেই। অ্যাডমিন প্যানেল থেকে স্লাইড যোগ করুন।
-                    </div>
-                `;
-                return;
-            }
-
-            slides.forEach((slide, index) => {
-                // Slide Item
-                const slideEl = document.createElement('div');
-                slideEl.className = `absolute inset-0 w-full h-full slide-fade transition-opacity duration-700 ${index === currentSlideIndex ? 'opacity-100 z-10 pointer-events-auto' : 'opacity-0 z-0 pointer-events-none'}`;
-                slideEl.id = `slide-${index}`;
-                
-                slideEl.innerHTML = `
-                    <img src="${slide.image}" alt="${slide.title}" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-r from-stone-950/90 via-stone-900/60 to-transparent"></div>
-                    <div class="absolute inset-0 flex flex-col justify-center px-6 sm:px-14 max-w-xl text-white">
-                        <span class="inline-block px-3 py-1 bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-full text-[11px] sm:text-xs font-semibold mb-2 sm:mb-3 w-fit">
-                            ${slide.badge || '👑 স্পেশাল কালেকশন'}
-                        </span>
-                        <h2 class="text-xl sm:text-3xl md:text-4xl font-black leading-tight sm:leading-snug mb-2 sm:mb-3 drop-shadow">
-                            ${slide.title}
-                        </h2>
-                        <p class="text-stone-300 text-xs sm:text-sm mb-4 sm:mb-6 line-clamp-2 leading-relaxed">
-                            ${slide.subtitle}
-                        </p>
-                        <div class="flex items-center gap-3">
-                            <button onclick="handleSlideAction('${slide.categoryTarget || 'all'}')" class="px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-full text-xs sm:text-sm font-bold transition shadow-lg shadow-amber-950/50 flex items-center gap-1.5">
-                                <span>${slide.buttonText || 'কালেকশন দেখুন'}</span>
-                                <i class="ph ph-arrow-right"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-                track.appendChild(slideEl);
-
-                // Indicator Dot
-                const dot = document.createElement('button');
-                dot.className = `h-2 sm:h-2.5 rounded-full transition-all duration-300 ${index === currentSlideIndex ? 'w-7 sm:w-8 bg-amber-500' : 'w-2 sm:w-2.5 bg-white/40 hover:bg-white/70'}`;
-                dot.onclick = () => goToSlide(index);
-                dots.appendChild(dot);
-            });
-        }
-
-        function updateSlideVisibility() {
-            slides.forEach((_, idx) => {
-                const el = document.getElementById(`slide-${idx}`);
-                if (el) {
-                    if (idx === currentSlideIndex) {
-                        el.classList.remove('opacity-0', 'pointer-events-none', 'z-0');
-                        el.classList.add('opacity-100', 'pointer-events-auto', 'z-10');
-                    } else {
-                        el.classList.remove('opacity-100', 'pointer-events-auto', 'z-10');
-                        el.classList.add('opacity-0', 'pointer-events-none', 'z-0');
-                    }
-                }
-            });
-
-            // Update Dots
-            const dots = document.getElementById('sliderDots').children;
-            for (let i = 0; i < dots.length; i++) {
-                if (i === currentSlideIndex) {
-                    dots[i].className = 'h-2 sm:h-2.5 w-7 sm:w-8 rounded-full bg-amber-500 transition-all duration-300';
-                } else {
-                    dots[i].className = 'h-2 sm:h-2.5 w-2 sm:w-2.5 rounded-full bg-white/40 hover:bg-white/70 transition-all duration-300';
-                }
-            }
-        }
-
-        function nextSlide() {
-            if (slides.length <= 1) return;
-            currentSlideIndex = (currentSlideIndex + 1) % slides.length;
-            updateSlideVisibility();
-            resetSliderTimer();
-        }
-
-        function prevSlide() {
-            if (slides.length <= 1) return;
-            currentSlideIndex = (currentSlideIndex - 1 + slides.length) % slides.length;
-            updateSlideVisibility();
-            resetSliderTimer();
-        }
-
-        function goToSlide(index) {
-            currentSlideIndex = index;
-            updateSlideVisibility();
-            resetSliderTimer();
-        }
-
-        function startSliderAutoPlay() {
-            clearInterval(sliderTimer);
-            sliderTimer = setInterval(nextSlide, 5000);
-        }
-
-        function resetSliderTimer() {
-            clearInterval(sliderTimer);
-            startSliderAutoPlay();
-        }
-
-        function handleSlideAction(cat) {
-            filterCategory(cat);
-            document.getElementById('catalog').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        /* ================= ADMIN & SLIDER MANAGER LOGIC ================= */
-        function openAdminModal(tab = 'sliderTab') {
-            document.getElementById('adminModal').classList.remove('hidden');
-            if (isAdminLoggedIn) {
-                showAdminDashboard();
-                switchAdminTab(tab);
-            } else {
-                document.getElementById('adminPinContainer').classList.remove('hidden');
-                document.getElementById('adminPanelContent').classList.add('hidden');
-            }
-        }
-
-        function closeAdminModal() {
-            document.getElementById('adminModal').classList.add('hidden');
-        }
-
-        function verifyAdminPin() {
-            const pin = document.getElementById('adminPinInput').value.trim();
-            if (pin === "1234" || pin === "6295") {
-                isAdminLoggedIn = true;
-                document.getElementById('adminPinInput').value = '';
-                showAdminDashboard();
-            } else {
-                alert('ভুল পিন নম্বর! অনুগ্রহ করে সঠিক পিন দিন (ডিফল্ট: 1234)');
-            }
-        }
-
-        function showAdminDashboard() {
-            document.getElementById('adminPinContainer').classList.add('hidden');
-            document.getElementById('adminPanelContent').classList.remove('hidden');
-            renderActiveSlidesList();
-        }
-
-        function lockAdminSession() {
-            isAdminLoggedIn = false;
-            document.getElementById('adminPinContainer').classList.remove('hidden');
-            document.getElementById('adminPanelContent').classList.add('hidden');
-        }
-
-        function switchAdminTab(tab) {
-            const isSlider = tab === 'sliderTab';
-            document.getElementById('sliderManagerSection').classList.toggle('hidden', !isSlider);
-            document.getElementById('productManagerSection').classList.toggle('hidden', isSlider);
-
-            document.getElementById('tabBtnSlider').className = isSlider ? 
-                'pb-2 text-xs font-bold text-amber-700 border-b-2 border-amber-600 transition' : 
-                'pb-2 text-xs font-semibold text-stone-500 hover:text-stone-800 transition';
-            
-            document.getElementById('tabBtnProduct').className = !isSlider ? 
-                'pb-2 text-xs font-bold text-amber-700 border-b-2 border-amber-600 transition' : 
-                'pb-2 text-xs font-semibold text-stone-500 hover:text-stone-800 transition';
-        }
-
-        function handleSlideImageUpload(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                tempSlideImageBase64 = evt.target.result;
-                document.getElementById('slideImageInput').value = 'ফাইল প্রস্তুত করা হয়েছে (আপলোডেড ছবি)';
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function handleAddNewSlide(e) {
-            e.preventDefault();
-            const title = document.getElementById('slideTitleInput').value.trim();
-            const badge = document.getElementById('slideBadgeInput').value.trim();
-            const subtitle = document.getElementById('slideSubtitleInput').value.trim();
-            const buttonText = document.getElementById('slideButtonInput').value.trim() || 'কালেকশন দেখুন';
-            const categoryTarget = document.getElementById('slideTargetCategory').value;
-            const urlInput = document.getElementById('slideImageInput').value.trim();
-
-            const image = tempSlideImageBase64 || (!urlInput.includes('ফাইল প্রস্তুত') && urlInput ? urlInput : 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1200&q=80');
-
-            const newSlide = {
-                id: Date.now(),
-                badge: badge || '🔥 নতুন অফার',
-                title,
-                subtitle,
-                buttonText,
-                categoryTarget,
-                image
-            };
-
-            slides.push(newSlide);
-            saveSlides();
-            renderSlidesUI();
-            renderActiveSlidesList();
-            goToSlide(slides.length - 1);
-
-            // Reset form
-            e.target.reset();
-            tempSlideImageBase64 = '';
-            alert('সফলভাবে নতুন স্লাইড যোগ করা হয়েছে!');
-        }
-
-        function deleteSlide(id) {
-            if (slides.length <= 1) {
-                return alert('কমপক্ষে একটি স্লাইড অবশ্যই থাকতে হবে!');
-            }
-            if (confirm('আপনি কি এই স্লাইডটি মুছে ফেলতে চান?')) {
-                slides = slides.filter(s => s.id !== id);
-                if (currentSlideIndex >= slides.length) currentSlideIndex = 0;
-                saveSlides();
-                renderSlidesUI();
-                renderActiveSlidesList();
-            }
-        }
-
-        function renderActiveSlidesList() {
-            const container = document.getElementById('activeSlidesContainer');
-            const countEl = document.getElementById('slideCountText');
-            if (!container) return;
-
-            countEl.innerText = slides.length;
-            container.innerHTML = '';
-
-            slides.forEach((s, idx) => {
-                const item = document.createElement('div');
-                item.className = 'flex items-center justify-between p-2.5 bg-white rounded-xl border border-stone-200 text-xs shadow-sm';
-                item.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        <img src="${s.image}" class="w-12 h-10 object-cover rounded-lg border border-stone-200">
-                        <div>
-                            <p class="font-bold text-stone-800 line-clamp-1">${s.title}</p>
-                            <span class="text-[10px] text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded font-medium">${s.badge || 'স্লাইড ' + (idx + 1)}</span>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <button onclick="goToSlide(${idx}); closeAdminModal();" class="p-1.5 text-stone-500 hover:text-amber-600 text-sm" title="প্রিভিউ দেখুন">
-                            <i class="ph ph-eye"></i>
-                        </button>
-                        <button onclick="deleteSlide(${s.id})" class="p-1.5 text-stone-400 hover:text-red-600 text-sm" title="ডিলিট করুন">
-                            <i class="ph ph-trash"></i>
-                        </button>
-                    </div>
-                `;
-                container.appendChild(item);
-            });
-        }
-
-        function saveSlides() {
-            localStorage.setItem('seras_slides', JSON.stringify(slides));
-        }
-
-        function restoreDefaultSlides() {
-            if (confirm('আপনি কি পূর্বের ডিফল্ট স্লাইড কালেকশনে ফিরে যেতে চান?')) {
-                slides = DEFAULT_SLIDES;
-                saveSlides();
-                renderSlidesUI();
-                renderActiveSlidesList();
-                goToSlide(0);
-            }
-        }
-
-        function handleAddNewProduct(e) {
-            e.preventDefault();
-            const name = document.getElementById('newProdName').value.trim();
-            const category = document.getElementById('newProdCategory').value;
-            const price = parseInt(document.getElementById('newProdPrice').value);
-            const mrp = parseInt(document.getElementById('newProdMrp').value);
-            const wood = document.getElementById('newProdWood').value.trim();
-            const image = document.getElementById('newProdImage').value.trim();
-
-            const newProd = {
-                id: Date.now(),
-                name,
-                category,
-                wood,
-                price,
-                mrp,
-                isPremium: price > 20000,
-                stockStatus: "in_stock",
-                image
-            };
-
-            products.unshift(newProd);
-            localStorage.setItem('seras_products', JSON.stringify(products));
-            renderProducts();
-            e.target.reset();
-            alert('নতুন ফার্নিচার সফলভাবে যোগ করা হয়েছে!');
-            closeAdminModal();
-        }
-
-        /* ================= CATALOG & PRODUCT DISPLAY ================= */
-        function renderProducts(items = products) {
-            const grid = document.getElementById('productGrid');
-            grid.innerHTML = '';
-
-            items.forEach(p => {
-                const discount = Math.round(((p.mrp - p.price) / p.mrp) * 100);
-                const advance = Math.round(p.price * 0.10);
-
-                const card = document.createElement('div');
-                card.className = `bg-white rounded-2xl overflow-hidden border ${p.isPremium ? 'border-amber-400 gold-glow' : 'border-stone-200'} flex flex-col shadow-sm transition hover:shadow-md`;
-                
-                card.innerHTML = `
-                    <div class="relative h-48 bg-stone-100 overflow-hidden">
-                        <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover">
-                        ${p.isPremium ? '<span class="absolute top-2 left-2 bg-amber-500 text-stone-900 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider">👑 Premium Luxury</span>' : ''}
-                        <span class="absolute top-2 right-2 bg-stone-900/80 text-white text-[10px] font-bold px-2 py-0.5 rounded-md">${discount}% ছাড়</span>
-                    </div>
-                    <div class="p-4 flex-1 flex flex-col justify-between">
-                        <div>
-                            <span class="text-[11px] text-stone-500 font-medium">${p.wood}</span>
-                            <h4 class="font-bold text-stone-900 text-sm mb-2 leading-snug">${p.name}</h4>
-                            <div class="flex items-baseline gap-2 mb-1">
-                                <span class="text-base font-extrabold text-stone-900">₹${p.price.toLocaleString('en-IN')}</span>
-                                <span class="text-xs text-stone-400 line-through">₹${p.mrp.toLocaleString('en-IN')}</span>
-                            </div>
-                            <p class="text-[11px] text-amber-800 font-medium bg-amber-50 inline-block px-2 py-0.5 rounded">
-                                বুকিং অগ্রিম: মাত্র ₹${advance.toLocaleString('en-IN')} (১০%)
-                            </p>
-                        </div>
-                        <div class="mt-4 pt-3 border-t border-stone-100 flex gap-2">
-                            <button onclick="addToCart(${p.id})" class="flex-1 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5">
-                                <i class="ph ph-shopping-cart-simple text-sm"></i> কার্ট
-                            </button>
-                            <button onclick="quickOrderWhatsApp(${p.id})" class="p-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-xl text-xs font-bold transition" title="WhatsApp-এ অর্ডার">
-                                <i class="ph ph-whatsapp-logo text-base"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        function filterCategory(cat) {
-            currentFilter = cat;
-            document.querySelectorAll('.cat-pill').forEach(btn => {
-                btn.className = "cat-pill px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap bg-white text-stone-600 border border-stone-200 hover:bg-stone-50 transition";
-            });
-            if (event && event.target && event.target.classList.contains('cat-pill')) {
-                event.target.className = "cat-pill active px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap bg-stone-900 text-white transition";
-            }
-
-            if (cat === 'all') {
-                renderProducts(products);
-            } else if (cat === 'premium') {
-                renderProducts(products.filter(p => p.isPremium));
-            } else {
-                renderProducts(products.filter(p => p.category === cat));
-            }
-        }
-
-        function handleSearch() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = products.filter(p => p.name.toLowerCase().includes(query) || p.wood.toLowerCase().includes(query));
-            renderProducts(filtered);
-        }
-
-        function handleMobileSearch() {
-            const query = document.getElementById('mobileSearchInput').value.toLowerCase();
-            const filtered = products.filter(p => p.name.toLowerCase().includes(query) || p.wood.toLowerCase().includes(query));
-            renderProducts(filtered);
-        }
-
-        /* ================= PHOTO SEARCH ================= */
-        function triggerPhotoSearch() {
-            document.getElementById('photoSearchInput').click();
-        }
-
-        let uploadedSampleBase64 = null;
-        function processPhotoSearch(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                uploadedSampleBase64 = e.target.result;
-                document.getElementById('samplePreviewImg').src = uploadedSampleBase64;
-                document.getElementById('photoPreviewModal').classList.remove('hidden');
-
-                const fname = file.name.toLowerCase();
-                let matched = products;
-                if (fname.includes('bed') || fname.includes('khat')) {
-                    matched = products.filter(p => p.category === 'bed');
-                } else if (fname.includes('sofa')) {
-                    matched = products.filter(p => p.category === 'sofa');
-                }
-                renderProducts(matched);
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function closePhotoModal() {
-            document.getElementById('photoPreviewModal').classList.add('hidden');
-        }
-
-        function sendSampleToWhatsApp() {
-            const phone = "916295941126";
-            const text = encodeURIComponent("নমস্কার! আমি আপনাদের ওয়েবসাইটে একটি ফার্নিচারের স্যাম্পল ছবি আপলোড করেছি। এই একই মডেল সেগুন বা শীশম কাঠে বানিয়ে নিতে খরচ ও সময় কত লাগবে জানাবেন।");
-            window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
-            closePhotoModal();
-        }
-
-        /* ================= CART & CHECKOUT ================= */
-        function addToCart(id) {
-            const prod = products.find(p => p.id === id);
-            if (prod) {
-                cart.push(prod);
-                updateCartUI();
-                toggleCartDrawer(true);
-            }
-        }
-
-        function removeFromCart(index) {
-            cart.splice(index, 1);
-            updateCartUI();
-        }
-
-        function updateCartUI() {
-            const badge = document.getElementById('cartCountBadge');
-            const list = document.getElementById('cartItemsList');
-            const totalEl = document.getElementById('cartTotalPrice');
-            const advEl = document.getElementById('cartBookingAdvance');
-
-            badge.innerText = cart.length;
-            badge.classList.toggle('hidden', cart.length === 0);
-
-            list.innerHTML = '';
-            let total = 0;
-
-            if (cart.length === 0) {
-                list.innerHTML = `<div class="text-center py-10 text-stone-400 text-xs">কার্ট বর্তমানে খালি রয়েছে</div>`;
-            } else {
-                cart.forEach((item, idx) => {
-                    total += item.price;
-                    const el = document.createElement('div');
-                    el.className = "flex items-center justify-between p-2 bg-stone-50 rounded-xl border border-stone-200 text-xs";
-                    el.innerHTML = `
-                        <div class="flex items-center gap-2">
-                            <img src="${item.image}" class="w-10 h-10 object-cover rounded-lg">
-                            <div>
-                                <p class="font-bold text-stone-800 line-clamp-1">${item.name}</p>
-                                <p class="text-amber-800 font-semibold">₹${item.price.toLocaleString('en-IN')}</p>
-                            </div>
-                        </div>
-                        <button onclick="removeFromCart(${idx})" class="text-stone-400 hover:text-red-500 p-1 text-base">
-                            <i class="ph ph-trash"></i>
-                        </button>
-                    `;
-                    list.appendChild(el);
-                });
-            }
-
-            totalEl.innerText = `₹${total.toLocaleString('en-IN')}`;
-            advEl.innerText = `₹${Math.round(total * 0.10).toLocaleString('en-IN')}`;
-        }
-
-        function toggleCartDrawer(forceOpen = false) {
-            const drawer = document.getElementById('cartDrawer');
-            if (forceOpen) {
-                drawer.classList.remove('hidden');
-            } else {
-                drawer.classList.toggle('hidden');
-            }
-        }
-
-        function checkoutToWhatsApp() {
-            if (cart.length === 0) return alert('কার্ট খালি!');
-            const user = JSON.parse(localStorage.getItem('seras_customer_user') || '{}');
-            let itemsSummary = cart.map(c => `• ${c.name} - ₹${c.price.toLocaleString('en-IN')}`).join('\n');
-            let total = cart.reduce((acc, c) => acc + c.price, 0);
-            let adv = Math.round(total * 0.10);
-
-            let msg = `*নমস্কার Sera's Collection!*\nআমি নিচের ফার্নিচারগুলো ১০% অগ্রিমে বুকিং করতে চাই:\n\n${itemsSummary}\n\n*মোট মূল্য:* ₹${total.toLocaleString('en-IN')}\n*বুকিং অগ্রিম (১০%):* ₹${adv.toLocaleString('en-IN')}\n\n`;
-
-            if (user.phone) {
-                msg += `*গ্রাহকের তথ্য:*\nনাম: ${user.name}\nমোবাইল: ${user.phone}\nঠিকানা: ${user.address || 'উল্লেখ নেই'}`;
-            } else {
-                msg += `(গ্রাহক ওয়েবসাইটে লগইন ছাড়া বুকিং রিকোয়েস্ট পাঠাচ্ছেন)`;
-            }
-
-            window.open(`https://wa.me/916295941126?text=${encodeURIComponent(msg)}`, '_blank');
-        }
-
-        function quickOrderWhatsApp(id) {
-            const p = products.find(i => i.id === id);
-            if (!p) return;
-            const adv = Math.round(p.price * 0.10);
-            const msg = `*নমস্কার Sera's Collection!*\nআমি "${p.name}" (মূল্য: ₹${p.price.toLocaleString('en-IN')}) অর্ডার বুকিং করতে আগ্রহী।\nবুকিং অগ্রিম (১০%): ₹${adv.toLocaleString('en-IN')}।\nঅনুগ্রহ করে ডেলিভারি ও পেমেন্ট বিবরণ জানাবেন।`;
-            window.open(`https://wa.me/916295941126?text=${encodeURIComponent(msg)}`, '_blank');
-        }
-
-        /* ================= AUTHENTICATION ================= */
-        let isSignupView = false;
-        function checkUserAuth() {
-            const user = JSON.parse(localStorage.getItem('seras_customer_user') || 'null');
-            const container = document.getElementById('authHeaderContainer');
-            if (user && user.phone) {
-                container.innerHTML = `
-                    <div class="flex items-center gap-2">
-                        <span class="text-xs font-bold text-stone-800 bg-amber-100 text-amber-900 px-3 py-1 rounded-full border border-amber-300">
-                            Hi, ${user.name.split(' ')[0]}
-                        </span>
-                        <button onclick="logoutCustomer()" class="text-stone-400 hover:text-red-600 text-xs font-semibold" title="লগআউট">
-                            <i class="ph ph-sign-out text-base"></i>
-                        </button>
-                    </div>
-                `;
-            } else {
-                container.innerHTML = `
-                    <button onclick="openAuthModal()" class="px-3.5 py-1.5 rounded-full border border-stone-300 text-stone-700 hover:border-amber-600 text-xs font-semibold flex items-center gap-1.5 transition">
-                        <i class="ph ph-user text-base"></i>
-                        <span>লগইন</span>
-                    </button>
-                `;
-            }
-        }
-
-        function openAuthModal() {
-            renderAuthForm();
-            document.getElementById('authModal').classList.remove('hidden');
-        }
-
-        function closeAuthModal() {
-            document.getElementById('authModal').classList.add('hidden');
-        }
-
-        function toggleAuthMode() {
-            isSignupView = !isSignupView;
-            renderAuthForm();
-        }
-
-        function renderAuthForm() {
-            const container = document.getElementById('authFormContainer');
-            if (isSignupView) {
-                container.innerHTML = `
-                    <h3 class="text-lg font-bold text-stone-900 mb-1">নতুন অ্যাকাউন্ট তৈরি করুন</h3>
-                    <p class="text-xs text-stone-500 mb-4">অর্ডার ট্র্যাক ও অটো-চেকআউট করতে তথ্য দিন</p>
-                    <div class="space-y-3">
-                        <input type="text" id="regName" placeholder="আপনার নাম" class="w-full p-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs">
-                        <input type="tel" id="regPhone" placeholder="১০ সংখ্যার মোবাইল নম্বর" class="w-full p-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs">
-                        <input type="password" id="regPass" placeholder="পাসওয়ার্ড" class="w-full p-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs">
-                        <textarea id="regAddress" placeholder="ডেলিভারি ঠিকানা ও পিনকোড" rows="2" class="w-full p-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs"></textarea>
-                        <button onclick="submitRegister()" class="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition">সাইন আপ করুন</button>
-                        <p class="text-center text-xs text-stone-500">
-                            আগে থেকেই অ্যাকাউন্ট আছে? <a href="javascript:void(0)" onclick="toggleAuthMode()" class="text-amber-700 font-bold">লগইন করুন</a>
-                        </p>
-                    </div>
-                `;
-            } else {
-                container.innerHTML = `
-                    <h3 class="text-lg font-bold text-stone-900 mb-1">লগইন করুন</h3>
-                    <p class="text-xs text-stone-500 mb-4">আপনার মোবাইল নম্বর ও পাসওয়ার্ড দিন</p>
-                    <div class="space-y-3">
-                        <input type="tel" id="logPhone" placeholder="মোবাইল নম্বর" class="w-full p-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs">
-                        <input type="password" id="logPass" placeholder="পাসওয়ার্ড" class="w-full p-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs">
-                        <button onclick="submitLogin()" class="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition">লগইন করুন</button>
-                        <p class="text-center text-xs text-stone-500">
-                            নতুন কাস্টমার? <a href="javascript:void(0)" onclick="toggleAuthMode()" class="text-amber-700 font-bold">নতুন অ্যাকাউন্ট খুলুন</a>
-                        </p>
-                    </div>
-                `;
-            }
-        }
-
-        function submitRegister() {
-            const name = document.getElementById('regName').value.trim();
-            const phone = document.getElementById('regPhone').value.trim();
-            const pass = document.getElementById('regPass').value.trim();
-            const address = document.getElementById('regAddress').value.trim();
-
-            if (!name || phone.length < 10 || !pass) {
-                return alert('অনুগ্রহ করে সঠিক নাম, মোবাইল ও পাসওয়ার্ড দিন!');
-            }
-
-            const user = { name, phone, pass, address };
-            localStorage.setItem('seras_customer_user', JSON.stringify(user));
-            alert('অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে!');
-            closeAuthModal();
-            checkUserAuth();
-        }
-
-        function submitLogin() {
-            const phone = document.getElementById('logPhone').value.trim();
-            const pass = document.getElementById('logPass').value.trim();
-            const saved = JSON.parse(localStorage.getItem('seras_customer_user') || 'null');
-
-            if (!saved || saved.phone !== phone || saved.pass !== pass) {
-                return alert('মোবাইল নম্বর বা পাসওয়ার্ড ভুল হয়েছে!');
-            }
-
-            alert(`স্বাগতম, ${saved.name}!`);
-            closeAuthModal();
-            checkUserAuth();
-        }
-
-        function logoutCustomer() {
-            localStorage.removeItem('seras_customer_user');
-            checkUserAuth();
-        }
-    </script>
+        localStorage.setItem('sera_products_v2', JSON.stringify(products));
+        renderProducts();
+        renderAdminProducts();
+        e.target.reset();
+        btn.innerText = "ফার্নিচার সেভ করুন";
+        btn.disabled = false;
+        alert("ফার্নিচার সফলভাবে ৩টি অ্যাঙ্গেল সহ সেভ হয়েছে!");
+      };
+
+      // Process Files sequentially
+      const processBack = () => {
+        if (fBack) compressImage(fBack, 600, (uri) => { collectedImages.push(uri); finalize(); });
+        else finalize();
+      };
+      const processSide = () => {
+        if (fSide) compressImage(fSide, 600, (uri) => { collectedImages.push(uri); processBack(); });
+        else processBack();
+      };
+      if (fFront) compressImage(fFront, 600, (uri) => { collectedImages.push(uri); processSide(); });
+      else processSide();
+    }
+
+    function renderAdminProducts() {
+      const tbody = document.getElementById('adminProductsTableBody');
+      tbody.innerHTML = '';
+      products.forEach((p, idx) => {
+        const tr = document.createElement('tr');
+        const thumbs = (p.images || []).map(img => `<img src="${img}" class="w-8 h-8 object-cover rounded inline-block mr-1">`).join('');
+        tr.innerHTML = `
+          <td class="p-3">${thumbs}</td>
+          <td class="p-3 font-semibold">${p.name}</td>
+          <td class="p-3 font-bold text-amber-900">₹${p.price}</td>
+          <td class="p-3 text-right">
+            <button onclick="deleteProduct(${idx})" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-trash"></i></button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function deleteProduct(idx) {
+      if (confirm("এই ফার্নিচারটি মুছে ফেলতে চান?")) {
+        products.splice(idx, 1);
+        localStorage.setItem('sera_products_v2', JSON.stringify(products));
+        renderProducts();
+        renderAdminProducts();
+      }
+    }
+
+    function filterCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.cat-pill').forEach(b => {
+        b.className = b.dataset.cat === cat 
+          ? "cat-pill px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-800 text-white"
+          : "cat-pill px-3.5 py-1.5 rounded-full text-xs font-bold bg-white text-stone-700 border border-stone-300";
+      });
+      renderProducts();
+    }
+
+    // ADMIN TOGGLE
+    function openAdminModal() { document.getElementById('adminModal').classList.remove('hidden'); }
+    function closeAdminModal() { document.getElementById('adminModal').classList.add('hidden'); }
+    function verifyAdminPin() {
+      const pin = document.getElementById('adminPinInput').value.trim();
+      if (pin === '1234' || pin === '6295') {
+        closeAdminModal();
+        document.getElementById('storefrontView').classList.add('hidden');
+        document.getElementById('adminPortalView').classList.remove('hidden');
+        renderAdminProducts();
+      } else { alert("ভুল পিন!"); }
+    }
+    function exitAdminToStorefront() {
+      document.getElementById('adminPortalView').classList.add('hidden');
+      document.getElementById('storefrontView').classList.remove('hidden');
+      renderProducts();
+    }
+    function switchAdminTab(t) {
+      if (t === 'products') {
+        document.getElementById('adminTabProducts').classList.remove('hidden');
+        document.getElementById('adminTabSlides').classList.add('hidden');
+      } else {
+        document.getElementById('adminTabProducts').classList.add('hidden');
+        document.getElementById('adminTabSlides').classList.remove('hidden');
+      }
+    }
+
+    // SLIDER ENGINE
+    let currentSlide = 0;
+    function initSlider() {
+      if (slides.length === 0) return;
+      const s = slides[currentSlide];
+      document.getElementById('activeSlideImg').src = s.image;
+      document.getElementById('activeSlideTag').innerText = s.tag;
+      document.getElementById('activeSlideTitle').innerText = s.title;
+      document.getElementById('activeSlideDesc').innerText = s.desc;
+    }
+    function nextSlide() { currentSlide = (currentSlide + 1) % slides.length; initSlider(); }
+    function prevSlide() { currentSlide = (currentSlide - 1 + slides.length) % slides.length; initSlider(); }
+
+    // CART
+    function addToCart(id) {
+      const p = products.find(x => x.id === id);
+      if (!p) return;
+      const ex = cart.find(c => c.id === id);
+      if (ex) ex.qty += 1; else cart.push({ ...p, qty: 1 });
+      localStorage.setItem('sera_cart', JSON.stringify(cart));
+      updateCartBadge();
+      toggleCartDrawer();
+    }
+    function updateCartBadge() { document.getElementById('cartBadge').innerText = cart.reduce((a, b) => a + b.qty, 0); }
+    function toggleCartDrawer() {
+      const d = document.getElementById('cartDrawer');
+      const p = document.getElementById('cartDrawerPanel');
+      if (d.classList.contains('opacity-0')) {
+        renderCart();
+        d.classList.remove('opacity-0', 'pointer-events-none');
+        p.classList.remove('translate-x-full');
+      } else {
+        d.classList.add('opacity-0', 'pointer-events-none');
+        p.classList.add('translate-x-full');
+      }
+    }
+    function renderCart() {
+      const list = document.getElementById('cartItemsList');
+      list.innerHTML = '';
+      let subtotal = 0;
+      if (cart.length === 0) {
+        list.innerHTML = `<p class="text-center py-10 text-stone-400 text-xs">কার্ট খালি।</p>`;
+        document.getElementById('cartSubtotal').innerText = '₹০';
+        document.getElementById('cartAdvancePayable').innerText = '₹০';
+        return;
+      }
+      cart.forEach((c, idx) => {
+        subtotal += c.price * c.qty;
+        list.innerHTML += `
+          <div class="flex items-center justify-between p-2.5 bg-stone-50 rounded border">
+            <div>
+              <div class="font-bold text-xs">${c.name}</div>
+              <div class="text-[11px] text-amber-900">₹${c.price} × ${c.qty}</div>
+            </div>
+            <button onclick="cart.splice(${idx},1); localStorage.setItem('sera_cart',JSON.stringify(cart)); updateCartBadge(); renderCart();" class="text-red-500 text-xs"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        `;
+      });
+      document.getElementById('cartSubtotal').innerText = `₹${subtotal.toLocaleString('en-IN')}`;
+      document.getElementById('cartAdvancePayable').innerText = `₹${Math.round(subtotal * 0.10).toLocaleString('en-IN')}`;
+    }
+    function proceedToCheckout() {
+      if (cart.length === 0) return;
+      const total = cart.reduce((a, b) => a + (b.price * b.qty), 0);
+      const adv = Math.round(total * 0.10);
+      const items = cart.map(c => `${c.name} (${c.qty}টি)`).join(', ');
+      const msg = encodeURIComponent(`নমস্কার সেরা ফার্নিচার,\nআমি অর্ডার বুক করতে চাই:\nআইটেম: ${items}\nমোট: ₹${total}\n১০% অগ্রিম: ₹${adv}`);
+      window.open(`https://wa.me/916295941126?text=${msg}`, '_blank');
+    }
+  </script>
 </body>
 </html>
