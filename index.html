@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sera's Collection - ফার্নিচার ও কাঠের কারুকার্য</title>
+  <title>Sera's Collection - Furniture & Wooden Crafts</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <!-- Google Fonts: Hind Siliguri -->
+  <!-- Google Fonts: Hind Siliguri (Bangla) & Poppins -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
   <!-- Firebase Compat SDKs for Browser -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -19,7 +19,7 @@
 
   <style>
     body {
-      font-family: 'Hind Siliguri', sans-serif;
+      font-family: 'Hind Siliguri', 'Noto Sans Devanagari', 'Poppins', sans-serif;
     }
     .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #92400e; border-radius: 4px; }
@@ -34,7 +34,7 @@
 
   <!-- TOP ANNOUNCEMENT BAR -->
   <div class="bg-stone-900 text-amber-200 text-xs py-2 px-4 text-center tracking-wide font-medium flex justify-center items-center gap-2">
-    <span>✨ ১০০% খাঁটি চিটাগাং সেগুন ও শীশম কাঠ | গঙ্গারামপুর ও সংলগ্ন এলাকায় দ্রুত হোম ডেলিভারি ও ফ্রি ফিটিং ✨</span>
+    <span id="txt-announcement">✨ ১০০% খাঁটি চিটাগাং সেগুন ও শীশম কাঠ | গঙ্গারামপুর ও সংলগ্ন এলাকায় দ্রুত হোম ডেলিভারি ও ফ্রি ফিটিং ✨</span>
   </div>
 
   <!-- NAVIGATION HEADER -->
@@ -48,7 +48,7 @@
         </div>
         <div>
           <span class="text-xl sm:text-2xl font-black tracking-tight text-stone-900">Sera's <span class="text-amber-800">Collection</span></span>
-          <p class="text-[11px] text-stone-500 font-medium">প্রিমিয়াম কোয়ালিটি ফার্নিচার ও কাঠের কারুকার্য</p>
+          <p id="txt-logo-subtitle" class="text-[11px] text-stone-500 font-medium">প্রিমিয়াম কোয়ালিটি ফার্নিচার ও কাঠের কারুকার্য</p>
         </div>
       </a>
 
@@ -60,33 +60,41 @@
         
         <button onclick="triggerPhotoSearch()" class="absolute right-1.5 top-1 bottom-1 px-3 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded-full text-xs font-semibold flex items-center gap-1.5 border border-amber-300 transition">
           <i class="fa-solid fa-camera text-xs"></i>
-          <span>ছবি দিয়ে খুঁজুন</span>
+          <span id="txt-photo-search-btn">ছবি দিয়ে খুঁজুন</span>
         </button>
         <input type="file" id="photoSearchInput" accept="image/*" class="hidden" onchange="processPhotoSearch(event)">
       </div>
 
-      <!-- RIGHT ACTIONS -->
+      <!-- RIGHT ACTIONS (Language Selector + Auth + Cart + Admin) -->
       <div class="flex items-center gap-2 sm:gap-3">
-        <button onclick="triggerPhotoSearch()" class="md:hidden w-8 h-8 rounded-full bg-amber-100 text-amber-900 flex items-center justify-center border border-amber-300" title="ছবি দিয়ে খুঁজুন">
+        <!-- LANGUAGE DROPDOWN -->
+        <div class="relative">
+          <select id="langSelect" onchange="changeLanguage(this.value)" class="bg-stone-100 border border-stone-300 text-stone-800 text-xs font-semibold rounded-lg px-2 py-1.5 outline-none cursor-pointer hover:border-amber-700 transition">
+            <option value="bn">বাংলা</option>
+            <option value="en">English</option>
+            <option value="hi">हिंदी</option>
+          </select>
+        </div>
+
+        <button onclick="triggerPhotoSearch()" class="md:hidden w-8 h-8 rounded-full bg-amber-100 text-amber-900 flex items-center justify-center border border-amber-300" title="Search with photo">
           <i class="fa-solid fa-camera text-sm"></i>
         </button>
 
         <div id="authHeaderContainer">
           <button onclick="openAuthModal()" class="px-3 py-1.5 rounded-full border border-stone-300 text-stone-700 hover:border-amber-700 text-xs font-semibold flex items-center gap-1.5 transition">
             <i class="fa-regular fa-user"></i>
-            <span class="hidden sm:inline">OTP লগইন</span>
-            <span class="sm:hidden">লগইন</span>
+            <span id="txt-login-btn">লগইন</span>
           </button>
         </div>
 
-        <button onclick="toggleCartDrawer(true)" class="relative p-2 text-stone-700 hover:text-amber-800 transition" title="শপিং কার্ট">
+        <button onclick="toggleCartDrawer(true)" class="relative p-2 text-stone-700 hover:text-amber-800 transition" title="Shopping Cart">
           <i class="fa-solid fa-bag-shopping text-xl"></i>
           <span id="cartCountBadge" class="absolute -top-1 -right-1 bg-amber-700 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
         </button>
 
         <button onclick="openAdminModal()" class="px-2.5 py-1.5 bg-stone-800 hover:bg-stone-900 text-amber-200 text-xs font-bold rounded-lg flex items-center gap-1 shadow transition">
           <i class="fa-solid fa-lock text-[10px]"></i>
-          <span>অ্যাডমিন</span>
+          <span id="txt-admin-btn">অ্যাডমিন</span>
         </button>
       </div>
 
@@ -108,22 +116,19 @@
     <section class="bg-gradient-to-r from-stone-900 via-stone-800 to-amber-950 text-white py-10 px-4 sm:px-6">
       <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
         <div class="space-y-3 max-w-xl">
-          <span class="inline-block px-3 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-full text-xs font-semibold">
+          <span id="txt-hero-tag" class="inline-block px-3 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-full text-xs font-semibold">
             👑 খাঁটি চিটাগাং সেগুন ও শীশম কাঠ
           </span>
-          <h1 class="text-2xl sm:text-4xl font-extrabold leading-snug">
+          <h1 id="txt-hero-title" class="text-2xl sm:text-4xl font-extrabold leading-snug">
             ঘরের সেরা শোভা <span class="text-amber-400">Sera's Collection</span>-এ
           </h1>
-          <p class="text-stone-300 text-xs sm:text-sm leading-relaxed">
-            যেকোনো প্রোডাক্টের ওপর ক্লিক করুন—মাউস দিয়ে ঘুরিয়ে <strong>৩৬০° ভিউ</strong> দেখুন এবং নিচে অনুরূপ আরও ডিজাইন বেছে নিন।
+          <p id="txt-hero-desc" class="text-stone-300 text-xs sm:text-sm leading-relaxed">
+            যেকোনো প্রোডাক্টের ওপর ক্লিক করে ভেতরে <strong>৩৬০° ভিউ</strong> টেনে ঘুরে দেখুন এবং অনুরূপ আরও সেরা ডিজাইন বেছে নিন।
           </p>
           <div class="flex flex-wrap gap-3 pt-1">
-            <a href="#catalogSection" class="px-5 py-2.5 bg-amber-700 hover:bg-amber-800 text-white rounded-lg text-xs sm:text-sm font-bold shadow transition">
+            <a href="#catalogSection" id="txt-hero-btn" class="px-5 py-2.5 bg-amber-700 hover:bg-amber-800 text-white rounded-lg text-xs sm:text-sm font-bold shadow transition">
               কালেকশন দেখুন ↓
             </a>
-            <button onclick="triggerPhotoSearch()" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-xs font-semibold border border-white/20 transition flex items-center gap-1.5">
-              <i class="fa-solid fa-camera"></i> ছবি দিয়ে ডিজাইন খুঁজুন
-            </button>
           </div>
         </div>
       </div>
@@ -133,16 +138,16 @@
     <section id="catalogSection" class="max-w-7xl mx-auto px-4 py-8">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
-          <h2 class="text-xl sm:text-2xl font-extrabold text-stone-900">ফার্নিচার ক্যাটালগ</h2>
-          <p class="text-stone-500 text-xs">৩৬০° ডিগ্রি অ্যাঙ্গেল ও বিস্তারিত দেখতে যেকোনো পণ্যে ক্লিক করুন</p>
+          <h2 id="txt-catalog-title" class="text-xl sm:text-2xl font-extrabold text-stone-900">ফার্নিচার ক্যাটালগ</h2>
+          <p id="txt-catalog-subtitle" class="text-stone-500 text-xs">৩৬০° ডিগ্রি অ্যাঙ্গেল ও বিস্তারিত দেখতে যেকোনো পণ্যে ক্লিক করুন</p>
         </div>
         <!-- FILTER CHIPS -->
         <div class="flex items-center gap-2 overflow-x-auto pb-1 max-w-full custom-scrollbar">
-          <button onclick="filterCategory('all', this)" class="cat-pill px-4 py-1.5 rounded-full text-xs font-bold bg-amber-800 text-white transition">সব ফার্নিচার</button>
-          <button onclick="filterCategory('bed', this)" class="cat-pill px-4 py-1.5 rounded-full text-xs font-semibold bg-white text-stone-700 border border-stone-300 transition">খাট (Bed)</button>
-          <button onclick="filterCategory('sofa', this)" class="cat-pill px-4 py-1.5 rounded-full text-xs font-semibold bg-white text-stone-700 border border-stone-300 transition">সোফা (Sofa)</button>
-          <button onclick="filterCategory('dining', this)" class="cat-pill px-4 py-1.5 rounded-full text-xs font-semibold bg-white text-stone-700 border border-stone-300 transition">ডাইনিং টেবিল</button>
-          <button onclick="filterCategory('wardrobe', this)" class="cat-pill px-4 py-1.5 rounded-full text-xs font-semibold bg-white text-stone-700 border border-stone-300 transition">আলমারি</button>
+          <button onclick="filterCategory('all', this)" id="cat-all" class="cat-pill px-4 py-1.5 rounded-full text-xs font-bold bg-amber-800 text-white transition">সব ফার্নিচার</button>
+          <button onclick="filterCategory('bed', this)" id="cat-bed" class="cat-pill px-4 py-1.5 rounded-full text-xs font-semibold bg-white text-stone-700 border border-stone-300 transition">খাট (Bed)</button>
+          <button onclick="filterCategory('sofa', this)" id="cat-sofa" class="cat-pill px-4 py-1.5 rounded-full text-xs font-semibold bg-white text-stone-700 border border-stone-300 transition">সোফা (Sofa)</button>
+          <button onclick="filterCategory('dining', this)" id="cat-dining" class="cat-pill px-4 py-1.5 rounded-full text-xs font-semibold bg-white text-stone-700 border border-stone-300 transition">ডাইনিং টেবিল</button>
+          <button onclick="filterCategory('wardrobe', this)" id="cat-wardrobe" class="cat-pill px-4 py-1.5 rounded-full text-xs font-semibold bg-white text-stone-700 border border-stone-300 transition">আলমারি</button>
         </div>
       </div>
 
@@ -165,7 +170,7 @@
           
           <div class="absolute top-3 left-3 bg-amber-500/90 text-stone-950 text-xs font-extrabold px-3 py-1 rounded-full shadow flex items-center gap-1.5 backdrop-blur-sm pointer-events-none">
             <i class="fa-solid fa-arrows-rotate animate-spin" style="animation-duration: 4s;"></i>
-            <span>৩৬০° ভিউ (টেনে ঘুরিয়ে দেখুন)</span>
+            <span id="txt-360-badge">৩৬০° ভিউ (টেনে ঘুরিয়ে দেখুন)</span>
           </div>
 
           <span id="frameCounterBadge" class="absolute bottom-3 right-3 bg-black/60 text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full backdrop-blur-sm pointer-events-none">
@@ -202,38 +207,38 @@
               <i class="fa-solid fa-circle-check"></i>
               <span>১০% বুকিং টোকেন: মাত্র ₹০</span>
             </div>
-            <p class="text-[11px] text-stone-500 mt-1">বাকি ৯০% টাকা ডেলিভারি ও ফ্রি ফিটিংয়ের পর পরিশোধযোগ্য।</p>
+            <p id="txt-balance-note" class="text-[11px] text-stone-500 mt-1">বাকি ৯০% টাকা ডেলিভারি ও ফ্রি ফিটিংয়ের পর পরিশোধযোগ্য।</p>
           </div>
 
           <div class="mt-4 space-y-2 text-xs text-stone-700 bg-stone-50 p-3 rounded-xl border border-stone-200">
             <div class="flex items-center gap-2">
               <i class="fa-solid fa-shield-halved text-amber-700"></i>
-              <span><strong>গ্যারান্টি:</strong> ১০ বছরের ঘুণ ও উইপোকা প্রতিরোধ গ্যারান্টি।</span>
+              <span id="txt-guarantee-note"><strong>গ্যারান্টি:</strong> ১০ বছরের ঘুণ ও উইপোকা প্রতিরোধ গ্যারান্টি।</span>
             </div>
             <div class="flex items-center gap-2">
               <i class="fa-solid fa-truck-fast text-amber-700"></i>
-              <span><strong>ডেলিভারি:</strong> গঙ্গারামপুর ও সংলগ্ন এলাকায় দ্রুত হোম ডেলিভারি।</span>
+              <span id="txt-delivery-note"><strong>ডেলিভারি:</strong> গঙ্গারামপুর ও সংলগ্ন এলাকায় দ্রুত হোম ডেলিভারি।</span>
             </div>
             <div class="flex items-center gap-2">
               <i class="fa-solid fa-screwdriver-wrench text-amber-700"></i>
-              <span><strong>ফিটিং:</strong> দক্ষ কারিগর দ্বারা সম্পূর্ণ ফ্রি ফিটিং।</span>
+              <span id="txt-fitting-note"><strong>ফিটিং:</strong> দক্ষ কারিগর দ্বারা সম্পূর্ণ ফ্রি ফিটিং।</span>
             </div>
           </div>
         </div>
 
         <div class="grid grid-cols-2 gap-2 pt-1">
           <button id="modalAddToCartBtn" class="bg-amber-100 hover:bg-amber-200 text-amber-950 font-bold py-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition">
-            <i class="fa-solid fa-bag-shopping"></i> কার্টে নিন
+            <i class="fa-solid fa-bag-shopping"></i> <span id="txt-modal-cart-btn">কার্টে নিন</span>
           </button>
           <button id="modalWhatsAppBtn" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow transition">
-            <i class="fa-brands fa-whatsapp text-base"></i> WhatsApp অর্ডার
+            <i class="fa-brands fa-whatsapp text-base"></i> <span id="txt-modal-wa-btn">WhatsApp অর্ডার</span>
           </button>
         </div>
 
         <hr class="border-stone-200 mt-4">
 
         <div class="pt-2">
-          <h4 class="font-bold text-stone-900 text-sm mb-3 flex items-center gap-1.5">
+          <h4 id="txt-related-title" class="font-bold text-stone-900 text-sm mb-3 flex items-center gap-1.5">
             <i class="fa-solid fa-layer-group text-amber-700"></i> একই ক্যাটাগরির আরও সেরা কালেকশন
           </h4>
           <div id="relatedProductsGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
@@ -249,10 +254,10 @@
       <button onclick="closePhotoModal()" class="absolute right-4 top-4 text-stone-400 hover:text-stone-700 text-lg">
         <i class="fa-solid fa-xmark"></i>
       </button>
-      <h3 class="text-base font-bold text-stone-900 mb-2 flex items-center gap-2">
+      <h3 id="txt-photo-modal-title" class="text-base font-bold text-stone-900 mb-2 flex items-center gap-2">
         <i class="fa-solid fa-camera text-amber-700"></i> আপনার আপলোড করা ছবি
       </h3>
-      <p class="text-xs text-stone-500 mb-3">আপনার ছবির সাথে মিল থাকা ফার্নিচার ক্যাটালগে খোঁজা হচ্ছে...</p>
+      <p id="txt-photo-modal-desc" class="text-xs text-stone-500 mb-3">আপনার ছবির সাথে মিল থাকা ফার্নিচার ক্যাটালগে খোঁজা হচ্ছে...</p>
       
       <div class="w-full h-48 bg-stone-100 rounded-xl overflow-hidden mb-4 flex items-center justify-center border border-stone-200">
         <img id="samplePreviewImg" src="" alt="Sample" class="w-full h-full object-contain">
@@ -260,7 +265,7 @@
 
       <div class="space-y-2">
         <button onclick="sendSampleToWhatsApp()" class="w-full py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition">
-          <i class="fa-brands fa-whatsapp text-base"></i> WhatsApp-এ এই ডিজাইন পাঠিয়ে রেট জানুন
+          <i class="fa-brands fa-whatsapp text-base"></i> <span id="txt-sample-wa-btn">WhatsApp-এ এই ডিজাইন পাঠিয়ে রেট জানুন</span>
         </button>
       </div>
     </div>
@@ -276,16 +281,16 @@
       <div id="authFormContainer">
         <!-- Step 1: Input Name & Phone -->
         <div id="phoneStep" class="space-y-3 text-xs">
-          <h3 class="text-base font-bold text-stone-900 mb-1">কাস্টমার লগইন / সাইন আপ</h3>
-          <p class="text-stone-500">আপনার মোবাইল নম্বরে ৬ সংখ্যার OTP পাঠানো হবে।</p>
+          <h3 id="txt-auth-title" class="text-base font-bold text-stone-900 mb-1">কাস্টমার লগইন / সাইন আপ</h3>
+          <p id="txt-auth-desc" class="text-stone-500">আপনার মোবাইল নম্বরে ৬ সংখ্যার OTP পাঠানো হবে।</p>
           
           <div>
-            <label class="block font-semibold mb-1 text-stone-700">আপনার নাম *</label>
+            <label id="txt-label-name" class="block font-semibold mb-1 text-stone-700">আপনার নাম *</label>
             <input type="text" id="custNameInput" placeholder="আপনার নাম লিখুন" class="w-full p-2.5 bg-stone-50 border rounded-lg outline-none">
           </div>
 
           <div>
-            <label class="block font-semibold mb-1 text-stone-700">মোবাইল নম্বর *</label>
+            <label id="txt-label-phone" class="block font-semibold mb-1 text-stone-700">মোবাইল নম্বর *</label>
             <div class="flex gap-2">
               <span class="p-2.5 bg-stone-100 border rounded-lg font-bold text-stone-600">+91</span>
               <input type="tel" id="custPhoneInput" maxlength="10" placeholder="১০ সংখ্যার নম্বর" class="w-full p-2.5 bg-stone-50 border rounded-lg outline-none">
@@ -293,7 +298,7 @@
           </div>
 
           <div>
-            <label class="block font-semibold mb-1 text-stone-700">ডেলিভারি ঠিকানা (ঐচ্ছিক)</label>
+            <label id="txt-label-address" class="block font-semibold mb-1 text-stone-700">ডেলিভারি ঠিকানা (ঐচ্ছিক)</label>
             <textarea id="custAddressInput" placeholder="গ্রাম/শহর, পোস্ট, পিনকোড" rows="2" class="w-full p-2.5 bg-stone-50 border rounded-lg outline-none"></textarea>
           </div>
 
@@ -307,8 +312,8 @@
 
         <!-- Step 2: Verify OTP -->
         <div id="otpStep" class="space-y-3 text-xs hidden">
-          <h3 class="text-base font-bold text-stone-900 mb-1">OTP যাচাই করুন</h3>
-          <p class="text-stone-500">আপনার নম্বরে পাঠানো ৬ সংখ্যার কোডটি দিন।</p>
+          <h3 id="txt-otp-title" class="text-base font-bold text-stone-900 mb-1">OTP যাচাই করুন</h3>
+          <p id="txt-otp-desc" class="text-stone-500">আপনার নম্বরে পাঠানো ৬ সংখ্যার কোডটি দিন।</p>
           
           <input type="text" id="custOtpInput" maxlength="6" placeholder="• • • • • •" class="w-full p-3 bg-stone-50 border rounded-lg text-center tracking-[0.5em] text-lg font-bold outline-none">
 
@@ -316,7 +321,7 @@
             ভেরিফাই ও প্রবেশ
           </button>
 
-          <button onclick="resetAuthSteps()" class="w-full text-stone-400 text-center hover:text-stone-600 mt-2">
+          <button onclick="resetAuthSteps()" id="txt-change-num-btn" class="w-full text-stone-400 text-center hover:text-stone-600 mt-2">
             নম্বর পরিবর্তন করুন
           </button>
         </div>
@@ -436,21 +441,21 @@
     <div onclick="toggleCartDrawer(false)" class="absolute inset-0 bg-stone-900/60 pointer-events-auto"></div>
     <div class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-white shadow-2xl flex flex-col pointer-events-auto transform translate-x-full transition-transform duration-300" id="cartDrawerPanel">
       <div class="p-4 border-b border-stone-200 flex justify-between items-center bg-stone-50">
-        <h3 class="font-bold text-stone-900 text-base">শপিং কার্ট</h3>
+        <h3 id="txt-cart-title" class="font-bold text-stone-900 text-base">শপিং কার্ট</h3>
         <button onclick="toggleCartDrawer(false)" class="text-stone-400 hover:text-stone-700"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
       <div id="cartItemsList" class="flex-grow overflow-y-auto p-4 space-y-3 custom-scrollbar"></div>
       <div class="p-4 border-t border-stone-200 bg-stone-50 space-y-3">
         <div class="flex justify-between items-center text-xs text-stone-600">
-          <span>মোট মূল্য:</span>
+          <span id="txt-cart-total-lbl">মোট মূল্য:</span>
           <span class="font-bold text-stone-900 text-sm" id="cartSubtotal">₹০</span>
         </div>
         <div class="flex justify-between items-center text-xs text-amber-900 bg-amber-100 p-2 rounded">
-          <span class="font-semibold">১০% বুকিং টোকেন:</span>
+          <span id="txt-cart-adv-lbl" class="font-semibold">১০% বুকিং টোকেন:</span>
           <span class="font-bold text-sm" id="cartAdvancePayable">₹০</span>
         </div>
         <button onclick="proceedToCheckout()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2.5 rounded-lg text-sm transition flex items-center justify-center gap-2">
-          <i class="fa-brands fa-whatsapp text-lg"></i> WhatsApp-এ অর্ডার পাঠান
+          <i class="fa-brands fa-whatsapp text-lg"></i> <span id="txt-cart-order-btn">WhatsApp-এ অর্ডার পাঠান</span>
         </button>
       </div>
     </div>
@@ -473,66 +478,340 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div>
           <h3 class="text-xl font-bold text-white mb-2">Sera's Collection</h3>
-          <p class="text-stone-400 text-xs leading-relaxed mb-4">
+          <p id="txt-footer-desc" class="text-stone-400 text-xs leading-relaxed mb-4">
             আমাদের নিজস্ব কারখানায় অভিজ্ঞ কারিগর দ্বারা চিটাগাং সেগুন, শীশম কাঠ এবং মেরিন প্লাইউডের টেকসই ফার্নিচার তৈরি করা হয়।
           </p>
           <div class="flex items-center gap-2 text-xs text-amber-400">
             <i class="fa-solid fa-location-dot"></i>
-            <span>গঙ্গারামপুর, দক্ষিণ দিনাজপুর, পশ্চিমবঙ্গ</span>
+            <span id="txt-footer-address">গঙ্গারামপুর, দক্ষিণ দিনাজপুর, পশ্চিমবঙ্গ</span>
           </div>
         </div>
 
         <div class="bg-stone-800/60 p-5 rounded-2xl border border-stone-700">
-          <h4 class="text-sm font-bold text-amber-400 mb-3 flex items-center gap-2">
+          <h4 id="txt-footer-contact-title" class="text-sm font-bold text-amber-400 mb-3 flex items-center gap-2">
             <i class="fa-solid fa-headset"></i> যোগাযোগ ও কাস্টমার হেল্পলাইন
           </h4>
-          <p class="text-xs text-stone-400 mb-4">
+          <p id="txt-footer-contact-desc" class="text-xs text-stone-400 mb-4">
             অর্ডার বুকিং, ডিজাইন কাস্টমাইজেশন বা যেকোনো তথ্যের জন্য সরাসরি কল বা হোয়াটসঅ্যাপ করুন:
           </p>
           <div class="space-y-2">
             <a href="tel:+916295941126" class="flex items-center justify-between p-2.5 bg-stone-700/60 hover:bg-stone-700 rounded-xl text-xs text-white font-medium transition">
               <span class="flex items-center gap-2">
-                <i class="fa-solid fa-phone text-amber-400"></i> কল করুন: <strong>+91 6295941126</strong>
+                <i class="fa-solid fa-phone text-amber-400"></i> <span id="txt-call-lbl">কল করুন:</span> <strong>+91 6295941126</strong>
               </span>
-              <span class="text-[10px] bg-stone-600 px-2 py-0.5 rounded text-stone-300">সরাসরি কল</span>
+              <span id="txt-call-badge" class="text-[10px] bg-stone-600 px-2 py-0.5 rounded text-stone-300">সরাসরি কল</span>
             </a>
             <a href="https://wa.me/916295941126?text=নমস্কার,%20ফার্নিচার%20সম্পর্কে%20জানতে%20চাই।" target="_blank" class="flex items-center justify-between p-2.5 bg-emerald-950/40 hover:bg-emerald-900/50 border border-emerald-700/50 rounded-xl text-xs text-emerald-300 font-medium transition">
               <span class="flex items-center gap-2">
                 <i class="fa-brands fa-whatsapp text-emerald-400 text-sm"></i> WhatsApp: <strong>+91 6295941126</strong>
               </span>
-              <span class="text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded font-bold">চ্যাট করুন</span>
+              <span id="txt-chat-badge" class="text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded font-bold">চ্যাট করুন</span>
             </a>
           </div>
         </div>
 
         <div class="space-y-3">
-          <h4 class="text-sm font-bold text-white mb-2">আমাদের অঙ্গীকার</h4>
+          <h4 id="txt-footer-promise-title" class="text-sm font-bold text-white mb-2">আমাদের অঙ্গীকার</h4>
           <div class="flex items-start gap-3">
             <i class="fa-solid fa-shield-halved text-amber-500 text-lg flex-shrink-0 mt-0.5"></i>
             <div>
-              <p class="text-xs font-semibold text-stone-200">১০ বছরের ঘুণ-পোকা গ্যারান্টি</p>
-              <p class="text-[11px] text-stone-400">খাঁটি পাকা কাঠের ওপর দীর্ঘস্থায়ী নিশ্চয়তা।</p>
+              <p id="txt-promise-1-t" class="text-xs font-semibold text-stone-200">১০ বছরের ঘুণ-পোকা গ্যারান্টি</p>
+              <p id="txt-promise-1-d" class="text-[11px] text-stone-400">খাঁটি পাকা কাঠের ওপর দীর্ঘস্থায়ী নিশ্চয়তা।</p>
             </div>
           </div>
           <div class="flex items-start gap-3">
             <i class="fa-solid fa-truck-fast text-amber-500 text-lg flex-shrink-0 mt-0.5"></i>
             <div>
-              <p class="text-xs font-semibold text-stone-200">হোম ডেলিভারি ও ফ্রি ফিটিং</p>
-              <p class="text-[11px] text-stone-400">আপনার বাড়িতে গিয়ে নিখুঁতভাবে সেট করে দেওয়া হয়।</p>
+              <p id="txt-promise-2-t" class="text-xs font-semibold text-stone-200">হোম ডেলিভারি ও ফ্রি ফিটিং</p>
+              <p id="txt-promise-2-d" class="text-[11px] text-stone-400">আপনার বাড়িতে গিয়ে নিখুঁতভাবে সেট করে দেওয়া হয়।</p>
             </div>
           </div>
         </div>
       </div>
 
       <div class="border-t border-stone-800 mt-8 pt-4 text-center text-xs text-stone-500">
-        © 2026 Sera's Collection. সর্বস্বত্ব সংরক্ষিত।
+        © 2026 Sera's Collection. <span id="txt-copyright">সর্বস্বত্ব সংরক্ষিত।</span>
       </div>
     </div>
   </footer>
 
-  <!-- JAVASCRIPT LOGIC -->
+  <!-- MULTI-LANGUAGE DICTIONARY & APP LOGIC -->
   <script>
-    // YOUR FIREBASE CONFIG
+    const translations = {
+      bn: {
+        announcement: "✨ ১০০% খাঁটি চিটাগাং সেগুন ও শীশম কাঠ | গঙ্গারামপুর ও সংলগ্ন এলাকায় দ্রুত হোম ডেলিভারি ও ফ্রি ফিটিং ✨",
+        logoSubtitle: "প্রিমিয়াম কোয়ালিটি ফার্নিচার ও কাঠের কারুকার্য",
+        searchPlaceholder: "খাট, সোফা, ডাইনিং টেবিল খুঁজুন...",
+        photoSearchBtn: "ছবি দিয়ে খুঁজুন",
+        loginBtn: "লগইন",
+        adminBtn: "অ্যাডমিন",
+        heroTag: "👑 খাঁটি চিটাগাং সেগুন ও শীশম কাঠ",
+        heroTitle: `ঘরের সেরা শোভা <span class="text-amber-400">Sera's Collection</span>-এ`,
+        heroDesc: "যেকোনো প্রোডাক্টের ওপর ক্লিক করে ভেতরে <strong>৩৬০° ভিউ</strong> টেনে ঘুরে দেখুন এবং অনুরূপ আরও সেরা ডিজাইন বেছে নিন।",
+        heroBtn: "কালেকশন দেখুন ↓",
+        catalogTitle: "ফার্নিচার ক্যাটালগ",
+        catalogSubtitle: "৩৬০° ডিগ্রি অ্যাঙ্গেল ও বিস্তারিত দেখতে যেকোনো পণ্যে ক্লিক করুন",
+        catAll: "সব ফার্নিচার",
+        catBed: "খাট (Bed)",
+        catSofa: "সোফা (Sofa)",
+        catDining: "ডাইনিং টেবিল",
+        catWardrobe: "আলমারি",
+        btnDetails: "বিস্তারিত দেখুন",
+        btnAddToCart: "কার্টে নিন",
+        offBadge: "ছাড়",
+        advanceToken: "১০% বুকিং টোকেন: মাত্র",
+        view360Badge: "৩৬০° ভিউ (টেনে ঘুরিয়ে দেখুন)",
+        anglePrefix: "অ্যাঙ্গেল:",
+        balanceNote: "বাকি ৯০% টাকা ডেলিভারি ও ফ্রি ফিটিংয়ের পর পরিশোধযোগ্য।",
+        guaranteeNote: "<strong>গ্যারান্টি:</strong> ১০ বছরের ঘুণ ও উইপোকা প্রতিরোধ গ্যারান্টি।",
+        deliveryNote: "<strong>ডেলিভারি:</strong> গঙ্গারামপুর ও সংলগ্ন এলাকায় দ্রুত হোম ডেলিভারি।",
+        fittingNote: "<strong>ফিটিং:</strong> দক্ষ কারিগর দ্বারা সম্পূর্ণ ফ্রি ফিটিং।",
+        modalCartBtn: "কার্টে নিন",
+        modalWaBtn: "WhatsApp অর্ডার",
+        relatedTitle: "একই ক্যাটাগরির আরও সেরা কালেকশন",
+        photoModalTitle: "আপনার আপলোড করা ছবি",
+        photoModalDesc: "আপনার ছবির সাথে মিল থাকা ফার্নিচার ক্যাটালগে খোঁজা হচ্ছে...",
+        sampleWaBtn: "WhatsApp-এ এই ডিজাইন পাঠিয়ে রেট জানুন",
+        authTitle: "কাস্টমার লগইন / সাইন আপ",
+        authDesc: "আপনার মোবাইল নম্বরে ৬ সংখ্যার OTP পাঠানো হবে।",
+        labelName: "আপনার নাম *",
+        namePlaceholder: "আপনার নাম লিখুন",
+        labelPhone: "মোবাইল নম্বর *",
+        phonePlaceholder: "১০ সংখ্যার নম্বর",
+        labelAddress: "ডেলিভারি ঠিকানা (ঐচ্ছিক)",
+        addressPlaceholder: "গ্রাম/শহর, পোস্ট, পিনকোড",
+        sendOtpBtn: "OTP পাঠান",
+        otpTitle: "OTP যাচাই করুন",
+        otpDesc: "আপনার নম্বরে পাঠানো ৬ সংখ্যার কোডটি দিন।",
+        verifyOtpBtn: "ভেরিফাই ও প্রবেশ",
+        changeNumBtn: "নম্বর পরিবর্তন করুন",
+        cartTitle: "শপিং কার্ট",
+        cartTotalLbl: "মোট মূল্য:",
+        cartAdvLbl: "১০% বুকিং টোকেন:",
+        cartOrderBtn: "WhatsApp-এ অর্ডার পাঠান",
+        cartEmpty: "কার্ট খালি।",
+        footerDesc: "আমাদের নিজস্ব কারখানায় অভিজ্ঞ কারিগর দ্বারা চিটাগাং সেগুন, শীশম কাঠ এবং মেরিন প্লাইউডের টেকসই ফার্নিচার তৈরি করা হয়।",
+        footerAddress: "গঙ্গারামপুর, দক্ষিণ দিনাজপুর, পশ্চিমবঙ্গ",
+        footerContactTitle: "যোগাযোগ ও কাস্টমার হেল্পলাইন",
+        footerContactDesc: "অর্ডার বুকিং, ডিজাইন কাস্টমাইজেশন বা যেকোনো তথ্যের জন্য সরাসরি কল বা হোয়াটসঅ্যাপ করুন:",
+        callLbl: "কল করুন:",
+        callBadge: "সরাসরি কল",
+        chatBadge: "চ্যাট করুন",
+        footerPromiseTitle: "আমাদের অঙ্গীকার",
+        promise1T: "১০ বছরের ঘুণ-পোকা গ্যারান্টি",
+        promise1D: "খাঁটি পাকা কাঠের ওপর দীর্ঘস্থায়ী নিশ্চয়তা।",
+        promise2T: "হোম ডেলিভারি ও ফ্রি ফিটিং",
+        promise2D: "আপনার বাড়িতে গিয়ে নিখুঁতভাবে সেট করে দেওয়া হয়।",
+        copyright: "সর্বস্বত্ব সংরক্ষিত।"
+      },
+      en: {
+        announcement: "✨ 100% Genuine Chittagong Teak & Sheesham Wood | Fast Home Delivery & Free Fitting in Gangarampur & Nearby Areas ✨",
+        logoSubtitle: "Premium Quality Furniture & Woodcraft",
+        searchPlaceholder: "Search Beds, Sofas, Dining Tables...",
+        photoSearchBtn: "Photo Search",
+        loginBtn: "Login",
+        adminBtn: "Admin",
+        heroTag: "👑 100% Solid Chittagong Teak & Sheesham Wood",
+        heroTitle: `Finest Home Decor at <span class="text-amber-400">Sera's Collection</span>`,
+        heroDesc: "Click any product to explore its <strong>360° View</strong>, rotate with mouse/touch, and explore matching premium designs.",
+        heroBtn: "Explore Collection ↓",
+        catalogTitle: "Furniture Catalog",
+        catalogSubtitle: "Click any item to view full details and interactive 360° angles",
+        catAll: "All Furniture",
+        catBed: "Bed",
+        catSofa: "Sofa",
+        catDining: "Dining Table",
+        catWardrobe: "Wardrobe",
+        btnDetails: "View Details",
+        btnAddToCart: "Add to Cart",
+        offBadge: "OFF",
+        advanceToken: "10% Booking Advance: only",
+        view360Badge: "360° View (Drag to rotate)",
+        anglePrefix: "Angle:",
+        balanceNote: "Remaining 90% balance payable after delivery & free installation.",
+        guaranteeNote: "<strong>Warranty:</strong> 10-Year Termite & Borer Resistance Guarantee.",
+        deliveryNote: "<strong>Delivery:</strong> Fast doorstep delivery across Gangarampur & nearby.",
+        fittingNote: "<strong>Installation:</strong> Completely free setup by expert craftsmen.",
+        modalCartBtn: "Add to Cart",
+        modalWaBtn: "Order on WhatsApp",
+        relatedTitle: "More Top Designs in this Category",
+        photoModalTitle: "Your Uploaded Photo",
+        photoModalDesc: "Finding matching furniture designs from catalog...",
+        sampleWaBtn: "Send this design to WhatsApp for pricing",
+        authTitle: "Customer Login / Sign Up",
+        authDesc: "A 6-digit OTP will be sent to your mobile number.",
+        labelName: "Your Full Name *",
+        namePlaceholder: "Enter your name",
+        labelPhone: "Mobile Number *",
+        phonePlaceholder: "10-digit mobile number",
+        labelAddress: "Delivery Address (Optional)",
+        addressPlaceholder: "Village/City, Post office, Pincode",
+        sendOtpBtn: "Send OTP",
+        otpTitle: "Verify OTP",
+        otpDesc: "Enter the 6-digit verification code sent to your phone.",
+        verifyOtpBtn: "Verify & Enter",
+        changeNumBtn: "Change Mobile Number",
+        cartTitle: "Shopping Cart",
+        cartTotalLbl: "Total Amount:",
+        cartAdvLbl: "10% Booking Advance:",
+        cartOrderBtn: "Submit Order on WhatsApp",
+        cartEmpty: "Your cart is empty.",
+        footerDesc: "Handcrafted using solid Chittagong Teak, Sheesham wood, and marine ply by expert artisans at our local workshop.",
+        footerAddress: "Gangarampur, Dakshin Dinajpur, West Bengal",
+        footerContactTitle: "Contact & Customer Helpline",
+        footerContactDesc: "For custom designs, inquiries, or phone bookings, call or WhatsApp us:",
+        callLbl: "Call Us:",
+        callBadge: "Direct Call",
+        chatBadge: "Chat Now",
+        footerPromiseTitle: "Our Promise",
+        promise1T: "10-Year Termite Guarantee",
+        promise1D: "Long-lasting durability assurance on treated timber.",
+        promise2T: "Doorstep Delivery & Free Fitting",
+        promise2D: "Carefully transported and installed at your home.",
+        copyright: "All Rights Reserved."
+      },
+      hi: {
+        announcement: "✨ १००% असली चटगांव सागौन और शीशम की लकड़ी | गंगारामपुर और नजदीकी क्षेत्रों में मुफ्त होम डिलीवरी और फिटिंग ✨",
+        logoSubtitle: "प्रीमियम क्वालिटी फर्नीचर और लकड़ी की कारीगरी",
+        searchPlaceholder: "पलंग, सोफा, डाइनिंग टेबल खोजें...",
+        photoSearchBtn: "फोटो से खोजें",
+        loginBtn: "लॉगिन",
+        adminBtn: "एडमिन",
+        heroTag: "👑 १००% असली सागौन और शीशम की लकड़ी",
+        heroTitle: `घर की सबसे सुंदर सजावट <span class="text-amber-400">Sera's Collection</span> में`,
+        heroDesc: "किसी भी प्रोडक्ट पर क्लिक करके अंदर <strong>३६०° व्यू</strong> घुमाकर देखें और अपनी पसंद का फर्नीचर चुनें।",
+        heroBtn: "कलेक्शन देखें ↓",
+        catalogTitle: "फर्नीचर कैटलॉग",
+        catalogSubtitle: "३६०° व्यू और पूरी जानकारी देखने के लिए किसी भी फर्नीचर पर क्लिक करें",
+        catAll: "सभी फर्नीचर",
+        catBed: "पलंग (Bed)",
+        catSofa: "सोफा (Sofa)",
+        catDining: "डाइनिंग टेबल",
+        catWardrobe: "अलमारी",
+        btnDetails: "विवरण देखें",
+        btnAddToCart: "कार्ट में जोड़ें",
+        offBadge: "छूट",
+        advanceToken: "१०% बुकिंग टोकन: मात्र",
+        view360Badge: "३६०° व्यू (घुमाकर देखें)",
+        anglePrefix: "एंगल:",
+        balanceNote: "बाकी ९०% भुगतान डिलीवरी और मुफ्त फिटिंग के बाद देय है।",
+        guaranteeNote: "<strong>वारंटी:</strong> १० साल की दीमक और घुन प्रतिरोधी गारंटी।",
+        deliveryNote: "<strong>डिलीवरी:</strong> गंगारामपुर और आसपास के इलाकों में त्वरित होम डिलीवरी।",
+        fittingNote: "<strong>फिटिंग:</strong> कुशल कारीगरों द्वारा पूरी तरह से मुफ्त फिटिंग।",
+        modalCartBtn: "कार्ट में जोड़ें",
+        modalWaBtn: "WhatsApp ऑर्डर",
+        relatedTitle: "इसी श्रेणी के और भी बेहतरीन डिजाइन",
+        photoModalTitle: "आपकी अपलोड की गई फोटो",
+        photoModalDesc: "आपकी फोटो से मिलते-जुलते फर्नीचर खोजे जा रहे हैं...",
+        sampleWaBtn: "WhatsApp पर यह डिजाइन भेजकर रेट जानें",
+        authTitle: "ग्राहक लॉगिन / साइन अप",
+        authDesc: "आपके मोबाइल नंबर पर ६ अंकों का OTP भेजा जाएगा।",
+        labelName: "आपका नाम *",
+        namePlaceholder: "अपना नाम दर्ज करें",
+        labelPhone: "मोबाइल नंबर *",
+        phonePlaceholder: "१० अंकों का नंबर",
+        labelAddress: "डिलीवरी का पता (वैकल्पिक)",
+        addressPlaceholder: "गांव/शहर, पोस्ट, पिन कोड",
+        sendOtpBtn: "OTP भेजें",
+        otpTitle: "OTP सत्यापित करें",
+        otpDesc: "आपके नंबर पर भेजा गया ६ अंकों का कोड दर्ज करें।",
+        verifyOtpBtn: "सत्यापित करें और प्रवेश करें",
+        changeNumBtn: "नंबर बदलें",
+        cartTitle: "शॉपिंग कार्ट",
+        cartTotalLbl: "कुल मूल्य:",
+        cartAdvLbl: "१०% बुकिंग टोकन:",
+        cartOrderBtn: "WhatsApp पर ऑर्डर भेजें",
+        cartEmpty: "कार्ट खाली है।",
+        footerDesc: "हमारे अपने कारखाने में अनुभवी कारीगरों द्वारा सागौन, शीशम और मरीन प्लाईवुड से टिकाऊ फर्नीचर तैयार किया जाता है।",
+        footerAddress: "गंगारामपुर, दक्षिण दिनाजपुर, पश्चिम बंगाल",
+        footerContactTitle: "संपर्क और ग्राहक हेल्पलाइन",
+        footerContactDesc: "ऑर्डर बुकिंग, कस्टम डिजाइन या किसी भी जानकारी के लिए सीधे कॉल या व्हाट्सएप करें:",
+        callLbl: "कॉल करें:",
+        callBadge: "सीधी कॉल",
+        chatBadge: "चैट करें",
+        footerPromiseTitle: "हमारा वादा",
+        promise1T: "१० साल की दीमक-रोधी गारंटी",
+        promise1D: "मजबूत पक्की लकड़ी पर लंबे समय तक चलने का भरोसा।",
+        promise2T: "होम डिलीवरी और मुफ्त फिटिंग",
+        promise2D: "आपके घर पर कुशलतापूर्वक सेट करके दिया जाता है।",
+        copyright: "सर्वाधिकार सुरक्षित।"
+      }
+    };
+
+    let currentLang = localStorage.getItem('seras_lang') || 'bn';
+
+    function changeLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('seras_lang', lang);
+      document.getElementById('langSelect').value = lang;
+      applyLanguage();
+      renderProducts();
+    }
+
+    function applyLanguage() {
+      const t = translations[currentLang];
+      document.getElementById('txt-announcement').innerText = t.announcement;
+      document.getElementById('txt-logo-subtitle').innerText = t.logoSubtitle;
+      document.getElementById('searchInput').placeholder = t.searchPlaceholder;
+      document.getElementById('mobileSearchInput').placeholder = t.searchPlaceholder;
+      document.getElementById('txt-photo-search-btn').innerText = t.photoSearchBtn;
+      document.getElementById('txt-login-btn').innerText = t.loginBtn;
+      document.getElementById('txt-admin-btn').innerText = t.adminBtn;
+      document.getElementById('txt-hero-tag').innerText = t.heroTag;
+      document.getElementById('txt-hero-title').innerHTML = t.heroTitle;
+      document.getElementById('txt-hero-desc').innerHTML = t.heroDesc;
+      document.getElementById('txt-hero-btn').innerText = t.heroBtn;
+      document.getElementById('txt-catalog-title').innerText = t.catalogTitle;
+      document.getElementById('txt-catalog-subtitle').innerText = t.catalogSubtitle;
+      document.getElementById('cat-all').innerText = t.catAll;
+      document.getElementById('cat-bed').innerText = t.catBed;
+      document.getElementById('cat-sofa').innerText = t.catSofa;
+      document.getElementById('cat-dining').innerText = t.catDining;
+      document.getElementById('cat-wardrobe').innerText = t.catWardrobe;
+      document.getElementById('txt-360-badge').innerText = t.view360Badge;
+      document.getElementById('txt-balance-note').innerText = t.balanceNote;
+      document.getElementById('txt-guarantee-note').innerHTML = t.guaranteeNote;
+      document.getElementById('txt-delivery-note').innerHTML = t.deliveryNote;
+      document.getElementById('txt-fitting-note').innerHTML = t.fittingNote;
+      document.getElementById('txt-modal-cart-btn').innerText = t.modalCartBtn;
+      document.getElementById('txt-modal-wa-btn').innerText = t.modalWaBtn;
+      document.getElementById('txt-related-title').innerHTML = `<i class="fa-solid fa-layer-group text-amber-700"></i> ` + t.relatedTitle;
+      document.getElementById('txt-photo-modal-title').innerHTML = `<i class="fa-solid fa-camera text-amber-700"></i> ` + t.photoModalTitle;
+      document.getElementById('txt-photo-modal-desc').innerText = t.photoModalDesc;
+      document.getElementById('txt-sample-wa-btn').innerText = t.sampleWaBtn;
+      document.getElementById('txt-auth-title').innerText = t.authTitle;
+      document.getElementById('txt-auth-desc').innerText = t.authDesc;
+      document.getElementById('txt-label-name').innerText = t.labelName;
+      document.getElementById('custNameInput').placeholder = t.namePlaceholder;
+      document.getElementById('txt-label-phone').innerText = t.labelPhone;
+      document.getElementById('custPhoneInput').placeholder = t.phonePlaceholder;
+      document.getElementById('txt-label-address').innerText = t.labelAddress;
+      document.getElementById('custAddressInput').placeholder = t.addressPlaceholder;
+      document.getElementById('sendOtpBtn').innerText = t.sendOtpBtn;
+      document.getElementById('txt-otp-title').innerText = t.otpTitle;
+      document.getElementById('txt-otp-desc').innerText = t.otpDesc;
+      document.getElementById('verifyOtpBtn').innerText = t.verifyOtpBtn;
+      document.getElementById('txt-change-num-btn').innerText = t.changeNumBtn;
+      document.getElementById('txt-cart-title').innerText = t.cartTitle;
+      document.getElementById('txt-cart-total-lbl').innerText = t.cartTotalLbl;
+      document.getElementById('txt-cart-adv-lbl').innerText = t.cartAdvLbl;
+      document.getElementById('txt-cart-order-btn').innerText = t.cartOrderBtn;
+      document.getElementById('txt-footer-desc').innerText = t.footerDesc;
+      document.getElementById('txt-footer-address').innerText = t.footerAddress;
+      document.getElementById('txt-footer-contact-title').innerHTML = `<i class="fa-solid fa-headset"></i> ` + t.footerContactTitle;
+      document.getElementById('txt-footer-contact-desc').innerText = t.footerContactDesc;
+      document.getElementById('txt-call-lbl').innerText = t.callLbl;
+      document.getElementById('txt-call-badge').innerText = t.callBadge;
+      document.getElementById('txt-chat-badge').innerText = t.chatBadge;
+      document.getElementById('txt-footer-promise-title').innerText = t.footerPromiseTitle;
+      document.getElementById('txt-promise-1-t').innerText = t.promise1T;
+      document.getElementById('txt-promise-1-d').innerText = t.promise1D;
+      document.getElementById('txt-promise-2-t').innerText = t.promise2T;
+      document.getElementById('txt-promise-2-d').innerText = t.promise2D;
+      document.getElementById('txt-copyright').innerText = t.copyright;
+    }
+
+    // FIREBASE CONFIG
     const firebaseConfig = {
       apiKey: "AIzaSyAPpAAVZEWhrbjpg_gZKZtLRO63HvdLRtc",
       authDomain: "sera-s-collection.firebaseapp.com",
@@ -634,6 +913,8 @@
     let dragStartX = 0;
 
     window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('langSelect').value = currentLang;
+      applyLanguage();
       renderProducts();
       updateCartBadge();
       checkUserAuth();
@@ -644,7 +925,6 @@
       });
     });
 
-    // COMPRESS IMAGE
     function compressImage(file, maxWidth, callback) {
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -668,8 +948,9 @@
       reader.readAsDataURL(file);
     }
 
-    // RENDER PRODUCTS
+    // RENDER PRODUCTS (WITHOUT OUTSIDE 360 BADGE, CLEAN BUTTONS)
     function renderProducts(customList = null) {
+      const t = translations[currentLang];
       const grid = document.getElementById('productsGrid');
       grid.innerHTML = '';
 
@@ -684,7 +965,7 @@
       }
 
       if (list.length === 0) {
-        grid.innerHTML = `<div class="col-span-full text-center py-12 text-stone-400 text-sm">দুঃখিত, কোনো ফার্নিচার খুঁজে পাওয়া যায়নি।</div>`;
+        grid.innerHTML = `<div class="col-span-full text-center py-12 text-stone-400 text-sm">No furniture found.</div>`;
         return;
       }
 
@@ -700,15 +981,12 @@
         card.innerHTML = `
           <div onclick="openProductModal('${p.id}')">
             <div class="relative h-48 bg-stone-100 group overflow-hidden">
-              <img src="${mainImg}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-              ${discount > 0 ? `<span class="absolute top-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded">${discount}% ছাড়</span>` : ''}
-              <span class="absolute bottom-2 right-2 bg-amber-500/90 text-stone-900 text-[10px] font-extrabold px-2 py-0.5 rounded flex items-center gap-1 shadow">
-                <i class="fa-solid fa-arrows-rotate"></i> ৩৬০° ভিউ (${imgList.length})
-              </span>
+              <img src="${mainImg}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+              ${discount > 0 ? `<span class="absolute top-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded">${discount}\%${t.offBadge}</span>` : ''}
             </div>
             <div class="p-4">
               <div class="text-[11px] text-stone-500 mb-1 flex justify-between">
-                <span>${p.wood || 'খাঁটি কাঠ'}</span>
+                <span>${p.wood || ''}</span>
                 <span>${p.size || ''}</span>
               </div>
               <h3 class="font-bold text-stone-900 text-sm leading-snug">${p.name}</h3>
@@ -717,14 +995,16 @@
                 ${p.mrp > p.price ? `<span class="text-xs text-stone-400 line-through">₹${p.mrp.toLocaleString('en-IN')}</span>` : ''}
               </div>
               <div class="mt-1 text-[11px] text-emerald-700 font-semibold">
-                ১০% বুকিং টোকেন: মাত্র ₹${advance.toLocaleString('en-IN')}
+                ${t.advanceToken} ₹${advance.toLocaleString('en-IN')}
               </div>
             </div>
           </div>
           <div class="p-4 pt-0 grid grid-cols-2 gap-2">
-            <button onclick="event.stopPropagation(); addToCart('${p.id}');" class="bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold py-1.5 rounded text-xs">কার্টে নিন</button>
-            <button onclick="event.stopPropagation(); openProductModal('${p.id}');" class="bg-amber-800 hover:bg-amber-900 text-white font-bold py-1.5 rounded text-xs flex items-center justify-center gap-1">
-              <i class="fa-solid fa-eye"></i> ৩৬০° দেখুন
+            <button type="button" onclick="event.stopPropagation(); addToCart('${p.id}');" class="bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold py-1.5 rounded text-xs transition">
+              ${t.btnAddToCart}
+            </button>
+            <button type="button" onclick="event.stopPropagation(); openProductModal('${p.id}');" class="bg-amber-800 hover:bg-amber-900 text-white font-bold py-1.5 rounded text-xs flex items-center justify-center gap-1 transition">
+              <i class="fa-solid fa-eye"></i> ${t.btnDetails}
             </button>
           </div>
         `;
@@ -732,8 +1012,8 @@
       });
     }
 
-    // OPEN 360 MODAL
     function openProductModal(id) {
+      const t = translations[currentLang];
       const p = products.find(x => String(x.id) === String(id));
       if (!p) return;
       currentModalProduct = p;
@@ -744,15 +1024,15 @@
       }
 
       document.getElementById('modalProdTitle').innerText = p.name;
-      document.getElementById('modalProdWood').innerText = p.wood || 'খাঁটি সেগুন কাঠ';
-      document.getElementById('modalProdSize').innerText = "মাপ: " + (p.size || 'স্ট্যান্ডার্ড সাইজ');
+      document.getElementById('modalProdWood').innerText = p.wood || 'Solid Wood';
+      document.getElementById('modalProdSize').innerText = p.size || '';
       document.getElementById('modalProdPrice').innerText = "₹" + p.price.toLocaleString('en-IN');
       document.getElementById('modalProdMRP').innerText = p.mrp > 0 ? "MRP ₹" + p.mrp.toLocaleString('en-IN') : "";
-      document.getElementById('modalProdAdvance').innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>১০% বুকিং টোকেন: মাত্র ₹${Math.round(p.price * 0.10).toLocaleString('en-IN')}</span>`;
+      document.getElementById('modalProdAdvance').innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>${t.advanceToken} ₹${Math.round(p.price * 0.10).toLocaleString('en-IN')}</span>`;
 
       document.getElementById('modalAddToCartBtn').onclick = () => { addToCart(p.id); closeProductModal(); };
       document.getElementById('modalWhatsAppBtn').onclick = () => {
-        const msg = encodeURIComponent(`নমস্কার Sera's Collection,\nআমি "${p.name}" (${p.wood || ''}, ${p.size || ''}) অর্ডার বুক করতে চাই।\nমূল্য: ₹${p.price}\n১০% অগ্রিম বুকিং: ₹${Math.round(p.price*0.10)}`);
+        const msg = encodeURIComponent(`Hello Sera's Collection,\nI want to book "${p.name}" (${p.wood || ''}, ${p.size || ''}).\nPrice: ₹${p.price}\n10% Advance: ₹${Math.round(p.price*0.10)}`);
         window.open(`https://wa.me/916295941126?text=${msg}`, '_blank');
       };
 
@@ -774,10 +1054,11 @@
     function updateRotatorView() {
       if (!currentModalProduct || !currentModalProduct.images || currentModalProduct.images.length === 0) return;
       const images = currentModalProduct.images;
+      const t = translations[currentLang];
       if (activeAngleIndex >= images.length) activeAngleIndex = 0;
 
       document.getElementById('rotatorImg').src = images[activeAngleIndex];
-      document.getElementById('frameCounterBadge').innerText = `অ্যাঙ্গেল: ${activeAngleIndex + 1} / ${images.length}`;
+      document.getElementById('frameCounterBadge').innerText = `${t.anglePrefix} ${activeAngleIndex + 1} / ${images.length}`;
 
       const thumbContainer = document.getElementById('rotatorThumbnails');
       thumbContainer.innerHTML = '';
@@ -831,7 +1112,7 @@
       const related = products.filter(p => p.category === currentProd.category && String(p.id) !== String(currentProd.id));
 
       if (related.length === 0) {
-        container.innerHTML = `<p class="col-span-full text-xs text-stone-400">এই ক্যাটাগরিতে আরও পণ্য শীঘ্রই আসছে।</p>`;
+        container.innerHTML = `<p class="col-span-full text-xs text-stone-400">More designs coming soon.</p>`;
         return;
       }
 
@@ -890,7 +1171,7 @@
     }
     function closePhotoModal() { document.getElementById('photoPreviewModal').classList.add('hidden'); }
     function sendSampleToWhatsApp() {
-      const msg = encodeURIComponent("নমস্কার! আমি আপনাদের ওয়েবসাইটে একটি ফার্নিচারের স্যাম্পল ছবি আপলোড করেছি। এই একই ডিজাইন সেগুন বা শীশম কাঠে বানিয়ে নিতে খরচ ও ডেলিভারির সময় কত লাগবে জানাবেন।");
+      const msg = encodeURIComponent("Hello! I uploaded a sample furniture photo on your site. Please let me know the custom cost and delivery timeline in Teak/Sheesham wood.");
       window.open(`https://wa.me/916295941126?text=${msg}`, '_blank');
       closePhotoModal();
     }
@@ -908,11 +1189,11 @@
     function sendFirebaseOTP() {
       const name = document.getElementById('custNameInput').value.trim();
       const phone = document.getElementById('custPhoneInput').value.trim();
-      if (!name) return alert('অনুগ্রহ করে আপনার নাম লিখুন!');
-      if (phone.length !== 10) return alert('সঠিক ১০ সংখ্যার মোবাইল নম্বর দিন!');
+      if (!name) return alert('Please enter your name!');
+      if (phone.length !== 10) return alert('Please enter valid 10-digit phone number!');
 
       const sendBtn = document.getElementById('sendOtpBtn');
-      sendBtn.innerText = "OTP পাঠানো হচ্ছে...";
+      sendBtn.innerText = "Sending OTP...";
       sendBtn.disabled = true;
 
       initRecaptcha();
@@ -924,22 +1205,22 @@
           confirmationResult = result;
           document.getElementById('phoneStep').classList.add('hidden');
           document.getElementById('otpStep').classList.remove('hidden');
-          sendBtn.innerText = "OTP পাঠান";
+          sendBtn.innerText = translations[currentLang].sendOtpBtn;
           sendBtn.disabled = false;
         }).catch((error) => {
           console.error(error);
-          alert('OTP পাঠানো যায়নি: ' + error.message);
-          sendBtn.innerText = "OTP পাঠান";
+          alert('Could not send OTP: ' + error.message);
+          sendBtn.innerText = translations[currentLang].sendOtpBtn;
           sendBtn.disabled = false;
         });
     }
 
     function verifyFirebaseOTP() {
       const otp = document.getElementById('custOtpInput').value.trim();
-      if (otp.length !== 6) return alert('অনুগ্রহ করে সঠিক ৬ সংখ্যার কোড দিন!');
+      if (otp.length !== 6) return alert('Please enter valid 6-digit OTP!');
 
       const verifyBtn = document.getElementById('verifyOtpBtn');
-      verifyBtn.innerText = "যাচাই হচ্ছে...";
+      verifyBtn.innerText = "Verifying...";
       verifyBtn.disabled = true;
 
       confirmationResult.confirm(otp)
@@ -951,14 +1232,14 @@
           const userData = { name, phone, address };
           localStorage.setItem('seras_customer_user', JSON.stringify(userData));
 
-          alert(`স্বাগতম, ${name}! লগইন সফল হয়েছে।`);
+          alert(`Welcome, ${name}! Login successful.`);
           closeAuthModal();
           checkUserAuth();
-          verifyBtn.innerText = "ভেরিফাই ও প্রবেশ";
+          verifyBtn.innerText = translations[currentLang].verifyOtpBtn;
           verifyBtn.disabled = false;
         }).catch((error) => {
-          alert('ভুল OTP কোড! আবার চেষ্টা করুন।');
-          verifyBtn.innerText = "ভেরিফাই ও প্রবেশ";
+          alert('Invalid OTP code. Please try again!');
+          verifyBtn.innerText = translations[currentLang].verifyOtpBtn;
           verifyBtn.disabled = false;
         });
     }
@@ -971,19 +1252,19 @@
     function checkUserAuth() {
       const user = JSON.parse(localStorage.getItem('seras_customer_user') || 'null');
       const container = document.getElementById('authHeaderContainer');
+      const t = translations[currentLang];
       if (user && user.phone) {
         container.innerHTML = `
           <div class="flex items-center gap-1.5 bg-amber-100 text-amber-950 px-2.5 py-1 rounded-full border border-amber-300 text-xs">
             <span class="font-bold">Hi, ${user.name.split(' ')[0]}</span>
-            <button onclick="logoutCustomer()" class="text-stone-500 hover:text-red-600 ml-1" title="লগআউট"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
+            <button onclick="logoutCustomer()" class="text-stone-500 hover:text-red-600 ml-1" title="Logout"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
           </div>
         `;
       } else {
         container.innerHTML = `
           <button onclick="openAuthModal()" class="px-3 py-1.5 rounded-full border border-stone-300 text-stone-700 hover:border-amber-700 text-xs font-semibold flex items-center gap-1.5 transition">
             <i class="fa-regular fa-user"></i>
-            <span class="hidden sm:inline">OTP লগইন</span>
-            <span class="sm:hidden">লগইন</span>
+            <span>${t.loginBtn}</span>
           </button>
         `;
       }
@@ -1015,7 +1296,7 @@
         document.getElementById('storefrontView').classList.add('hidden');
         document.getElementById('adminPortalView').classList.remove('hidden');
         renderAdminProducts();
-      } else { alert("ভুল পিন!"); }
+      } else { alert("Invalid PIN!"); }
     }
     function exitAdminToStorefront() {
       document.getElementById('adminPortalView').classList.add('hidden');
@@ -1026,7 +1307,7 @@
     function handleAddNewProduct(e) {
       e.preventDefault();
       const btn = document.getElementById('saveProdBtn');
-      btn.innerText = "সংরক্ষণ হচ্ছে...";
+      btn.innerText = "Saving...";
       btn.disabled = true;
 
       const name = document.getElementById('newProdName').value.trim();
@@ -1057,15 +1338,15 @@
         try {
           localStorage.setItem('sera_products_v7', JSON.stringify(products));
         } catch (e) {
-          alert("লোকাল স্টোরেজ পূর্ণ হয়ে গেছে!");
+          alert("Storage full!");
         }
 
         renderProducts();
         renderAdminProducts();
         e.target.reset();
-        btn.innerText = "ফার্নিচার সেভ করুন";
+        btn.innerText = "Save Furniture";
         btn.disabled = false;
-        alert("নতুন ফার্নিচার সফলভাবে যুক্ত হয়েছে!");
+        alert("New furniture added successfully!");
       };
 
       const p4 = () => { if (f4) compressImage(f4, 600, u => { collected.push(u); finalize(); }); else finalize(); };
@@ -1095,7 +1376,7 @@
     }
 
     function deleteProduct(id) {
-      if (confirm("এই ফার্নিচারটি মুছে ফেলতে চান?")) {
+      if (confirm("Delete this furniture item?")) {
         products = products.filter(p => String(p.id) !== String(id));
         try {
           localStorage.setItem('sera_products_v7', JSON.stringify(products));
@@ -1105,7 +1386,7 @@
       }
     }
 
-    // CART WITH QUANTITY CONTROLS
+    // CART LOGIC
     function addToCart(id) {
       const p = products.find(x => String(x.id) === String(id));
       if (!p) return;
@@ -1156,10 +1437,11 @@
 
     function renderCart() {
       const list = document.getElementById('cartItemsList');
+      const t = translations[currentLang];
       list.innerHTML = '';
       let subtotal = 0;
       if (cart.length === 0) {
-        list.innerHTML = `<p class="text-center py-10 text-stone-400 text-xs">কার্ট খালি।</p>`;
+        list.innerHTML = `<p class="text-center py-10 text-stone-400 text-xs">${t.cartEmpty}</p>`;
         document.getElementById('cartSubtotal').innerText = '₹০';
         document.getElementById('cartAdvancePayable').innerText = '₹০';
         return;
@@ -1188,15 +1470,15 @@
     }
 
     function proceedToCheckout() {
-      if (cart.length === 0) return alert('কার্ট খালি!');
+      if (cart.length === 0) return alert('Cart is empty!');
       const user = JSON.parse(localStorage.getItem('seras_customer_user') || '{}');
       const total = cart.reduce((a, b) => a + (b.price * (b.qty || 1)), 0);
       const adv = Math.round(total * 0.10);
-      const items = cart.map(c => `• ${c.name} [${c.wood || 'কাঠ'} | ${c.size || 'সাইজ'}] (${c.qty || 1}টি) - ₹${(c.price * (c.qty || 1)).toLocaleString('en-IN')}`).join('\n');
+      const items = cart.map(c => `• ${c.name} [${c.wood || ''} | ${c.size || ''}] (${c.qty || 1} pcs) - ₹${(c.price * (c.qty || 1)).toLocaleString('en-IN')}`).join('\n');
 
-      let msg = `*নমস্কার Sera's Collection!*\nআমি নিচের ফার্নিচার অর্ডার বুক করতে চাই:\n\n${items}\n\n*মোট মূল্য:* ₹${total.toLocaleString('en-IN')}\n*১০% অগ্রিম বুকিং:* ₹${adv.toLocaleString('en-IN')}\n\n`;
+      let msg = `*Order Booking - Sera's Collection*\n\n${items}\n\n*Total Amount:* ₹${total.toLocaleString('en-IN')}\n*10% Advance:* ₹${adv.toLocaleString('en-IN')}\n\n`;
       if (user.phone) {
-        msg += `*গ্রাহকের তথ্য:*\nনাম: ${user.name}\nমোবাইল: ${user.phone}\nঠিকানা: ${user.address || 'উল্লেখ নেই'}`;
+        msg += `*Customer Details:*\nName: ${user.name}\nPhone: ${user.phone}\nAddress: ${user.address || 'N/A'}`;
       }
       window.open(`https://wa.me/916295941126?text=${encodeURIComponent(msg)}`, '_blank');
     }
