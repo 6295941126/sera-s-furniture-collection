@@ -8,7 +8,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <!-- Google Fonts: Hind Siliguri (Bangla) & Poppins -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
@@ -38,7 +38,7 @@
   </div>
 
   <!-- NAVIGATION HEADER -->
-  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md shadow-sm border-b border-stone-200">
+  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md shadow-sm border-b border-stone-200">
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
       
       <!-- LOGO -->
@@ -65,7 +65,7 @@
         <input type="file" id="photoSearchInput" accept="image/*" class="hidden" onchange="processPhotoSearch(event)">
       </div>
 
-      <!-- RIGHT ACTIONS (Language Selector + Auth + Cart + Admin) -->
+      <!-- RIGHT ACTIONS -->
       <div class="flex items-center gap-2 sm:gap-3">
         <!-- LANGUAGE DROPDOWN -->
         <div class="relative">
@@ -436,13 +436,13 @@
     </div>
   </div>
 
-  <!-- CART DRAWER -->
-  <div id="cartDrawer" class="fixed inset-0 z-50 pointer-events-none transition-opacity duration-300 opacity-0">
-    <div onclick="toggleCartDrawer(false)" class="absolute inset-0 bg-stone-900/60 pointer-events-auto"></div>
+  <!-- CART DRAWER (FIXED: HIDDEN BY DEFAULT TO PREVENT SCREEN BLOCKING) -->
+  <div id="cartDrawer" class="fixed inset-0 z-50 hidden transition-opacity duration-300">
+    <div onclick="toggleCartDrawer(false)" class="absolute inset-0 bg-stone-900/60 cursor-pointer"></div>
     <div class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-white shadow-2xl flex flex-col pointer-events-auto transform translate-x-full transition-transform duration-300" id="cartDrawerPanel">
       <div class="p-4 border-b border-stone-200 flex justify-between items-center bg-stone-50">
         <h3 id="txt-cart-title" class="font-bold text-stone-900 text-base">শপিং কার্ট</h3>
-        <button onclick="toggleCartDrawer(false)" class="text-stone-400 hover:text-stone-700"><i class="fa-solid fa-xmark text-lg"></i></button>
+        <button onclick="toggleCartDrawer(false)" class="text-stone-400 hover:text-stone-700 w-8 h-8 flex items-center justify-center rounded-full hover:bg-stone-200"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
       <div id="cartItemsList" class="flex-grow overflow-y-auto p-4 space-y-3 custom-scrollbar"></div>
       <div class="p-4 border-t border-stone-200 bg-stone-50 space-y-3">
@@ -948,7 +948,7 @@
       reader.readAsDataURL(file);
     }
 
-    // RENDER PRODUCTS (WITHOUT OUTSIDE 360 BADGE, CLEAN BUTTONS)
+    // RENDER PRODUCTS (CLEAN CARDS & INDEPENDENT BUTTONS)
     function renderProducts(customList = null) {
       const t = translations[currentLang];
       const grid = document.getElementById('productsGrid');
@@ -976,10 +976,10 @@
         const mainImg = imgList[0];
 
         const card = document.createElement('div');
-        card.className = "bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden flex flex-col justify-between hover:shadow-md transition cursor-pointer";
+        card.className = "bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden flex flex-col justify-between hover:shadow-md transition";
         
         card.innerHTML = `
-          <div onclick="openProductModal('${p.id}')">
+          <div onclick="openProductModal('${p.id}')" class="cursor-pointer">
             <div class="relative h-48 bg-stone-100 group overflow-hidden">
               <img src="${mainImg}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
               ${discount > 0 ? `<span class="absolute top-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded">${discount}\%${t.offBadge}</span>` : ''}
@@ -999,7 +999,7 @@
               </div>
             </div>
           </div>
-          <div class="p-4 pt-0 grid grid-cols-2 gap-2">
+          <div class="p-4 pt-0 grid grid-cols-2 gap-2" onclick="event.stopPropagation();">
             <button type="button" onclick="event.stopPropagation(); addToCart('${p.id}');" class="bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold py-1.5 rounded text-xs transition">
               ${t.btnAddToCart}
             </button>
@@ -1386,7 +1386,7 @@
       }
     }
 
-    // CART LOGIC
+    // CART LOGIC (PROPERLY HIDDEN/SHOWN)
     function addToCart(id) {
       const p = products.find(x => String(x.id) === String(id));
       if (!p) return;
@@ -1425,13 +1425,17 @@
     function toggleCartDrawer(forceOpen = false) {
       const d = document.getElementById('cartDrawer');
       const p = document.getElementById('cartDrawerPanel');
-      if (forceOpen || d.classList.contains('opacity-0')) {
+      if (forceOpen || d.classList.contains('hidden')) {
         renderCart();
-        d.classList.remove('opacity-0', 'pointer-events-none');
-        p.classList.remove('translate-x-full');
+        d.classList.remove('hidden');
+        setTimeout(() => {
+          p.classList.remove('translate-x-full');
+        }, 10);
       } else {
-        d.classList.add('opacity-0', 'pointer-events-none');
         p.classList.add('translate-x-full');
+        setTimeout(() => {
+          d.classList.add('hidden');
+        }, 300);
       }
     }
 
