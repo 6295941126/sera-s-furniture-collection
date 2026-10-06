@@ -109,7 +109,7 @@
 
   <!-- STOREFRONT VIEW -->
   <main id="storefrontView" class="flex-grow">
-    <!-- HERO SLIDER / OFFER BANNER (OWNER CONTROLLED LIVE HIGHLIGHT) -->
+    <!-- HERO SLIDER / OFFER BANNER -->
     <section class="bg-gradient-to-r from-stone-900 via-stone-800 to-amber-950 text-white py-10 px-4 sm:px-6 relative overflow-hidden">
       <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
         <div class="space-y-3 max-w-xl">
@@ -146,17 +146,17 @@
     </section>
   </main>
 
-  <!-- CUSTOMER OTP + PASSWORD AUTH MODAL -->
+  <!-- CUSTOMER OTP MODAL -->
   <div id="customerAuthModal" class="fixed inset-0 bg-stone-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl relative">
       <button type="button" onclick="closeCustomerAuthModal()" class="absolute right-4 top-4 text-stone-400 hover:text-stone-700 text-lg">
         <i class="fa-solid fa-xmark"></i>
       </button>
 
-      <!-- STEP 1: MOBILE & PASSWORD -->
+      <!-- STEP 1: MOBILE & DETAILS -->
       <div id="authPhoneStep" class="space-y-3 text-xs">
         <h3 class="text-base font-bold text-stone-900 mb-1">কাস্টমার লগইন / সাইন আপ</h3>
-        <p class="text-stone-500">আপনার মোবাইল ও পাসওয়ার্ড দিন। ফোনে OTP পাঠানো হবে।</p>
+        <p class="text-stone-500">আপনার মোবাইল ও নাম দিন। সরাসরি ইনবক্স SMS বা WhatsApp-এ OTP যাবে।</p>
         
         <div>
           <label class="block font-semibold mb-1 text-stone-700">আপনার নাম *</label>
@@ -176,20 +176,27 @@
           <input type="password" id="custAuthPass" placeholder="পাসওয়ার্ড লিখুন" class="w-full p-2.5 bg-stone-50 border rounded-lg outline-none">
         </div>
 
-        <button type="button" id="sendOtpBtn" onclick="handleCustomerSendOTP()" class="w-full py-2.5 bg-amber-800 hover:bg-amber-900 text-white rounded-lg font-bold shadow transition flex items-center justify-center gap-2 cursor-pointer">
-          <i class="fa-solid fa-paper-plane"></i>
-          <span>OTP পাঠান</span>
-        </button>
+        <!-- 2 BUTTONS: SMS / WHATSAPP -->
+        <div class="grid grid-cols-2 gap-2 pt-1">
+          <button type="button" id="sendSmsOtpBtn" onclick="handleCustomerSendOTP('sms')" class="py-2.5 bg-blue-700 hover:bg-blue-800 text-white rounded-lg font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
+            <i class="fa-solid fa-comment-sms"></i>
+            <span>SMS OTP</span>
+          </button>
+          <button type="button" id="sendWaOtpBtn" onclick="handleCustomerSendOTP('whatsapp')" class="py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
+            <i class="fa-brands fa-whatsapp text-sm"></i>
+            <span>WhatsApp OTP</span>
+          </button>
+        </div>
       </div>
 
       <!-- STEP 2: VERIFY OTP -->
       <div id="authOtpStep" class="space-y-3 text-xs hidden">
         <h3 class="text-base font-bold text-stone-900 mb-1">OTP যাচাই করুন</h3>
-        <p class="text-stone-500">মোবাইলে পাঠানো ৬ সংখ্যার OTP কোডটি লিখুন।</p>
+        <p class="text-stone-500" id="otpSentNoticeText">আপনার মোবাইলে পাঠানো ৬ সংখ্যার OTP কোডটি লিখুন।</p>
         
         <input type="text" id="custAuthOTPInput" maxlength="6" placeholder="• • • • • •" class="w-full p-3 bg-stone-50 border rounded-lg text-center tracking-[0.5em] text-lg font-bold outline-none">
 
-        <button type="button" onclick="handleCustomerVerifyOTP()" class="w-full py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg font-bold shadow transition cursor-pointer">
+        <button type="button" onclick="handleCustomerVerifyOTP()" class="w-full py-2.5 bg-amber-800 hover:bg-amber-900 text-white rounded-lg font-bold shadow transition cursor-pointer">
           ভেরিফাই ও প্রবেশ
         </button>
         <button type="button" onclick="resetAuthSteps()" class="w-full text-stone-400 text-center hover:text-stone-600 mt-2">
@@ -387,7 +394,6 @@
           <div class="sm:col-span-3">
             <label class="block font-semibold mb-1 text-stone-700">৩৬০° / বিভিন্ন অ্যাঙ্গেলের ছবির লিঙ্ক (URL কমা দিয়ে আলাদা করুন) *</label>
             <input type="text" id="pAddImages" required placeholder="https://image1.jpg, https://image2.jpg, https://image3.jpg" class="w-full border rounded-lg p-2.5 bg-stone-50 outline-none">
-            <p class="text-[10px] text-stone-400 mt-1">৩ থেকে ৮টি ছবির লিংক দিলে কাস্টমার ভেতরে ৩৬০° কোণে ঘুরিয়ে ও স্লাইড করে দেখতে পাবে।</p>
           </div>
           <div class="sm:col-span-3 flex justify-end">
             <button type="submit" class="bg-stone-900 hover:bg-stone-800 text-white font-bold py-2.5 px-6 rounded-lg transition shadow cursor-pointer">
@@ -397,7 +403,7 @@
         </form>
       </div>
 
-      <!-- SECTION 3: CREATE ADVANCE BILL / RECEIPT FORM (WITH CUSTOMIZATION) -->
+      <!-- SECTION 3: CREATE ADVANCE BILL / RECEIPT FORM -->
       <div id="adminBillFormSection" class="bg-white p-6 rounded-2xl border border-amber-200 shadow-sm">
         <div class="flex items-center justify-between pb-3 border-b border-stone-200 mb-4">
           <div class="flex items-center gap-2">
@@ -415,7 +421,6 @@
         </div>
 
         <form id="receiptForm" onsubmit="generateCustomerReceipt(event)" class="space-y-4 text-xs">
-          <!-- CUSTOMER DETAILS -->
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-stone-50 p-4 rounded-xl border border-stone-200">
             <div>
               <label class="block font-semibold mb-1 text-stone-700">কাস্টমারের নাম *</label>
@@ -438,7 +443,6 @@
             </div>
           </div>
 
-          <!-- FURNITURE & CUSTOMIZATION DETAILS -->
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
             <div class="md:col-span-2">
               <label class="block font-semibold mb-1 text-stone-700">ফার্নিচারের নাম ও বিবরণ *</label>
@@ -519,8 +523,6 @@
   <!-- PRINTABLE RECEIPT MODAL -->
   <div id="receiptModal" class="fixed inset-0 z-50 hidden bg-stone-950/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
     <div class="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl relative my-auto">
-      
-      <!-- Top buttons -->
       <div class="flex flex-wrap justify-between items-center gap-2 mb-4 pb-3 border-b border-stone-200">
         <span class="text-xs font-bold text-stone-500">অফিসিয়াল মেমো শেয়ার প্যানেল</span>
         <div class="flex flex-wrap items-center gap-1.5">
@@ -542,7 +544,6 @@
         </div>
       </div>
 
-      <!-- THE PRINTABLE SLIP -->
       <div id="printableReceipt" class="border-2 border-stone-800 p-6 rounded-xl bg-white text-stone-900 space-y-4">
         <div class="text-center border-b-2 border-stone-800 pb-3">
           <h2 class="text-2xl font-black tracking-tight text-amber-950 uppercase">Sera's Collection</h2>
@@ -700,7 +701,7 @@
     </div>
   </div>
 
-  <!-- ADMIN PASSWORD MODAL (Sera@21234) -->
+  <!-- ADMIN PASSWORD MODAL -->
   <div id="adminModal" class="fixed inset-0 z-50 hidden bg-stone-950/70 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-xs w-full p-6 shadow-2xl text-center">
       <div class="w-12 h-12 bg-amber-100 text-amber-900 rounded-full flex items-center justify-center mx-auto mb-3 text-lg">
@@ -879,12 +880,12 @@
         copyright: "All Rights Reserved."
       },
       hi: {
-        announcement: "✨ १००% असली चटगांव सागौन और शीशम की लकड़ी | गंगारामपुर में मुफ्त होम डिलीवरी और फिटिंग ✨",
+        announcement: "✨ ১০০% असली चटगांव सागौन और शीशम की लकड़ी | गंगारामपुर में मुफ्त होम डिलीवरी और फिटिंग ✨",
         logoSubtitle: "प्रीमियम क्वालिटी फर्नीचर और लकड़ी की कारीगरी",
         searchPlaceholder: "पलंग, सोफा, डाइनिंग टेबल खोजें...",
         loginBtn: "लॉगिन",
         contactBtn: "संपर्क करें",
-        heroTag: "👑 विशेष उत्सव ऑफर: १००% असली सागौन और शीशम की लकड़ी",
+        heroTag: "👑 विशेष उत्सव ऑफर: ১০০% असली सागौन और शीशम की लकड़ी",
         heroTitle: `घर की सबसे सुंदर सजावट <span class="text-amber-400">Sera's Collection</span> में`,
         heroDesc: "किसी भी फर्नीचर पर क्लिक करके अंदर <strong>३६০° व्यू</strong> घुमाकर देखें और अपनी पसंद का फर्नीचर चुनें।",
         catalogTitle: "फर्नीचर कैटलॉग",
@@ -892,7 +893,7 @@
         catAll: "सभी फर्नीचर",
         catBed: "पलंग",
         catSofa: "सोफा",
-        catDining: "डाइनिंग टेबल",
+        catDining: "ডাইনিং टेबल",
         btnDetails: "विवरण",
         btnAddToCart: "कार्ट में जोड़ें",
         offBadge: "छूट",
@@ -1092,7 +1093,7 @@
       setT('txt-copyright', t.copyright);
     }
 
-    // CUSTOMER OTP + PASSWORD AUTH
+    // CUSTOMER OTP SYSTEM (SMS / WHATSAPP)
     function openCustomerAuthModal() {
       resetAuthSteps();
       document.getElementById('customerAuthModal').classList.remove('hidden');
@@ -1109,27 +1110,57 @@
       if (oInp) oInp.value = '';
     }
 
-    async function handleCustomerSendOTP() {
+    async function handleCustomerSendOTP(method = 'whatsapp') {
       const name = document.getElementById('custAuthName').value.trim();
       const phone = document.getElementById('custAuthPhone').value.trim();
       const pass = document.getElementById('custAuthPass').value.trim();
+
       if (!name) return alert('অনুগ্রহ করে আপনার নাম লিখুন!');
       if (!/^[6-9]\d{9}$/.test(phone)) return alert('সঠিক ১০ সংখ্যার ভারতীয় মোবাইল নম্বর দিন!');
       if (!pass) return alert('লগইনের জন্য একটি পাসওয়ার্ড দিন!');
 
       generatedLiveOTP = Math.floor(100000 + Math.random() * 900000).toString();
-      const btn = document.getElementById('sendOtpBtn');
-      btn.innerText = "OTP পাঠানো হচ্ছে...";
-      btn.disabled = true;
+      const btnSms = document.getElementById('sendSmsOtpBtn');
+      const btnWa = document.getElementById('sendWaOtpBtn');
 
-      // DEMO OR FAST2SMS
-      setTimeout(() => {
-        alert(`[Sera's Collection OTP] আপনার ৬ সংখ্যার ভেরিফিকেশন কোড: ${generatedLiveOTP}`);
-        document.getElementById('authPhoneStep').classList.add('hidden');
-        document.getElementById('authOtpStep').classList.remove('hidden');
-        btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> <span>OTP পাঠান</span>`;
-        btn.disabled = false;
-      }, 400);
+      if (method === 'sms') {
+        btnSms.innerText = "পাঠানো হচ্ছে...";
+        btnSms.disabled = true;
+
+        if (FAST2SMS_API_KEY && FAST2SMS_API_KEY !== "YOUR_FAST2SMS_API_KEY_HERE") {
+          try {
+            const response = await fetch("https://www.fast2sms.com/dev/bulkV2", {
+              method: "POST",
+              headers: { "authorization": FAST2SMS_API_KEY, "Content-Type": "application/json" },
+              body: JSON.stringify({ "variables_values": generatedLiveOTP, "route": "otp", "numbers": phone })
+            });
+            const data = await response.json();
+            if (data.return) {
+              document.getElementById('otpSentNoticeText').innerText = `+91 ${phone} নম্বরের SMS ইনবক্সে ৬ সংখ্যার OTP পাঠানো হয়েছে।`;
+              moveToOtpStep();
+              return;
+            }
+          } catch(err) {
+            console.log("Fast2SMS API fail, opening WhatsApp:", err);
+          }
+        }
+      }
+
+      // WhatsApp route
+      const waMsg = encodeURIComponent(
+        `*Sera's Collection*\nনমস্কার ${name},\nআপনার ভেরিফিকেশন OTP কোড হলো: *${generatedLiveOTP}*\nকোডটি ওয়েবসাইটে বসিয়ে প্রবেশ সম্পন্ন করুন।`
+      );
+      window.open(`https://wa.me/91${phone}?text=${waMsg}`, '_blank');
+      document.getElementById('otpSentNoticeText').innerText = `+91 ${phone} নম্বরের WhatsApp-এ ৬ সংখ্যার OTP পাঠানো হয়েছে।`;
+      moveToOtpStep();
+
+      btnSms.innerHTML = `<i class="fa-solid fa-comment-sms"></i> <span>SMS OTP</span>`;
+      btnSms.disabled = false;
+    }
+
+    function moveToOtpStep() {
+      document.getElementById('authPhoneStep').classList.add('hidden');
+      document.getElementById('authOtpStep').classList.remove('hidden');
     }
 
     function handleCustomerVerifyOTP() {
@@ -1143,11 +1174,10 @@
         // Permanent Login
         localStorage.setItem('seras_customer_user', JSON.stringify(userData));
 
-        alert(`স্বাগতম, ${name}! ভেরিফিকেশন সফল হয়েছে।`);
         closeCustomerAuthModal();
         checkCustomerAuth();
       } else {
-        alert("ভুল OTP কোড! মোবাইলে আসা সঠিক ৬ সংখ্যার কোড দিন।");
+        alert("ভুল OTP কোড! আপনার নম্বরে যাওয়া সঠিক ৬ সংখ্যার কোড দিন।");
       }
     }
 
@@ -1188,7 +1218,6 @@
       document.getElementById('bioCustNameHeading').innerText = user.name;
       document.getElementById('bioCustPhoneSub').innerText = "+91 " + user.phone;
 
-      // Filter customer's memos
       const myMemos = memos.filter(m => String(m.custPhone) === String(user.phone));
       document.getElementById('bioTotalOrders').innerText = myMemos.length + " টি";
 
@@ -1420,7 +1449,6 @@
       const zone = document.getElementById('rotatorZone');
       if (!zone) return;
 
-      // Mouse Drag
       zone.addEventListener('mousedown', (e) => { isDragging = true; dragStartX = e.clientX; });
       window.addEventListener('mouseup', () => { isDragging = false; });
       zone.addEventListener('mousemove', (e) => {
@@ -1432,7 +1460,6 @@
         }
       });
 
-      // Mobile Touch Drag
       zone.addEventListener('touchstart', (e) => { isDragging = true; dragStartX = e.touches[0].clientX; }, { passive: true });
       window.addEventListener('touchend', () => { isDragging = false; });
       zone.addEventListener('touchmove', (e) => {
@@ -1456,7 +1483,7 @@
       renderProducts();
     }
 
-    // ADMIN AUTHENTICATION (Sera@21234)
+    // ADMIN AUTHENTICATION
     function promptAdminLogin() {
       const pInp = document.getElementById('adminPinInput');
       if (pInp) pInp.value = '';
@@ -1528,16 +1555,7 @@
       const images = imagesRaw.split(',').map(s => s.trim()).filter(s => s.length > 0);
       if (images.length === 0) return alert('অনুগ্রহ করে অন্তত ১টি বা ৩৬০° ভিউয়ের জন্য কয়েকটি ছবির লিঙ্ক দিন!');
 
-      const newProduct = {
-        id: "p_" + Date.now(),
-        name,
-        category,
-        wood,
-        size,
-        mrp,
-        price,
-        images
-      };
+      const newProduct = { id: "p_" + Date.now(), name, category, wood, size, mrp, price, images };
 
       products.unshift(newProduct);
       localStorage.setItem('seras_store_products', JSON.stringify(products));
@@ -1546,7 +1564,7 @@
       alert('নতুন ফার্নিচার ও ৩৬০° ফটো শোরুমে সফলভাবে যুক্ত হয়েছে!');
     }
 
-    // ADVANCE MEMO GENERATION + CUSTOMIZATION NOTES
+    // ADVANCE MEMO GENERATION
     function generateNextMemoId() {
       const nextId = "SC-" + (1001 + memos.length);
       const disp = document.getElementById('memoDisplayId');
@@ -1580,11 +1598,9 @@
 
       currentReceipt = { memoId, custName, custPhone, custEmail, custAddress, itemName, customNotes, qty, total, adv, due, deliveryDate, bookingDate, timestamp };
 
-      // Save locally
       memos.unshift(currentReceipt);
       try { localStorage.setItem('sera_memos_v6', JSON.stringify(memos)); } catch(e) {}
 
-      // Save to Cloud (Firebase)
       if (dbRef) {
         dbRef.child(memoId).set(currentReceipt);
       }
