@@ -1110,10 +1110,73 @@
       if (oInp) oInp.value = '';
     }
 
-    async function handleCustomerSendOTP(method = 'whatsapp') {
+   <script>
+    // 1. Ekdom shurute Fast2SMS-er API key thakbe
+    const FAST2SMS_API_KEY = "YOUR_FAST2SMS_API_KEY_HERE";
+    let generatedLiveOTP = null;
+
+    // ... ekhane Firebase ebong onnano code thakbe ...
+
+    // 2. Erpor nicher ei puro function-ta replace kore de:
+    async function handleCustomerSendOTP() {
       const name = document.getElementById('custAuthName').value.trim();
       const phone = document.getElementById('custAuthPhone').value.trim();
       const pass = document.getElementById('custAuthPass').value.trim();
+
+      if (!name) return alert('Onugroho kore apnar naam likhun!');
+      if (!/^[6-9]\d{9}$/.test(phone)) return alert('Sothik 10 sonkhar mobile number din!');
+      if (!pass) return alert('Login korar jonno ekta password din!');
+
+      // 6 digit secret OTP toiri holo
+      generatedLiveOTP = Math.floor(100000 + Math.random() * 900000).toString();
+
+      const btnSms = document.getElementById('sendSmsOtpBtn') || document.getElementById('sendOtpBtn');
+      if (btnSms) {
+        btnSms.innerText = "SMS পাঠানো হচ্ছে...";
+        btnSms.disabled = true;
+      }
+
+      // Customer-er mobile inbox-e automatic SMS pathano
+      try {
+        const response = await fetch("https://www.fast2sms.com/dev/bulkV2", {
+          method: "POST",
+          headers: {
+            "authorization": FAST2SMS_API_KEY,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            "route": "otp",
+            "variables_values": generatedLiveOTP,
+            "numbers": phone
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.return) {
+          document.getElementById('authPhoneStep').classList.add('hidden');
+          document.getElementById('authOtpStep').classList.remove('hidden');
+
+          const noticeEl = document.getElementById('otpSentNoticeText');
+          if (noticeEl) {
+            noticeEl.innerHTML = `+91 ${phone} নম্বরের <strong>SMS ইনবক্সে</strong> ৬ সংখ্যার OTP পাঠানো হয়েছে।`;
+          }
+        } else {
+          alert("SMS pathate shomossha hoyeche: " + data.message);
+          if (btnSms) {
+            btnSms.innerText = "পুনরায় চেষ্টা করুন";
+            btnSms.disabled = false;
+          }
+        }
+      } catch (err) {
+        console.error("SMS Gateway Error:", err);
+        document.getElementById('authPhoneStep').classList.add('hidden');
+        document.getElementById('authOtpStep').classList.remove('hidden');
+      }
+    }
+
+    // ... erpor baki function gulo (handleCustomerVerifyOTP etc.) thakbe ...
+  </script>
 
       if (!name) return alert('অনুগ্রহ করে আপনার নাম লিখুন!');
       if (!/^[6-9]\d{9}$/.test(phone)) return alert('সঠিক ১০ সংখ্যার ভারতীয় মোবাইল নম্বর দিন!');
