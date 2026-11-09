@@ -10,15 +10,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <!-- SWEETALERT2 FOR BRANDED POPUPS -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-  <!-- FIREBASE SDKs (Compat Mode) -->
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-
-  <!-- HTML2PDF LIBRARY -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <style>
@@ -55,8 +50,7 @@
   <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md shadow-sm border-b border-stone-200">
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
       
-      <!-- LOGO: CLICK TO TRIGGER ADMIN LOGIN -->
-      <button type="button" onclick="promptAdminLogin()" class="flex items-center gap-2.5 text-left focus:outline-none group cursor-pointer" title="মালিকের প্যানেলে প্রবেশের জন্য ক্লিক করুন">
+      <button type="button" onclick="promptAdminLogin()" class="flex items-center gap-2.5 text-left focus:outline-none group cursor-pointer" title="Owner Panel">
         <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-800 to-amber-600 text-white flex items-center justify-center font-bold text-xl shadow group-hover:scale-105 transition">
           <i class="fa-solid fa-couch"></i>
         </div>
@@ -69,14 +63,13 @@
         </div>
       </button>
 
-      <!-- SEARCH BAR -->
-      <div class="flex-1 max-w-md hidden md:flex items-center relative mx-4">
+      <!-- SEARCH BAR (Mobile + Desktop) -->
+      <div class="flex-1 max-w-md flex items-center relative mx-2 sm:mx-4">
         <input type="text" id="searchInput" oninput="handleSearch()" placeholder="খাট, সোফা, ডাইনিং টেবিল খুঁজুন..." 
           class="w-full pl-10 pr-4 py-2 bg-stone-100 border border-stone-300 rounded-full text-xs focus:outline-none focus:ring-2 focus:ring-amber-700 focus:bg-white transition">
         <i class="fa-solid fa-magnifying-glass absolute left-3.5 text-stone-400 text-sm"></i>
       </div>
 
-      <!-- RIGHT ACTIONS -->
       <div class="flex items-center gap-2 sm:gap-3">
         <select id="langSelect" onchange="changeLanguage(this.value)" class="bg-stone-100 border border-stone-300 text-stone-800 text-xs font-bold rounded-lg px-2 py-1.5 outline-none cursor-pointer hover:border-amber-700 transition">
           <option value="bn">বাংলা</option>
@@ -106,7 +99,6 @@
           <span id="txt-contact-btn">যোগাযোগ</span>
         </a>
       </div>
-
     </div>
   </header>
 
@@ -128,7 +120,6 @@
       </div>
     </section>
 
-    <!-- CATALOG SECTION -->
     <section class="max-w-7xl mx-auto px-4 py-8">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
@@ -145,12 +136,11 @@
           </button>
         </div>
       </div>
-
       <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
     </section>
   </main>
 
-  <!-- CUSTOMER SMS OTP MODAL -->
+  <!-- CUSTOMER AUTH MODAL -->
   <div id="customerAuthModal" class="fixed inset-0 bg-stone-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl relative">
       <button type="button" onclick="closeCustomerAuthModal()" class="absolute right-4 top-4 text-stone-400 hover:text-stone-700 text-lg cursor-pointer">
@@ -159,7 +149,7 @@
 
       <div id="authPhoneStep" class="space-y-3 text-xs">
         <h3 class="text-base font-bold text-stone-900 mb-1">কাস্টমার লগইন / সাইন আপ</h3>
-        <p class="text-stone-500">আপনার মোবাইল নম্বরে SMS-এর মাধ্যমে আসল OTP পাঠানো হবে।</p>
+        <p class="text-stone-500">আপনার মোবাইল নম্বরে SMS-এর মাধ্যমে OTP পাঠানো হবে।</p>
         
         <div>
           <label class="block font-semibold mb-1 text-stone-700">আপনার নাম *</label>
@@ -174,7 +164,6 @@
           </div>
         </div>
 
-        <!-- FIREBASE RECAPTCHA CONTAINER -->
         <div id="recaptcha-container" class="my-2 flex justify-center"></div>
 
         <button type="button" id="sendOtpBtn" onclick="handleCustomerSendOTP()" class="w-full py-2.5 bg-amber-800 hover:bg-amber-900 text-white rounded-lg font-bold shadow transition flex items-center justify-center gap-2 cursor-pointer">
@@ -265,18 +254,22 @@
     </div>
   </div>
 
-  <!-- OWNER LOGIN MODAL (USING PASSWORD: Sera@1234) -->
+  <!-- ====================== OWNER LOGIN MODAL (Firebase Auth) ====================== -->
   <div id="adminModal" class="fixed inset-0 z-50 hidden bg-stone-950/70 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl text-center relative">
       <div class="w-12 h-12 bg-amber-100 text-amber-900 rounded-full flex items-center justify-center mx-auto mb-3 text-lg">
         <i class="fa-solid fa-lock"></i>
       </div>
       <h3 class="text-base font-bold text-stone-900 mb-1">মালিকের ভেরিফিকেশন প্যানেল</h3>
-      <p class="text-xs text-stone-500 mb-4">সিক্রেট ওনার পাসওয়ার্ড দিয়ে প্রবেশ করুন</p>
+      <p class="text-xs text-stone-500 mb-4">Firebase Admin Account দিয়ে প্রবেশ করুন</p>
 
-      <form onsubmit="verifyAdminPassword(event)" class="space-y-3 text-left text-xs">
+      <form onsubmit="verifyAdminLogin(event)" class="space-y-3 text-left text-xs">
         <div>
-          <label class="block font-semibold mb-1 text-stone-700">সিক্রেট ওনার পাসওয়ার্ড *</label>
+          <label class="block font-semibold mb-1 text-stone-700">Admin Email *</label>
+          <input type="email" id="adminEmailInput" required placeholder="admin@serascollection.com" class="w-full border rounded-lg p-2.5 font-medium outline-none bg-stone-50">
+        </div>
+        <div>
+          <label class="block font-semibold mb-1 text-stone-700">Password *</label>
           <input type="password" id="adminPassInput" required placeholder="••••••••" class="w-full border rounded-lg p-2.5 font-medium outline-none bg-stone-50">
         </div>
         <button type="submit" id="adminLoginBtn" class="w-full bg-amber-800 hover:bg-amber-900 text-white font-bold py-2.5 rounded-lg text-xs transition shadow cursor-pointer">
@@ -332,7 +325,7 @@
         </a>
       </div>
 
-      <!-- SECTION 1: BANNER / OFFER SETTINGS -->
+      <!-- Banner Section -->
       <div id="adminOfferSection" class="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm">
         <div class="flex items-center gap-2 pb-3 border-b border-stone-100 mb-3">
           <span class="w-8 h-8 bg-amber-100 text-amber-900 rounded-lg flex items-center justify-center font-bold">
@@ -340,7 +333,7 @@
           </span>
           <div>
             <h3 class="font-bold text-stone-900 text-sm">ব্যানার ও লাইভ অফার সেটিংস</h3>
-            <p class="text-[11px] text-stone-500">দোকানের বিশেষ ছাড় বা নোটিশ আপডেট করুন (সরাসরি ক্লাউড সিঙ্ক)</p>
+            <p class="text-[11px] text-stone-500">দোকানের বিশেষ ছাড় বা নোটিশ আপডেট করুন</p>
           </div>
         </div>
 
@@ -362,21 +355,21 @@
             <input type="text" id="editHeroDesc" class="w-full border rounded-lg p-2.5 outline-none bg-stone-50">
           </div>
           <div class="sm:col-span-3 flex justify-end">
-            <button type="submit" id="saveBannerBtn" class="bg-amber-800 hover:bg-amber-900 text-white font-bold py-2 px-5 rounded-lg transition shadow cursor-pointer">
+            <button type="submit" class="bg-amber-800 hover:bg-amber-900 text-white font-bold py-2 px-5 rounded-lg transition shadow cursor-pointer">
               ক্লাউডে সেভ করুন
             </button>
           </div>
         </form>
       </div>
 
-      <!-- SECTION 2: FURNITURE UPLOAD (WITH HIGHLIGHT FEATURE) -->
+      <!-- Upload Section -->
       <div id="adminUploadSection" class="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm">
         <div class="flex items-center gap-2 pb-3 border-b border-stone-100 mb-3">
           <span class="w-8 h-8 bg-purple-100 text-purple-900 rounded-lg flex items-center justify-center font-bold">
             <i class="fa-solid fa-arrows-spin text-sm"></i>
           </span>
           <div>
-            <h3 class="font-bold text-stone-900 text-sm">নতুন ফার্নিচার আপলোড ও হাইলাইট</h3>
+            <h3 class="font-bold text-stone-900 text-sm">নতুন ফার্নিচার আপলোড</h3>
             <p class="text-[11px] text-stone-500">ছবিগুলোর লিঙ্ক কমা (,) দিয়ে আলাদা করুন</p>
           </div>
         </div>
@@ -392,7 +385,7 @@
               <option value="bed">খাট (Bed)</option>
               <option value="sofa">সোফা (Sofa)</option>
               <option value="dining">ডাইনিং টেবিল (Dining)</option>
-              <option value="luxury">লাক্সারি কালেকশন (Luxury Exclusive)</option>
+              <option value="luxury">লাক্সারি কালেকশন</option>
             </select>
           </div>
           <div>
@@ -416,32 +409,31 @@
             <input type="text" id="pAddImages" required placeholder="https://image1.jpg, https://image2.jpg" class="w-full border rounded-lg p-2.5 bg-stone-50 outline-none">
           </div>
           
-          <!-- HIGHLIGHT CHECKBOX -->
           <div class="sm:col-span-3 bg-amber-50/70 p-3 rounded-xl border border-amber-200 flex items-center gap-2">
             <input type="checkbox" id="pAddHighlight" class="w-4 h-4 text-amber-800 rounded border-amber-300 focus:ring-amber-500 cursor-pointer">
             <label for="pAddHighlight" class="font-bold text-amber-950 cursor-pointer">
-              🌟 এই ফার্নিচারটি বিশেষ ভাবে "হাইলাইট" (Featured Special Collection) হিসেবে দেখান
+              🌟 এই ফার্নিচারটি "হাইলাইট" হিসেবে দেখান
             </label>
           </div>
 
           <div class="sm:col-span-3 flex justify-end">
-            <button type="submit" id="addProdBtn" class="bg-stone-900 hover:bg-stone-800 text-white font-bold py-2.5 px-6 rounded-lg transition shadow cursor-pointer">
+            <button type="submit" class="bg-stone-900 hover:bg-stone-800 text-white font-bold py-2.5 px-6 rounded-lg transition shadow cursor-pointer">
               শোরুমে ফার্নিচার যুক্ত করুন
             </button>
           </div>
         </form>
       </div>
 
-      <!-- SECTION: PRODUCT MANAGEMENT (DELETE & CONTROL) -->
+      <!-- Product Management -->
       <div id="adminManageSection" class="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm">
         <h3 class="font-bold text-stone-900 text-sm mb-3 pb-2 border-b flex items-center gap-2">
           <i class="fa-solid fa-boxes-stacked text-indigo-700"></i>
-          <span>আপলোড করা ফার্নিচার তালিকা ও নিয়ন্ত্রণ</span>
+          <span>আপলোড করা ফার্নিচার তালিকা</span>
         </h3>
         <div id="adminProductsList" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs"></div>
       </div>
 
-      <!-- SECTION 3: CREATE BILL FORM -->
+      <!-- Memo Form -->
       <div id="adminBillFormSection" class="bg-white p-6 rounded-2xl border border-amber-200 shadow-sm">
         <div class="flex items-center justify-between pb-3 border-b border-stone-200 mb-4">
           <div class="flex items-center gap-2">
@@ -469,22 +461,22 @@
               </div>
             </div>
             <div>
-              <label class="block font-semibold mb-1 text-stone-700">কাস্টমারের Gmail (ঐচ্ছিক)</label>
+              <label class="block font-semibold mb-1 text-stone-700">Gmail (ঐচ্ছিক)</label>
               <input type="email" id="billCustEmail" placeholder="customer@gmail.com" class="w-full border rounded-lg p-2.5 outline-none bg-white">
             </div>
             <div class="sm:col-span-3">
-              <label class="block font-semibold mb-1 text-stone-700">ডেলিভারির সম্পূর্ণ ঠিকানা *</label>
-              <input type="text" id="billCustAddress" required placeholder="গ্রাম/ওয়ার্ড, পোস্ট, থানা, গঙ্গারামপুর, পিনকোড" class="w-full border rounded-lg p-2.5 outline-none bg-white">
+              <label class="block font-semibold mb-1 text-stone-700">ডেলিভারির ঠিকানা *</label>
+              <input type="text" id="billCustAddress" required placeholder="গ্রাম/ওয়ার্ড, পোস্ট, থানা, গঙ্গারামপুর" class="w-full border rounded-lg p-2.5 outline-none bg-white">
             </div>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
             <div class="md:col-span-2">
-              <label class="block font-semibold mb-1 text-stone-700">ফার্নিচারের নাম ও বিবরণ *</label>
-              <input type="text" id="billItemName" required placeholder="উদাঃ চিটাগাং সেগুন বক্স খাট (King Size)" class="w-full border rounded-lg p-2.5 outline-none">
+              <label class="block font-semibold mb-1 text-stone-700">ফার্নিচারের নাম *</label>
+              <input type="text" id="billItemName" required placeholder="উদাঃ চিটাগাং সেগুন বক্স খাট" class="w-full border rounded-lg p-2.5 outline-none">
             </div>
             <div>
-              <label class="block font-semibold mb-1 text-stone-700">পরিমাণ (Quantity) *</label>
+              <label class="block font-semibold mb-1 text-stone-700">পরিমাণ *</label>
               <input type="number" id="billItemQty" min="1" value="1" required class="w-full border rounded-lg p-2.5 outline-none" oninput="calculateMemoDue()">
             </div>
             <div>
@@ -492,32 +484,32 @@
               <input type="date" id="billDeliveryDate" required class="w-full border rounded-lg p-2.5 outline-none">
             </div>
             <div class="sm:col-span-4">
-              <label class="block font-semibold mb-1 text-stone-700">কাস্টমাইজেশন বিবরণ</label>
-              <input type="text" id="billCustomNotes" placeholder="উদাঃ সাইজ ৬.৫ ফুট করতে হবে, পলিশ ইত্যাদি" class="w-full border rounded-lg p-2.5 bg-amber-50/40 outline-none">
+              <label class="block font-semibold mb-1 text-stone-700">কাস্টমাইজেশন</label>
+              <input type="text" id="billCustomNotes" placeholder="সাইজ, পলিশ ইত্যাদি" class="w-full border rounded-lg p-2.5 bg-amber-50/40 outline-none">
             </div>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 bg-amber-50/70 p-4 rounded-xl border border-amber-200">
             <div>
-              <label class="block font-bold text-stone-800 mb-1">ইউনিট প্রতি দাম (₹) *</label>
-              <input type="number" id="billUnitPrice" min="0" required placeholder="উদাঃ 34500" class="w-full border rounded-lg p-2.5 font-bold text-stone-900 outline-none" oninput="calculateMemoDue()">
+              <label class="block font-bold text-stone-800 mb-1">ইউনিট দাম (₹) *</label>
+              <input type="number" id="billUnitPrice" min="0" required class="w-full border rounded-lg p-2.5 font-bold outline-none" oninput="calculateMemoDue()">
             </div>
             <div>
-              <label class="block font-bold text-stone-800 mb-1">মোট বিল মূল্য (₹)</label>
-              <input type="text" id="billTotalAmount" readonly value="₹০" class="w-full border rounded-lg p-2.5 font-bold text-stone-900 outline-none bg-stone-100">
+              <label class="block font-bold text-stone-800 mb-1">মোট বিল</label>
+              <input type="text" id="billTotalAmount" readonly value="₹০" class="w-full border rounded-lg p-2.5 font-bold bg-stone-100 outline-none">
             </div>
             <div>
-              <label class="block font-bold text-emerald-800 mb-1">অগ্রিম জমা দিল (Advance ₹) *</label>
-              <input type="number" id="billAdvancePaid" min="0" required placeholder="উদাঃ 5000" class="w-full border rounded-lg p-2.5 font-bold text-emerald-700 outline-none bg-emerald-50/60" oninput="calculateMemoDue()">
+              <label class="block font-bold text-emerald-800 mb-1">অগ্রিম জমা (₹) *</label>
+              <input type="number" id="billAdvancePaid" min="0" required class="w-full border rounded-lg p-2.5 font-bold text-emerald-700 outline-none bg-emerald-50/60" oninput="calculateMemoDue()">
             </div>
             <div>
-              <label class="block font-bold text-red-800 mb-1">বাকি রইল (Remaining Due ₹)</label>
+              <label class="block font-bold text-red-800 mb-1">বাকি রইল</label>
               <input type="text" id="billRemainingDue" readonly value="₹০" class="w-full border rounded-lg p-2.5 font-extrabold text-red-700 bg-red-50/60 outline-none">
             </div>
           </div>
 
           <div class="flex justify-end gap-2 pt-2">
-            <button type="submit" id="saveMemoSubmitBtn" class="bg-amber-800 hover:bg-amber-900 text-white font-bold py-2.5 px-6 rounded-lg shadow transition flex items-center gap-2 text-xs cursor-pointer">
+            <button type="submit" class="bg-amber-800 hover:bg-amber-900 text-white font-bold py-2.5 px-6 rounded-lg shadow transition flex items-center gap-2 text-xs cursor-pointer">
               <i class="fa-solid fa-file-circle-check text-sm"></i>
               <span>মেমো তৈরি ও সেভ করুন</span>
             </button>
@@ -525,7 +517,7 @@
         </form>
       </div>
 
-      <!-- SECTION 4: ORDER SUMMARY -->
+      <!-- Order Summary -->
       <div id="adminSummarySection" class="bg-white rounded-2xl border border-stone-200 shadow-sm p-6">
         <h4 class="font-bold text-stone-900 text-base mb-4 pb-2 border-b flex items-center gap-2">
           <i class="fa-solid fa-clipboard-check text-amber-700"></i>
@@ -549,18 +541,17 @@
           </table>
         </div>
       </div>
-
     </div>
   </div>
 
-  <!-- PRINTABLE & PDF RECEIPT MODAL -->
+  <!-- RECEIPT MODAL -->
   <div id="receiptModal" class="fixed inset-0 z-50 hidden bg-stone-950/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
     <div class="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl relative my-auto">
       <div class="flex flex-wrap justify-between items-center gap-2 mb-4 pb-3 border-b border-stone-200">
         <span class="text-xs font-bold text-stone-500">মেমো প্রিন্ট ও ডাউনলোড</span>
         <div class="flex flex-wrap items-center gap-1.5">
           <button type="button" onclick="downloadReceiptPDF()" class="px-2.5 py-1.5 bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-xs font-bold flex items-center gap-1 shadow cursor-pointer">
-            <i class="fa-solid fa-file-pdf text-xs"></i> PDF ডাউনলোড
+            <i class="fa-solid fa-file-pdf text-xs"></i> PDF
           </button>
           <button type="button" onclick="sendReceiptViaWhatsApp()" class="px-2.5 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg text-xs font-bold flex items-center gap-1 shadow cursor-pointer">
             <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp
@@ -650,7 +641,7 @@
 
   <!-- PRODUCT 360 MODAL -->
   <div id="productViewModal" class="fixed inset-0 z-50 hidden bg-stone-950/85 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4">
-    <div id="modalBoxContainer" class="bg-white rounded-2xl max-w-2xl w-full shadow-2xl relative max-h-[94vh] overflow-y-auto custom-scrollbar flex flex-col">
+    <div class="bg-white rounded-2xl max-w-2xl w-full shadow-2xl relative max-h-[94vh] overflow-y-auto custom-scrollbar flex flex-col">
       <button type="button" onclick="closeProductModal()" class="absolute top-3 right-3 text-stone-600 hover:text-stone-900 bg-white/90 backdrop-blur rounded-full w-9 h-9 flex items-center justify-center z-30 shadow transition cursor-pointer">
         <i class="fa-solid fa-xmark text-lg"></i>
       </button>
@@ -756,13 +747,11 @@
               <span class="flex items-center gap-2">
                 <i class="fa-solid fa-phone text-amber-400"></i> কল করুন: <strong>+91 6295941126</strong>
               </span>
-              <span class="text-[10px] bg-stone-600 px-2 py-0.5 rounded text-stone-300">সরাসরি কল</span>
             </a>
             <a href="https://wa.me/916295941126" target="_blank" class="flex items-center justify-between p-2.5 bg-emerald-950/40 hover:bg-emerald-900/50 border border-emerald-700/50 rounded-xl text-xs text-emerald-300 font-medium transition">
               <span class="flex items-center gap-2">
                 <i class="fa-brands fa-whatsapp text-emerald-400 text-sm"></i> WhatsApp: <strong>+91 6295941126</strong>
               </span>
-              <span class="text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded font-bold">চ্যাট করুন</span>
             </a>
           </div>
         </div>
@@ -792,15 +781,14 @@
     </div>
   </footer>
 
-  <!-- SCRIPT ENGINE -->
   <script>
+    // ====================== UTILS ======================
     function escapeHTML(str) {
       return String(str || '').replace(/[&<>'"]/g, 
         tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
       );
     }
 
-    // BRANDED CUSTOM POPUP FUNCTION (REPLACES BROWSER ALERT)
     function showCustomAlert(text, icon = 'info') {
       if (typeof Swal !== 'undefined') {
         Swal.fire({
@@ -815,6 +803,14 @@
       }
     }
 
+    function getSafeImage(images) {
+      if (Array.isArray(images) && images.length > 0 && images[0]) {
+        return images[0];
+      }
+      return 'https://via.placeholder.com/400x300?text=No+Image';
+    }
+
+    // ====================== FIREBASE ======================
     const firebaseConfig = {
       apiKey: "AIzaSyAPpAAVZEWhrbjpg_gZKZtLRO63HvdLRtc",
       authDomain: "sera-s-collection.firebaseapp.com",
@@ -846,6 +842,7 @@
       console.warn("Firebase Init Notice:", err);
     }
 
+    // ====================== TRANSLATIONS ======================
     const translations = {
       bn: {
         announcement: "✨ ১০০% খাঁটি চিটাগাং সেগুন ও শীশম কাঠ | গঙ্গারামপুর ও সংলগ্ন এলাকায় দ্রুত হোম ডেলিভারি ও ফ্রি ফিটিং ✨",
@@ -936,16 +933,16 @@
         copyright: "All Rights Reserved."
       },
       hi: {
-        announcement: "✨ १००% शुद्ध चटगाँव सागौन और शीशम की लकड़ी | गंगारामपुर और नजदीकी इलाकों में तेज़ डिलीवरी और फ्री फिटिंग ✨",
+        announcement: "✨ 100% शुद्ध चटगाँव सागौन और शीशम की लकड़ी | गंगारामपुर और नजदीकी इलाकों में तेज़ डिलीवरी और फ्री फिटिंग ✨",
         logoSubtitle: "प्रीमियम क्वालिटी फर्नीचर और लकड़ी की कारीगरी",
         searchPlaceholder: "पलंग, सोफा, डाइनिंग टेबल खोजें...",
         loginBtn: "लॉगिन",
         contactBtn: "संपर्क करें",
-        offerTag: "👑 विशेष ऑफर: १००% असली चटगाँव सागौन और शीशम की लकड़ी",
+        offerTag: "👑 विशेष ऑफर: 100% असली चटगाँव सागौन और शीशम की लकड़ी",
         heroTitle: 'घर की बेहतरीन शान <span class="text-amber-400">Sera\'s Collection</span> में',
-        heroDesc: "किसी भी फर्नीचर पर क्लिक करके अंदर <strong>३६०° व्यू</strong> घुमाकर देखें। बुकिंग मेमो और जानकारी के लिए संपर्क करें।",
+        heroDesc: "किसी भी फर्नीचर पर क्लिक करके अंदर <strong>360° व्यू</strong> घुमाकर देखें। बुकिंग मेमो और जानकारी के लिए संपर्क करें।",
         catalogTitle: "फर्नीचर कैटलॉग",
-        catalogSubtitle: "३६०° व्यू और पूरी जानकारी देखने के लिए किसी भी फर्नीचर पर क्लिक करें",
+        catalogSubtitle: "360° व्यू और पूरी जानकारी देखने के लिए किसी भी फर्नीचर पर क्लिक करें",
         catAll: "सभी फर्नीचर",
         catBed: "पलंग",
         catSofa: "सोफा",
@@ -954,18 +951,18 @@
         btnDetails: "विवरण",
         btnAddToCart: "कार्ट में जोड़ें",
         offBadge: "छूट",
-        advanceToken: "১০% बुकिंग टोकन: मात्र",
+        advanceToken: "10% बुकिंग टोकन: मात्र",
         specialBadge: "✨ स्पेशल",
-        view360Badge: "३६০° व्यू (घुमाकर देखें)",
-        view360AngleText: "३६০° व्यू",
+        view360Badge: "360° व्यू (घुमाकर देखें)",
+        view360AngleText: "360° व्यू",
         anglesText: "एंगल",
         anglePrefix: "एंगल:",
-        balanceNote: "बाकी ९০% भुगतान डिलीवरी और मुफ्त फिटिंग के बाद देय है।",
+        balanceNote: "बाकी 90% भुगतान डिलीवरी और मुफ्त फिटिंग के बाद देय है।",
         modalCartBtn: "कार्ट में जोड़ें",
         modalWaBtn: "WhatsApp बुकिंग",
         cartTitle: "शॉपिंग कार्ट",
         cartTotalLbl: "कुल मूल्य:",
-        cartAdvLbl: "১০% बुकिंग टोकन:",
+        cartAdvLbl: "10% बुकिंग टोकन:",
         cartOrderBtn: "WhatsApp पर ऑर्डर भेजें",
         cartEmpty: "कार्ट खाली है।",
         footerDesc: "हमारे अपने कारखाने में अनुभवी कारीगरों द्वारा सागौन, शीशम और मरीन प्लाईवुड से टिकाऊ फर्नीचर तैयार किया जाता है।",
@@ -973,7 +970,7 @@
         footerContactTitle: "संपर्क और हेल्पलाइन",
         footerContactDesc: "ऑर्डर बुकिंग, कस्टम डिजाइन या किसी भी जानकारी के लिए सीधे कॉल या व्हाट्सएप करें:",
         footerPromiseTitle: "हमारा वादा",
-        promise1T: "১০ साल की दीमक-रोधी गारंटी",
+        promise1T: "10 साल की दीमक-रोधी गारंटी",
         promise1D: "मजबूत पक्की लकड़ी पर लंबे समय तक चलने का भरोसा।",
         promise2T: "होम डिलीवरी और मुफ्त फिटिंग",
         promise2D: "आपके घर पर कुशलतापूर्वक सेट कर दिया जाता है।",
@@ -981,6 +978,7 @@
       }
     };
 
+    // ====================== DEFAULT PRODUCTS ======================
     const DEFAULT_PRODUCTS = [
       {
         id: "p1",
@@ -1069,6 +1067,7 @@
       }
     ];
 
+    // ====================== STATE ======================
     let currentLang = 'bn';
     let products = JSON.parse(localStorage.getItem('seras_store_products') || 'null') || DEFAULT_PRODUCTS;
     let cart = JSON.parse(localStorage.getItem('sera_cart_v2') || '[]');
@@ -1081,6 +1080,7 @@
     let dragStartX = 0;
     let currentReceipt = null;
 
+    // ====================== INIT ======================
     function initApp() {
       applyLanguage();
       renderProducts();
@@ -1093,9 +1093,14 @@
       listenToCloudDatabase();
       renderAdminProductsList();
 
-      if (sessionStorage.getItem('seras_admin_auth') === 'true') {
-        document.getElementById('storefrontView').classList.add('hidden');
-        document.getElementById('adminPortalView').classList.remove('hidden');
+      // Check if admin is already logged in
+      if (auth) {
+        auth.onAuthStateChanged((user) => {
+          if (user) {
+            document.getElementById('storefrontView').classList.add('hidden');
+            document.getElementById('adminPortalView').classList.remove('hidden');
+          }
+        });
       }
 
       const today = new Date();
@@ -1106,7 +1111,7 @@
 
     document.addEventListener('DOMContentLoaded', initApp);
 
-    // FULL CLOUD DATABASE SYNC (MEMOS, PRODUCTS, OFFERS)
+    // ====================== CLOUD SYNC ======================
     function listenToCloudDatabase() {
       if (dbMemosRef) {
         dbMemosRef.on('value', (snapshot) => {
@@ -1145,6 +1150,7 @@
       }
     }
 
+    // ====================== LANGUAGE ======================
     function changeLanguage(lang) {
       currentLang = lang;
       applyLanguage();
@@ -1162,11 +1168,9 @@
       if (sInp) sInp.placeholder = t.searchPlaceholder;
       setT('txt-login-btn', t.loginBtn);
       setT('txt-contact-btn', t.contactBtn);
-
       setT('storeOfferTag', t.offerTag);
       setH('storeHeroTitle', t.heroTitle);
       setH('storeHeroDesc', t.heroDesc);
-
       setT('txt-catalog-title', t.catalogTitle);
       setT('txt-catalog-subtitle', t.catalogSubtitle);
       setT('cat-all', t.catAll);
@@ -1174,7 +1178,6 @@
       setT('cat-sofa', t.catSofa);
       setT('cat-dining', t.catDining);
       setT('txt-cat-luxury', t.catLuxury);
-
       setT('txt-360-badge', t.view360Badge);
       setT('txt-balance-note', t.balanceNote);
       setT('txt-modal-cart-btn', t.modalCartBtn);
@@ -1183,7 +1186,6 @@
       setT('txt-cart-total-lbl', t.cartTotalLbl);
       setT('txt-cart-adv-lbl', t.cartAdvLbl);
       setT('txt-cart-order-btn', t.cartOrderBtn);
-
       setT('txt-footer-desc', t.footerDesc);
       setT('txt-footer-address', t.footerAddress);
       setH('txt-footer-contact-title', `<i class="fa-solid fa-headset"></i> ` + t.footerContactTitle);
@@ -1196,7 +1198,7 @@
       setT('txt-copyright', t.copyright);
     }
 
-    // FIREBASE PHONE AUTH WITH RECAPTCHA
+    // ====================== CUSTOMER AUTH ======================
     function setupCustomerRecaptcha() {
       if (!auth) return;
       const container = document.getElementById('recaptcha-container');
@@ -1265,11 +1267,11 @@
             document.getElementById('authOtpStep').classList.remove('hidden');
             btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> <span>ফোনে OTP পাঠান</span>`;
             btn.disabled = false;
-            showCustomAlert(`মোবাইল নম্বরে (+91 ${phone}) এসএমএস পাঠানো হয়েছে। কোডটি চেক করুন।`, "success");
+            showCustomAlert(`মোবাইল নম্বরে (+91 ${phone}) এসএমএস পাঠানো হয়েছে।`, "success");
           }).catch((err) => {
             let msg = err.message;
             if (err.code === 'auth/quota-exceeded') {
-              msg = 'দৈনিক ফ্রি SMS কোটা শেষ হয়ে গেছে! অনুগ্রহ করে কিছুক্ষণ পর চেষ্টা করুন।';
+              msg = 'দৈনিক ফ্রি SMS কোটা শেষ হয়ে গেছে!';
             } else if (err.code === 'auth/invalid-phone-number') {
               msg = 'মোবাইল নম্বরটি সঠিক নয়!';
             }
@@ -1287,14 +1289,14 @@
 
     async function handleCustomerVerifyOTP() {
       const code = document.getElementById('custAuthOTPInput').value.trim();
-      if (code.length !== 6) return showCustomAlert("মোবাইলে আসা ৬ সংখ্যার সঠিক OTP কোডটি দিন!", "warning");
+      if (code.length !== 6) return showCustomAlert("৬ সংখ্যার সঠিক OTP কোডটি দিন!", "warning");
 
       const btn = document.getElementById('verifyOtpBtn');
       btn.innerText = "যাচাই করা হচ্ছে...";
       btn.disabled = true;
 
       if (!confirmationResultObj) {
-        showCustomAlert("OTP সেশন পাওয়া যায়নি। পুনরায় OTP পাঠান।", "error");
+        showCustomAlert("OTP সেশন পাওয়া যায়নি।", "error");
         btn.innerText = "ভেরিফাই ও প্রবেশ";
         btn.disabled = false;
         resetAuthSteps();
@@ -1307,13 +1309,13 @@
         const userData = { name, phone };
         localStorage.setItem('seras_customer_user', JSON.stringify(userData));
 
-        showCustomAlert(`স্বাগতম, ${name}! ভেরিফিকেশন সফল হয়েছে।`, "success");
+        showCustomAlert(`স্বাগতম, ${name}!`, "success");
         closeCustomerAuthModal();
         checkCustomerAuth();
         btn.innerText = "ভেরিফাই ও প্রবেশ";
         btn.disabled = false;
       }).catch((err) => {
-        showCustomAlert("ভুল OTP কোড! অনুগ্রহ করে এসএমএস দেখে সঠিক কোড দিন।", "error");
+        showCustomAlert("ভুল OTP কোড!", "error");
         btn.innerText = "ভেরিফাই ও প্রবেশ";
         btn.disabled = false;
       });
@@ -1369,18 +1371,17 @@
       container.innerHTML = '';
 
       if (myMemos.length === 0) {
-        container.innerHTML = `<p class="text-stone-400 text-center py-4">আপনার নম্বরে কোনো বুকিং মেমো পাওয়া যায়নি।</p>`;
+        container.innerHTML = `<p class="text-stone-400 text-center py-4">কোনো বুকিং মেমো পাওয়া যায়নি।</p>`;
       } else {
         myMemos.forEach(m => {
           container.innerHTML += `
             <div class="p-3 bg-stone-50 border rounded-xl flex justify-between items-center text-xs">
               <div>
-                <span class="font-bold text-amber-900">#${escapeHTML(m.memoId)}</span> - <span class="font-semibold text-stone-900">${escapeHTML(m.itemName)}</span> (${m.qty}টি)
-                <p class="text-[11px] text-stone-500 mt-0.5">ডেলিভারির তারিখ: <strong class="text-stone-800">${escapeHTML(m.deliveryDate)}</strong></p>
+                <span class="font-bold text-amber-900">#${escapeHTML(m.memoId)}</span> - <span class="font-semibold">${escapeHTML(m.itemName)}</span>
+                <p class="text-[11px] text-stone-500 mt-0.5">ডেলিভারি: <strong>${escapeHTML(m.deliveryDate)}</strong></p>
               </div>
               <div class="text-right">
-                <p class="font-bold text-stone-900">বিল: ₹${m.total.toLocaleString('en-IN')}</p>
-                <p class="text-[11px] text-emerald-700 font-semibold">জমা: ₹${m.adv.toLocaleString('en-IN')}</p>
+                <p class="font-bold">বিল: ₹${m.total.toLocaleString('en-IN')}</p>
                 <button type="button" onclick="showReceiptModalByMemoId('${escapeHTML(m.memoId)}')" class="mt-1 px-2 py-0.5 bg-amber-100 text-amber-950 rounded text-[10px] font-bold cursor-pointer">
                   রিসিট দেখুন
                 </button>
@@ -1402,7 +1403,7 @@
       if (m) showReceiptModal(m);
     }
 
-    // OWNER LOGIN VERIFICATION WITH "Sera@1234"
+    // ====================== ADMIN AUTH (Firebase) ======================
     function promptAdminLogin() {
       document.getElementById('adminModal').classList.remove('hidden');
     }
@@ -1411,26 +1412,50 @@
       document.getElementById('adminModal').classList.add('hidden');
     }
 
-    function verifyAdminPassword(e) {
+    function verifyAdminLogin(e) {
       e.preventDefault();
+      const email = document.getElementById('adminEmailInput').value.trim();
       const pass = document.getElementById('adminPassInput').value.trim();
 
-      if (pass === "Sera@1234") {
-        sessionStorage.setItem('seras_admin_auth', 'true');
-        closeAdminModal();
-        document.getElementById('storefrontView').classList.add('hidden');
-        document.getElementById('adminPortalView').classList.remove('hidden');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        e.target.reset();
-        showCustomAlert("ওনার প্যানেলে স্বাগতম!", "success");
-      } else {
-        showCustomAlert("ভুল পাসওয়ার্ড! সঠিক পাসওয়ার্ড দিন।", "error");
+      if (!auth) {
+        return showCustomAlert("Firebase Auth সক্রিয় নেই।", "error");
       }
+
+      const btn = document.getElementById('adminLoginBtn');
+      btn.innerText = "লগইন হচ্ছে...";
+      btn.disabled = true;
+
+      auth.signInWithEmailAndPassword(email, pass)
+        .then((userCredential) => {
+          closeAdminModal();
+          document.getElementById('storefrontView').classList.add('hidden');
+          document.getElementById('adminPortalView').classList.remove('hidden');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          e.target.reset();
+          showCustomAlert("ওনার প্যানেলে স্বাগতম!", "success");
+        })
+        .catch((error) => {
+          let msg = "লগইন ব্যর্থ হয়েছে।";
+          if (error.code === 'auth/user-not-found') msg = "এই ইমেইল দিয়ে কোনো অ্যাকাউন্ট নেই।";
+          if (error.code === 'auth/wrong-password') msg = "পাসওয়ার্ড ভুল হয়েছে।";
+          if (error.code === 'auth/invalid-email') msg = "ইমেইল সঠিক নয়।";
+          showCustomAlert(msg, "error");
+        })
+        .finally(() => {
+          btn.innerText = "ড্যাশবোর্ডে প্রবেশ করুন";
+          btn.disabled = false;
+        });
     }
 
     function adminLogout() {
-      sessionStorage.removeItem('seras_admin_auth');
-      exitAdminToStorefront();
+      if (auth) {
+        auth.signOut().then(() => {
+          exitAdminToStorefront();
+          showCustomAlert("সফলভাবে লগআউট হয়েছে।", "success");
+        });
+      } else {
+        exitAdminToStorefront();
+      }
     }
 
     function exitAdminToStorefront() {
@@ -1439,7 +1464,7 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // PRODUCTS RENDERING & ROTATOR (WITH HIGHLIGHT & BADGE SUPPORT)
+    // ====================== PRODUCTS ======================
     function renderProducts() {
       const t = translations[currentLang] || translations['bn'];
       const grid = document.getElementById('productsGrid');
@@ -1459,17 +1484,18 @@
         const discount = (p.mrp > p.price) ? Math.round(((p.mrp - p.price) / p.mrp) * 100) : 0;
         const advance = Math.round(p.price * 0.10);
         const isFav = wishlist.includes(p.id);
+        const imgSrc = getSafeImage(p.images);
 
         const card = document.createElement('div');
         card.className = `bg-white rounded-xl border ${p.highlight ? 'border-amber-400 ring-2 ring-amber-400/30' : 'border-stone-200'} shadow-sm overflow-hidden flex flex-col justify-between hover:shadow-md transition relative`;
         card.innerHTML = `
           <div onclick="openProductModal('${escapeHTML(p.id)}')" class="cursor-pointer">
             <div class="relative h-48 bg-stone-100 group overflow-hidden">
-              <img src="${p.images[0]}" alt="${escapeHTML(p.name)}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+              <img src="${imgSrc}" alt="${escapeHTML(p.name)}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
               
               <div class="absolute top-2 left-2 flex flex-col gap-1">
                 ${discount > 0 ? `<span class="bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded shadow">${discount}% ${t.offBadge}</span>` : ''}
-                ${p.highlight ? `<span class="bg-amber-600 text-white text-[10px] font-black px-2 py-0.5 rounded shadow flex items-center gap-1">${t.specialBadge}</span>` : ''}
+                ${p.highlight ? `<span class="bg-amber-600 text-white text-[10px] font-black px-2 py-0.5 rounded shadow">${t.specialBadge}</span>` : ''}
               </div>
               
               <button type="button" onclick="event.stopPropagation(); toggleWishlist('${escapeHTML(p.id)}')" class="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 backdrop-blur shadow flex items-center justify-center text-xs transition cursor-pointer ${isFav ? 'text-red-600' : 'text-stone-400 hover:text-red-600'}">
@@ -1477,7 +1503,7 @@
               </button>
 
               <span class="absolute bottom-2 right-2 bg-black/60 text-white text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm">
-                <i class="fa-solid fa-arrows-spin"></i> ${t.view360AngleText} (${p.images.length} ${t.anglesText})
+                <i class="fa-solid fa-arrows-spin"></i> ${t.view360AngleText}
               </span>
             </div>
             <div class="p-4">
@@ -1514,14 +1540,15 @@
       container.innerHTML = '';
 
       products.forEach(p => {
+        const imgSrc = getSafeImage(p.images);
         const div = document.createElement('div');
         div.className = "flex items-center justify-between p-2.5 bg-stone-50 border rounded-xl gap-2";
         div.innerHTML = `
           <div class="flex items-center gap-2 overflow-hidden">
-            <img src="${p.images[0]}" class="w-10 h-10 object-cover rounded shrink-0">
+            <img src="${imgSrc}" class="w-10 h-10 object-cover rounded shrink-0">
             <div class="truncate">
               <h4 class="font-bold text-stone-900 truncate">${escapeHTML(p.name)}</h4>
-              <p class="text-amber-900 font-bold">₹${p.price.toLocaleString('en-IN')} ${p.highlight ? '<span class="text-amber-600 font-semibold">(হাইলাইট)</span>' : ''}</p>
+              <p class="text-amber-900 font-bold">₹${p.price.toLocaleString('en-IN')} ${p.highlight ? '<span class="text-amber-600">(হাইলাইট)</span>' : ''}</p>
             </div>
           </div>
           <button type="button" onclick="deleteProduct('${escapeHTML(p.id)}')" class="px-2 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded font-bold text-xs shrink-0 cursor-pointer">
@@ -1533,17 +1560,30 @@
     }
 
     function deleteProduct(id) {
-      if (!confirm("আপনি কি নিশ্চিতভাবে এই ফার্নিচারটি মুছে ফেলতে চান?")) return;
-      if (dbProductsRef) {
-        dbProductsRef.child(id).remove()
-          .then(() => showCustomAlert("ফার্নিচার মুছে ফেলা হয়েছে!", "success"))
-          .catch(e => showCustomAlert("সমস্যা হয়েছে: " + e.message, "error"));
-      } else {
-        products = products.filter(p => String(p.id) !== String(id));
-        localStorage.setItem('seras_store_products', JSON.stringify(products));
-        renderProducts();
-        renderAdminProductsList();
-      }
+      Swal.fire({
+        title: 'নিশ্চিত?',
+        text: "আপনি কি এই ফার্নিচারটি মুছে ফেলতে চান?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#92400e',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'হ্যাঁ, মুছুন',
+        cancelButtonText: 'না'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          if (dbProductsRef) {
+            dbProductsRef.child(id).remove()
+              .then(() => showCustomAlert("ফার্নিচার মুছে ফেলা হয়েছে!", "success"))
+              .catch(e => showCustomAlert("সমস্যা হয়েছে: " + e.message, "error"));
+          } else {
+            products = products.filter(p => String(p.id) !== String(id));
+            localStorage.setItem('seras_store_products', JSON.stringify(products));
+            renderProducts();
+            renderAdminProductsList();
+            showCustomAlert("ফার্নিচার মুছে ফেলা হয়েছে!", "success");
+          }
+        }
+      });
     }
 
     function openProductModal(id) {
@@ -1576,7 +1616,10 @@
 
     function updateRotatorView() {
       const t = translations[currentLang] || translations['bn'];
-      if (!currentModalProduct || !currentModalProduct.images) return;
+      if (!currentModalProduct || !currentModalProduct.images || currentModalProduct.images.length === 0) {
+        document.getElementById('rotatorImg').src = 'https://via.placeholder.com/400x300?text=No+Image';
+        return;
+      }
       const images = currentModalProduct.images;
       document.getElementById('rotatorImg').src = images[activeAngleIndex];
       document.getElementById('frameCounterBadge').innerText = `${t.anglePrefix} ${activeAngleIndex + 1} / ${images.length}`;
@@ -1638,6 +1681,7 @@
       renderProducts();
     }
 
+    // ====================== MEMO SYSTEM ======================
     function generateUniqueMemoId() {
       const datePart = new Date().toISOString().slice(2, 10).replace(/-/g, '');
       const randomPart = Math.floor(1000 + Math.random() * 9000);
@@ -1684,7 +1728,7 @@
       renderMemosList();
       showReceiptModal(currentReceipt);
       e.target.reset();
-      showCustomAlert("মেমো সফলভাবে তৈরি ও ক্লাউডে সেভ হয়েছে!", "success");
+      showCustomAlert("মেমো সফলভাবে তৈরি হয়েছে!", "success");
     }
 
     function showReceiptModal(memo) {
@@ -1764,11 +1808,11 @@
         `*বাকি রইল:* ₹${currentReceipt.due.toLocaleString('en-IN')}\n` +
         `*ডেলিভারির তারিখ:* ${currentReceipt.deliveryDate}\n` +
         `-----------------------------------------\n` +
-        `ধন্যবাদ! হেল্পলাইন: +91 6295941126 (গঙ্গারামপুর)`;
+        `ধন্যবাদ! হেল্পলাইন: +91 6295941126`;
       window.open(`https://wa.me/91${currentReceipt.custPhone}?text=${encodeURIComponent(text)}`, '_blank');
     }
 
-    // CART & WISHLIST
+    // ====================== CART & WISHLIST ======================
     function toggleWishlist(id) {
       const idx = wishlist.indexOf(id);
       if (idx > -1) wishlist.splice(idx, 1);
@@ -1792,10 +1836,11 @@
         list.innerHTML = `<p class="text-stone-400 text-center py-6">উইশলিস্ট খালি।</p>`;
       } else {
         favs.forEach(p => {
+          const imgSrc = getSafeImage(p.images);
           list.innerHTML += `
             <div class="flex items-center justify-between p-2.5 bg-stone-50 rounded border">
               <div class="flex items-center gap-2.5">
-                <img src="${p.images[0]}" class="w-12 h-12 object-cover rounded">
+                <img src="${imgSrc}" class="w-12 h-12 object-cover rounded">
                 <div>
                   <h4 class="font-bold text-stone-900">${escapeHTML(p.name)}</h4>
                   <p class="text-amber-900 font-bold">₹${p.price.toLocaleString('en-IN')}</p>
@@ -1871,7 +1916,7 @@
           <div class="flex items-center justify-between p-2.5 bg-stone-50 rounded border gap-2">
             <div>
               <div class="font-bold text-xs">${escapeHTML(c.name)}</div>
-              <div class="text-[11px] text-amber-900 font-semibold mt-0.5">₹${c.price.toLocaleString('en-IN')} × ${qty} = ₹${(c.price * qty).toLocaleString('en-IN')}</div>
+              <div class="text-[11px] text-amber-900 font-semibold mt-0.5">₹${c.price.toLocaleString('en-IN')} × ${qty}</div>
             </div>
             <div class="flex items-center gap-1.5 shrink-0">
               <button type="button" onclick="changeQty('${escapeHTML(c.id)}', -1)" class="w-6 h-6 bg-stone-200 hover:bg-stone-300 rounded text-xs font-bold cursor-pointer">-</button>
@@ -1902,7 +1947,7 @@
       window.open(`https://wa.me/916295941126?text=${encodeURIComponent(msg)}`, '_blank');
     }
 
-    // CLOUD-CONNECTED PRODUCT UPLOAD WITH HIGHLIGHT
+    // ====================== ADMIN FUNCTIONS ======================
     function handleAddNewProduct(e) {
       e.preventDefault();
       const name = document.getElementById('pAddName').value.trim();
@@ -1923,11 +1968,11 @@
       if (dbProductsRef) {
         dbProductsRef.child(prodId).set(newProduct)
           .then(() => {
-            showCustomAlert('নতুন ফার্নিচার সফলভাবে ক্লাউডে যুক্ত হয়েছে!', 'success');
+            showCustomAlert('নতুন ফার্নিচার সফলভাবে যুক্ত হয়েছে!', 'success');
             e.target.reset();
           })
           .catch((err) => {
-            showCustomAlert("ক্লাউড ডেটাবেসে আপলোড করতে ব্যর্থ হয়েছে: " + err.message, 'error');
+            showCustomAlert("আপলোড ব্যর্থ: " + err.message, 'error');
           });
       } else {
         products.unshift(newProduct);
@@ -1935,11 +1980,10 @@
         renderProducts();
         renderAdminProductsList();
         e.target.reset();
-        showCustomAlert('নতুন ফার্নিচার যুক্ত হয়েছে (লোকাল মোড)!', 'success');
+        showCustomAlert('নতুন ফার্নিচার যুক্ত হয়েছে!', 'success');
       }
     }
 
-    // CLOUD-CONNECTED OFFER BANNER UPDATE
     function loadOfferBannerData() {
       const saved = JSON.parse(localStorage.getItem('sera_store_offers') || '{}');
       if (saved.announcement) document.getElementById('storeAnnouncementText').innerText = saved.announcement;
@@ -1955,18 +1999,4 @@
       const title = document.getElementById('editHeroTitle').value.trim();
       const desc = document.getElementById('editHeroDesc').value.trim();
 
-      const offerData = { announcement, tag, title, desc };
-
-      if (dbOffersRef) {
-        dbOffersRef.set(offerData)
-          .then(() => showCustomAlert("ব্যানার ক্লাউডে আপডেট সফল হয়েছে!", 'success'))
-          .catch(err => showCustomAlert("ব্যানার সেভ হতে সমস্যা হয়েছে: " + err.message, 'error'));
-      } else {
-        localStorage.setItem('sera_store_offers', JSON.stringify(offerData));
-        loadOfferBannerData();
-        showCustomAlert("ব্যানার আপডেট সফল হয়েছে (লোকাল মোড)!", 'success');
-      }
-    }
-  </script>
-</body>
-</html>
+      
