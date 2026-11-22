@@ -149,52 +149,106 @@
     </section>
   </main>
 
-  <!-- CUSTOMER OTP MODAL -->
+  <!-- CUSTOMER AUTH MODAL (LOGIN / REGISTER / CAPTCHA PASSWORD RESET) -->
   <div id="customerAuthModal" class="fixed inset-0 bg-stone-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-2xl max-w-sm w-full p-5 sm:p-6 shadow-2xl relative">
       <button type="button" onclick="closeCustomerAuthModal()" class="absolute right-4 top-4 text-stone-400 hover:text-stone-700 text-lg p-1">
         <i class="fa-solid fa-xmark"></i>
       </button>
 
-      <div id="authPhoneStep" class="space-y-3 text-xs">
-        <h3 class="text-base font-bold text-stone-900 mb-1">কাস্টমার লগইন / সাইন আপ</h3>
-        <p class="text-stone-500">আপনার মোবাইল ও পাসওয়ার্ড দিন। ফোনে OTP পাঠানো হবে।</p>
-        
-        <div>
-          <label class="block font-semibold mb-1 text-stone-700">আপনার নাম *</label>
-          <input type="text" id="custAuthName" placeholder="উদাঃ সুব্রত দেবশর্মা" class="w-full p-2.5 bg-stone-50 border rounded-lg outline-none">
+      <!-- IN-APP STATUS MESSAGE BANNER -->
+      <div id="custAuthMsgBox" class="hidden mb-3 p-2.5 rounded-lg text-xs font-semibold"></div>
+
+      <!-- MODE TABS (LOGIN VS NEW ACCOUNT) -->
+      <div id="authModeTabs" class="flex border-b border-stone-200 mb-4 text-xs font-bold">
+        <button type="button" id="tabLoginBtn" onclick="switchCustomerAuthMode('login')" class="flex-1 py-2 border-b-2 border-amber-800 text-amber-900">লগইন করুন</button>
+        <button type="button" id="tabRegisterBtn" onclick="switchCustomerAuthMode('register')" class="flex-1 py-2 border-b-2 border-transparent text-stone-400 hover:text-stone-700">নতুন অ্যাকাউন্ট</button>
+      </div>
+
+      <!-- STEP 1: LOGIN OR REGISTER FORM -->
+      <div id="authMainStep" class="space-y-3 text-xs">
+        <div id="regNameWrapper" class="hidden">
+          <label class="block font-semibold mb-1 text-stone-700">আপনার পুরো নাম *</label>
+          <input type="text" id="custAuthName" placeholder="উদাঃ সুব্রত দেবশর্মা" class="w-full p-2.5 bg-stone-50 border rounded-lg outline-none focus:border-amber-700">
         </div>
 
         <div>
           <label class="block font-semibold mb-1 text-stone-700">মোবাইল নম্বর *</label>
           <div class="flex gap-2">
             <span class="p-2.5 bg-stone-100 border rounded-lg font-bold text-stone-600">+91</span>
-            <input type="tel" id="custAuthPhone" maxlength="10" placeholder="১০ সংখ্যার নম্বর" class="w-full p-2.5 bg-stone-50 border rounded-lg outline-none">
+            <input type="tel" id="custAuthPhone" maxlength="10" placeholder="১০ সংখ্যার নম্বর" class="w-full p-2.5 bg-stone-50 border rounded-lg outline-none focus:border-amber-700">
           </div>
         </div>
 
         <div>
-          <label class="block font-semibold mb-1 text-stone-700">পাসওয়ার্ড *</label>
-          <input type="password" id="custAuthPass" placeholder="পাসওয়ার্ড লিখুন" class="w-full p-2.5 bg-stone-50 border rounded-lg outline-none">
+          <div class="flex justify-between items-center mb-1">
+            <label class="font-semibold text-stone-700">পাসওয়ার্ড *</label>
+            <button type="button" id="forgotPassLink" onclick="openPasswordResetStep()" class="text-[11px] text-amber-800 font-bold hover:underline">পাসওয়ার্ড ভুলে গেছেন?</button>
+          </div>
+          <input type="password" id="custAuthPass" placeholder="পাসওয়ার্ড লিখুন (কমপক্ষে ৪ অক্ষর)" class="w-full p-2.5 bg-stone-50 border rounded-lg outline-none focus:border-amber-700">
         </div>
 
-        <button type="button" id="sendOtpBtn" onclick="handleCustomerSendOTP()" class="w-full py-3 bg-amber-800 hover:bg-amber-900 text-white rounded-lg font-bold shadow transition flex items-center justify-center gap-2 cursor-pointer">
-          <i class="fa-solid fa-paper-plane"></i>
-          <span>OTP পাঠান</span>
+        <!-- SECURITY CAPTCHA BOX -->
+        <div class="bg-stone-100 p-2.5 rounded-xl border border-stone-300 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold text-stone-600 flex items-center gap-1">
+              <i class="fa-solid fa-shield-halved text-emerald-700"></i> Security Captcha
+            </span>
+            <div class="flex items-center gap-1.5">
+              <span id="loginCaptchaDisplay" class="px-3 py-1 bg-stone-800 text-amber-300 font-mono font-black tracking-widest text-sm rounded select-none">AB12</span>
+              <button type="button" onclick="refreshCaptcha('login')" class="p-1.5 bg-white border rounded hover:bg-stone-50 text-stone-600" title="নতুন কোড">
+                <i class="fa-solid fa-rotate-right"></i>
+              </button>
+            </div>
+          </div>
+          <input type="text" id="loginCaptchaInput" maxlength="5" placeholder="ওপরের কোডটি লিখুন" class="w-full p-2 bg-white border rounded-lg text-center font-bold uppercase tracking-widest outline-none focus:border-amber-700">
+        </div>
+
+        <button type="button" id="custAuthSubmitBtn" onclick="handleCustomerAuthSubmit()" class="w-full py-3 bg-amber-800 hover:bg-amber-900 text-white rounded-lg font-bold shadow transition flex items-center justify-center gap-2 cursor-pointer">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          <span id="custAuthSubmitText">লগইন করুন</span>
         </button>
       </div>
 
-      <div id="authOtpStep" class="space-y-3 text-xs hidden">
-        <h3 class="text-base font-bold text-stone-900 mb-1">OTP যাচাই করুন</h3>
-        <p class="text-stone-500">মোবাইলে পাঠানো ৬ সংখ্যার OTP কোডটি লিখুন।</p>
+      <!-- STEP 2: FORGOT PASSWORD RESET WITH CAPTCHA -->
+      <div id="authResetStep" class="space-y-3 text-xs hidden">
+        <h3 class="text-base font-bold text-stone-900 mb-0.5">নতুন পাসওয়ার্ড সেট করুন</h3>
+        <p class="text-stone-500 text-[11px]">আপনার রেজিস্টার করা মোবাইল নম্বর ও ক্যাপচা কোড দিয়ে পাসওয়ার্ড পরিবর্তন করুন।</p>
         
-        <input type="text" id="custAuthOTPInput" maxlength="6" placeholder="• • • • • •" class="w-full p-3 bg-stone-50 border rounded-lg text-center tracking-[0.5em] text-lg font-bold outline-none">
+        <div>
+          <label class="block font-semibold mb-1 text-stone-700">রেজিস্টার করা মোবাইল নম্বর *</label>
+          <div class="flex gap-2">
+            <span class="p-2.5 bg-stone-100 border rounded-lg font-bold text-stone-600">+91</span>
+            <input type="tel" id="resetPhoneInput" maxlength="10" placeholder="১০ সংখ্যার নম্বর" class="w-full p-2.5 bg-stone-50 border rounded-lg outline-none focus:border-amber-700">
+          </div>
+        </div>
 
-        <button type="button" onclick="handleCustomerVerifyOTP()" class="w-full py-3 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg font-bold shadow transition cursor-pointer">
-          ভেরিফাই ও প্রবেশ
+        <div>
+          <label class="block font-semibold mb-1 text-stone-700">নতুন পাসওয়ার্ড *</label>
+          <input type="password" id="resetNewPassInput" placeholder="নতুন পাসওয়ার্ড লিখুন" class="w-full p-2.5 bg-stone-50 border rounded-lg outline-none focus:border-amber-700">
+        </div>
+
+        <!-- RESET CAPTCHA BOX -->
+        <div class="bg-amber-50/70 p-2.5 rounded-xl border border-amber-300 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold text-amber-950 flex items-center gap-1">
+              <i class="fa-solid fa-robot text-amber-800"></i> Verification Captcha
+            </span>
+            <div class="flex items-center gap-1.5">
+              <span id="resetCaptchaDisplay" class="px-3 py-1 bg-stone-900 text-emerald-400 font-mono font-black tracking-widest text-sm rounded select-none">XY89</span>
+              <button type="button" onclick="refreshCaptcha('reset')" class="p-1.5 bg-white border rounded hover:bg-stone-50 text-stone-600" title="নতুন কোড">
+                <i class="fa-solid fa-rotate-right"></i>
+              </button>
+            </div>
+          </div>
+          <input type="text" id="resetCaptchaInput" maxlength="5" placeholder="ওপরের কোডটি লিখুন" class="w-full p-2 bg-white border rounded-lg text-center font-bold uppercase tracking-widest outline-none focus:border-amber-700">
+        </div>
+
+        <button type="button" id="resetPassBtn" onclick="handlePasswordReset()" class="w-full py-3 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg font-bold shadow transition cursor-pointer">
+          পাসওয়ার্ড আপডেট ও লগইন করুন
         </button>
-        <button type="button" onclick="resetAuthSteps()" class="w-full text-stone-400 text-center hover:text-stone-600 mt-2 py-1">
-          নম্বর পরিবর্তন করুন
+        <button type="button" onclick="switchCustomerAuthMode('login')" class="w-full text-stone-500 text-center hover:text-stone-800 font-semibold py-1">
+          ← লগইন পেজে ফিরে যান
         </button>
       </div>
     </div>
@@ -714,7 +768,8 @@
         <i class="fa-solid fa-shield-halved"></i>
       </div>
       <h3 class="text-base font-bold text-stone-900 mb-1">ওনার লগইন</h3>
-      <p class="text-xs text-stone-500 mb-4">আপনার অ্যাডমিন ইমেইল ও পাসওয়ার্ড দিন</p>
+      <p class="text-xs text-stone-500 mb-3">আপনার অ্যাডমিন ইমেইল ও পাসওয়ার্ড দিন</p>
+      <div id="adminAuthMsg" class="hidden mb-2 p-2 rounded text-[11px] font-semibold bg-red-50 text-red-700 border border-red-200"></div>
       <input type="email" id="adminEmailInput" placeholder="Admin Email" class="w-full border rounded-lg p-2.5 text-xs outline-none mb-2">
       <input type="password" id="adminPinInput" placeholder="Password" class="w-full border rounded-lg p-2.5 text-xs outline-none mb-3">
       <button type="button" id="adminLoginBtn" onclick="verifyAdminLogin()" class="w-full bg-amber-800 hover:bg-amber-900 text-white font-bold py-2.5 rounded-lg text-sm transition shadow cursor-pointer">লগইন করুন</button>
@@ -799,12 +854,14 @@
 
     let dbRef = null;
     let prodRef = null;
+    let custRef = null;
     try {
       if (!firebase.apps.length) {
         firebase.initializeApp(firebaseConfig);
       }
       dbRef = firebase.database().ref('seras_memos');
       prodRef = firebase.database().ref('seras_products');
+      custRef = firebase.database().ref('seras_customers');
     } catch(err) {
       console.log("Firebase init error:", err);
     }
@@ -816,8 +873,50 @@
       return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
     }
 
-    let generatedLiveOTP = null;
+    let currentAuthMode = 'login';
+    let loginCaptchaCode = '';
+    let resetCaptchaCode = '';
     let uploadedMobileImages = [];
+
+    function generateCaptchaText() {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let res = '';
+      for (let i = 0; i < 4; i++) {
+        res += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return res;
+    }
+
+    function refreshCaptcha(type) {
+      const code = generateCaptchaText();
+      if (type === 'login') {
+        loginCaptchaCode = code;
+        const el = document.getElementById('loginCaptchaDisplay');
+        if (el) el.innerText = code;
+        const inp = document.getElementById('loginCaptchaInput');
+        if (inp) inp.value = '';
+      } else {
+        resetCaptchaCode = code;
+        const el = document.getElementById('resetCaptchaDisplay');
+        if (el) el.innerText = code;
+        const inp = document.getElementById('resetCaptchaInput');
+        if (inp) inp.value = '';
+      }
+    }
+
+    function showAuthBanner(msg, isError = true) {
+      const box = document.getElementById('custAuthMsgBox');
+      if (!box) return;
+      box.innerText = msg;
+      box.className = isError
+        ? "mb-3 p-2.5 rounded-lg text-xs font-semibold bg-red-50 text-red-700 border border-red-200 block"
+        : "mb-3 p-2.5 rounded-lg text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 block";
+    }
+
+    function hideAuthBanner() {
+      const box = document.getElementById('custAuthMsgBox');
+      if (box) box.classList.add('hidden');
+    }
 
     const translations = {
       bn: {
@@ -1220,60 +1319,196 @@
       setT('txt-copyright', t.copyright);
     }
 
+    // CUSTOMER LOGIN, REGISTRATION & CAPTCHA PASSWORD RESET
     function openCustomerAuthModal() {
-      resetAuthSteps();
+      switchCustomerAuthMode('login');
       document.getElementById('customerAuthModal').classList.remove('hidden');
     }
 
     function closeCustomerAuthModal() {
       document.getElementById('customerAuthModal').classList.add('hidden');
+      hideAuthBanner();
     }
 
-    function resetAuthSteps() {
-      document.getElementById('authOtpStep').classList.add('hidden');
-      document.getElementById('authPhoneStep').classList.remove('hidden');
-      const oInp = document.getElementById('custAuthOTPInput');
-      if (oInp) oInp.value = '';
+    function switchCustomerAuthMode(mode) {
+      currentAuthMode = mode;
+      hideAuthBanner();
+      document.getElementById('authResetStep').classList.add('hidden');
+      document.getElementById('authMainStep').classList.remove('hidden');
+      document.getElementById('authModeTabs').classList.remove('hidden');
+      refreshCaptcha('login');
+
+      const tabLogin = document.getElementById('tabLoginBtn');
+      const tabReg = document.getElementById('tabRegisterBtn');
+      const nameWrap = document.getElementById('regNameWrapper');
+      const forgotLink = document.getElementById('forgotPassLink');
+      const submitText = document.getElementById('custAuthSubmitText');
+
+      if (mode === 'login') {
+        tabLogin.className = "flex-1 py-2 border-b-2 border-amber-800 text-amber-900 font-bold";
+        tabReg.className = "flex-1 py-2 border-b-2 border-transparent text-stone-400 hover:text-stone-700";
+        nameWrap.classList.add('hidden');
+        forgotLink.classList.remove('hidden');
+        submitText.innerText = "লগইন করুন";
+      } else {
+        tabReg.className = "flex-1 py-2 border-b-2 border-amber-800 text-amber-900 font-bold";
+        tabLogin.className = "flex-1 py-2 border-b-2 border-transparent text-stone-400 hover:text-stone-700";
+        nameWrap.classList.remove('hidden');
+        forgotLink.classList.add('hidden');
+        submitText.innerText = "নতুন অ্যাকাউন্ট তৈরি করুন";
+      }
     }
 
-    async function handleCustomerSendOTP() {
-      const name = document.getElementById('custAuthName').value.trim();
+    function openPasswordResetStep() {
+      hideAuthBanner();
+      document.getElementById('authMainStep').classList.add('hidden');
+      document.getElementById('authModeTabs').classList.add('hidden');
+      document.getElementById('authResetStep').classList.remove('hidden');
+      document.getElementById('resetPhoneInput').value = document.getElementById('custAuthPhone').value.trim();
+      document.getElementById('resetNewPassInput').value = '';
+      refreshCaptcha('reset');
+    }
+
+    async function handleCustomerAuthSubmit() {
+      hideAuthBanner();
       const phone = document.getElementById('custAuthPhone').value.trim();
       const pass = document.getElementById('custAuthPass').value.trim();
-      if (!name) return alert('অনুগ্রহ করে আপনার নাম লিখুন!');
-      if (!/^[6-9]\d{9}$/.test(phone)) return alert('সঠিক ১০ সংখ্যার ভারতীয় মোবাইল নম্বর দিন!');
-      if (!pass) return alert('লগইনের জন্য একটি পাসওয়ার্ড দিন!');
+      const captchaInp = document.getElementById('loginCaptchaInput').value.trim().toUpperCase();
+      const btn = document.getElementById('custAuthSubmitBtn');
 
-      generatedLiveOTP = Math.floor(100000 + Math.random() * 900000).toString();
-      const btn = document.getElementById('sendOtpBtn');
-      btn.innerText = "OTP পাঠানো হচ্ছে...";
+      if (!/^[6-9]\d{9}$/.test(phone)) {
+        return showAuthBanner('সঠিক ১০ সংখ্যার ভারতীয় মোবাইল নম্বর দিন!');
+      }
+      if (pass.length < 4) {
+        return showAuthBanner('কমপক্ষে ৪ অক্ষরের পাসওয়ার্ড দিন!');
+      }
+      if (captchaInp !== loginCaptchaCode) {
+        refreshCaptcha('login');
+        return showAuthBanner('Captcha কোডটি মেলেনি! আবার চেষ্টা করুন।');
+      }
+
+      const hashedPass = await sha256(pass);
       btn.disabled = true;
 
-      setTimeout(() => {
-        alert(`[Sera's Collection OTP] আপনার ৬ সংখ্যার ভেরিফিকেশন কোড: ${generatedLiveOTP}`);
-        document.getElementById('authPhoneStep').classList.add('hidden');
-        document.getElementById('authOtpStep').classList.remove('hidden');
-        btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> <span>OTP পাঠান</span>`;
+      try {
+        if (currentAuthMode === 'register') {
+          const name = document.getElementById('custAuthName').value.trim();
+          if (!name) {
+            btn.disabled = false;
+            return showAuthBanner('অনুগ্রহ করে আপনার পুরো নাম লিখুন!');
+          }
+
+          let existingUser = null;
+          if (custRef) {
+            const snap = await custRef.child(phone).once('value');
+            existingUser = snap.val();
+          }
+
+          if (existingUser) {
+            btn.disabled = false;
+            refreshCaptcha('login');
+            return showAuthBanner('এই মোবাইল নম্বরে আগে থেকেই অ্যাকাউন্ট আছে! অনুগ্রহ করে লগইন করুন।');
+          }
+
+          const newUser = { name, phone, pass: hashedPass, createdAt: Date.now() };
+          if (custRef) {
+            await custRef.child(phone).set(newUser);
+          }
+          localStorage.setItem('seras_customer_user', JSON.stringify(newUser));
+          showAuthBanner(`স্বাগতম ${name}! আপনার অ্যাকাউন্ট তৈরি হয়েছে।`, false);
+          setTimeout(() => {
+            closeCustomerAuthModal();
+            checkCustomerAuth();
+          }, 900);
+
+        } else {
+          // LOGIN MODE
+          let userRecord = null;
+          if (custRef) {
+            const snap = await custRef.child(phone).once('value');
+            userRecord = snap.val();
+          }
+
+          if (!userRecord) {
+            btn.disabled = false;
+            refreshCaptcha('login');
+            return showAuthBanner('এই নম্বরে কোনো অ্যাকাউন্ট পাওয়া যায়নি! আগে "নতুন অ্যাকাউন্ট" তৈরি করুন।');
+          }
+
+          if (userRecord.pass !== hashedPass) {
+            btn.disabled = false;
+            refreshCaptcha('login');
+            return showAuthBanner('ভুল পাসওয়ার্ড! ভুলে গেলে "পাসওয়ার্ড ভুলে গেছেন?" থেকে রিসেট করুন।');
+          }
+
+          localStorage.setItem('seras_customer_user', JSON.stringify(userRecord));
+          showAuthBanner(`স্বাগতম, ${userRecord.name}! লগইন সফল হয়েছে।`, false);
+          setTimeout(() => {
+            closeCustomerAuthModal();
+            checkCustomerAuth();
+          }, 800);
+        }
+      } catch (err) {
+        showAuthBanner('সার্ভারে সংযোগ করতে সমস্যা হয়েছে, আবার চেষ্টা করুন।');
+      } finally {
         btn.disabled = false;
-      }, 400);
+      }
     }
 
-    async function handleCustomerVerifyOTP() {
-      const enteredOtp = document.getElementById('custAuthOTPInput').value.trim();
-      if (enteredOtp === generatedLiveOTP) {
-        const name = document.getElementById('custAuthName').value.trim();
-        const phone = document.getElementById('custAuthPhone').value.trim();
-        const pass = document.getElementById('custAuthPass').value.trim();
-        const hashedPass = await sha256(pass);
-        const userData = { name, phone, pass: hashedPass };
-        
-        localStorage.setItem('seras_customer_user', JSON.stringify(userData));
+    async function handlePasswordReset() {
+      hideAuthBanner();
+      const phone = document.getElementById('resetPhoneInput').value.trim();
+      const newPass = document.getElementById('resetNewPassInput').value.trim();
+      const captchaInp = document.getElementById('resetCaptchaInput').value.trim().toUpperCase();
+      const btn = document.getElementById('resetPassBtn');
 
-        alert(`স্বাগতম, ${name}! ভেরিফিকেশন সফল হয়েছে।`);
-        closeCustomerAuthModal();
-        checkCustomerAuth();
-      } else {
-        alert("ভুল OTP কোড! মোবাইলে আসা সঠিক ৬ সংখ্যার কোড দিন।");
+      if (!/^[6-9]\d{9}$/.test(phone)) {
+        return showAuthBanner('সঠিক ১০ সংখ্যার মোবাইল নম্বর দিন!');
+      }
+      if (newPass.length < 4) {
+        return showAuthBanner('কমপক্ষে ৪ অক্ষরের নতুন পাসওয়ার্ড দিন!');
+      }
+      if (captchaInp !== resetCaptchaCode) {
+        refreshCaptcha('reset');
+        return showAuthBanner('Verification Captcha কোডটি মেলেনি! আবার লিখুন।');
+      }
+
+      btn.disabled = true;
+      btn.innerText = "আপডেট হচ্ছে...";
+
+      try {
+        if (!custRef) {
+          btn.disabled = false;
+          btn.innerText = "পাসওয়ার্ড আপডেট ও লগইন করুন";
+          return showAuthBanner('ডেটাবেস সংযোগ পাওয়া যায়নি।');
+        }
+
+        const snap = await custRef.child(phone).once('value');
+        const userRecord = snap.val();
+
+        if (!userRecord) {
+          btn.disabled = false;
+          btn.innerText = "পাসওয়ার্ড আপডেট ও লগইন করুন";
+          refreshCaptcha('reset');
+          return showAuthBanner('এই মোবাইল নম্বরে কোনো অ্যাকাউন্ট নেই! আগে নতুন অ্যাকাউন্ট খুলুন।');
+        }
+
+        const newHashedPass = await sha256(newPass);
+        await custRef.child(phone).update({ pass: newHashedPass, updatedAt: Date.now() });
+
+        userRecord.pass = newHashedPass;
+        localStorage.setItem('seras_customer_user', JSON.stringify(userRecord));
+
+        showAuthBanner('পাসওয়ার্ড সফলভাবে পরিবর্তন হয়েছে! লগইন করা হচ্ছে...', false);
+        setTimeout(() => {
+          closeCustomerAuthModal();
+          checkCustomerAuth();
+        }, 1000);
+      } catch (e) {
+        showAuthBanner('পাসওয়ার্ড রিসেট করতে সমস্যা হয়েছে।');
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "পাসওয়ার্ড আপডেট ও লগইন করুন";
       }
     }
 
@@ -1580,6 +1815,8 @@
       }
       const pInp = document.getElementById('adminPinInput');
       if (pInp) pInp.value = '';
+      const msgBox = document.getElementById('adminAuthMsg');
+      if (msgBox) msgBox.classList.add('hidden');
       document.getElementById('adminModal').classList.remove('hidden');
     }
 
@@ -1591,11 +1828,17 @@
       const email = document.getElementById('adminEmailInput').value.trim();
       const pass = document.getElementById('adminPinInput').value.trim();
       const btn = document.getElementById('adminLoginBtn');
+      const msgBox = document.getElementById('adminAuthMsg');
 
-      if (!email || !pass) return alert("ইমেইল এবং পাসওয়ার্ড দুটোই দিন!");
+      if (!email || !pass) {
+        msgBox.innerText = "ইমেইল এবং পাসওয়ার্ড দুটোই দিন!";
+        msgBox.classList.remove('hidden');
+        return;
+      }
 
       btn.innerText = "যাচাই হচ্ছে...";
       btn.disabled = true;
+      msgBox.classList.add('hidden');
 
       try {
         await firebase.auth().signInWithEmailAndPassword(email, pass);
@@ -1605,7 +1848,8 @@
         listenToCloudDatabase();
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } catch (error) {
-        alert("ভুল ইমেইল বা পাসওয়ার্ড! প্রবেশের অনুমতি নেই।");
+        msgBox.innerText = "ভুল ইমেইল বা পাসওয়ার্ড! প্রবেশের অনুমতি নেই।";
+        msgBox.classList.remove('hidden');
       } finally {
         btn.innerText = "লগইন করুন";
         btn.disabled = false;
